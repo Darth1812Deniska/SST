@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Создано Microsoft Visio, экспорт SVG Архитектура.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="11.6929in" height="8.26772in" viewBox="0 0 841.89 595.276" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st18">
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-dasharray:0,2.25;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st2 {fill:#000000;font-family:Calibri;font-size:0.833336em;font-weight:bold}
+		.st3 {font-size:1em}
+		.st4 {fill:url(#ptrn2-4294967295);shape-rendering:crispEdges;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st5 {fill:#000000;font-family:Calibri;font-size:0.833336em}
+		.st6 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st7 {fill:none;stroke:#000000;stroke-dasharray:0,2.25;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st8 {fill:#d8d8d8;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st9 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st10 {fill:#e4e4e4;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st11 {fill:#ffffff}
+		.st12 {fill:#000000;font-family:Calibri;font-size:0.666664em}
+		.st13 {marker-end:url(#mrkr4-62);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st14 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.28409090909091}
+		.st15 {marker-end:url(#mrkr4-62);marker-start:url(#mrkr4-107);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st16 {marker-end:url(#mrkr10-117);marker-start:url(#mrkr10-115);stroke:#000000;stroke-dasharray:1.66346,1.18819;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.237638}
+		.st17 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.086174404659928}
+		.st18 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Patterns_And_Gradients">
+		<pattern id="ptrn2-4294967295" patternUnits="userSpaceOnUse" width="6" height="6" viewBox="0 0 64 64">
+			<image x="0" y="0" width="64" height="64" image-rendering="optimizeSpeed"
+					xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA+SURBVChTfY/BDQAgCAPZf0Xm6LumRI0oeB8Cdx8MACt0d3fa3BNLaj7BKUUKbil2UEkRQSdFfNFJYT8JgAPM6PnBP4fqWwAAAABJRU5ErkJggg=="/>
+		</pattern>
+	</defs>
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-62" class="st14" refX="-7.04" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-3.52,-3.52) "/>
+		</marker>
+		<marker id="mrkr4-107" class="st14" refX="6.68" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(3.52) "/>
+		</marker>
+		<g id="lend10">
+			<path
+					d="M 0 0.75 C -0.414214 0.75 -0.75 0.414214 -0.75 0 -0.75 -0.414214 -0.414214 -0.75 0 -0.75 0.414214 -0.75 0.75 -0.414214 0.75 0 0.75 0.414214 0.414214 0.75 0 0.75 Z "
+					style="stroke:none"/>
+		</g>
+		<marker id="mrkr10-115" class="st17" refX="7.1883697813121" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend10" transform="scale(11.604373757455) "/>
+		</marker>
+		<marker id="mrkr10-117" class="st17" refX="-8.7032803180915" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend10" transform="scale(-11.604373757455,-11.604373757455) "/>
+		</marker>
+	</defs>
+	<g>
+		<title>Страница-1</title>
+		<g id="shape2-1" transform="translate(141.732,-290.878)">
+			<title>Прямоугольник</title>
+			<desc>Клиент SQL Script Tool</desc>
+			<path d="M0 595.28 L255.12 595.28 L255.12 374.17 L0 374.17 L0 595.28 Z" class="st1"/>
+			<text x="112.14" y="387.17" class="st2">Клиент <tspan x="96.43" dy="1.2em" class="st3">SQL Script Tool</tspan></text>		</g>
+		<g id="shape3-5" transform="translate(328.819,-378.752)">
+			<title>Прямоугольник.3</title>
+			<desc>Модуль обмена и контроля версий HTTP-Client</desc>
+			<rect x="0" y="510.236" width="99.2126" height="85.0394" class="st4"/>
+			<text x="11.54" y="543.76" class="st5">Модуль обмена и <tspan x="13.7" dy="1.2em" class="st3">контроля версий </tspan><tspan
+						x="25.75" dy="1.2em" class="st3">HTTP</tspan>-Client</text>		</g>
+		<g id="shape5-12" transform="translate(-136.063,315.736) rotate(-90)">
+			<title>Полилиния</title>
+			<path d="M0 595.28 L87.77 583.94 L222.01 606.61 L289.13 595.28" class="st6"/>
+		</g>
+		<g id="shape6-15" transform="translate(510.236,-324.894)">
+			<title>Прямоугольник.6</title>
+			<desc>Сервер обмена и контроля версий SQL Script Tool</desc>
+			<path d="M0 595.28 L136.06 595.28 L136.06 368.5 L0 368.5 L0 595.28 Z" class="st7"/>
+			<text x="30.84" y="381.5" class="st2">Сервер обмена и<tspan x="31.24" dy="1.2em" class="st3">контроля версий </tspan><tspan
+						x="36.91" dy="1.2em" class="st3">SQL Script Tool</tspan></text>		</g>
+		<g id="shape14-20" transform="translate(164.409,-273.87)">
+			<title>Прямоугольник.14</title>
+			<desc>Модели скриптов и шаблоны элементов</desc>
+			<rect x="0" y="510.236" width="209.764" height="85.0394" class="st8"/>
+			<text x="18.22" y="523.24" class="st5">Модели скриптов и шаблоны элементов</text>		</g>
+		<g id="group15-23" transform="translate(172.913,-279.54)">
+			<title>Загнутый угол</title>
+			<desc>Стандарт-ные</desc>
+			<g id="shape15-24">
+				<path d="M0 595.28 L43.09 595.28 L53.86 584.5 L53.86 541.42 L0 541.42 L0 595.28 Z" class="st9"/>
+				<text x="5.98" y="554.42" class="st5">Стандарт-<tspan x="18.44" dy="1.2em" class="st3">ные</tspan></text>			</g>
+			<g id="shape16-28" transform="translate(43.0866,0)">
+				<title>Лист.16</title>
+				<path d="M0 595.28 L10.77 584.5 L0 584.5 L0 595.28 Z" class="st10"/>
+			</g>
+		</g>
+		<g id="group17-30" transform="translate(242.362,-279.54)">
+			<title>Загнутый угол.17</title>
+			<desc>Публич-ные</desc>
+			<g id="shape17-31">
+				<path d="M0 595.28 L43.09 595.28 L53.86 584.5 L53.86 541.42 L0 541.42 L0 595.28 Z" class="st9"/>
+				<text x="9.77" y="554.42" class="st5">Публич-<tspan x="18.44" dy="1.2em" class="st3">ные</tspan></text>			</g>
+			<g id="shape18-35" transform="translate(43.0866,0)">
+				<title>Лист.18</title>
+				<path d="M0 595.28 L10.77 584.5 L0 584.5 L0 595.28 Z" class="st10"/>
+			</g>
+		</g>
+		<g id="group19-37" transform="translate(311.811,-279.54)">
+			<title>Загнутый угол.19</title>
+			<desc>Личные</desc>
+			<g id="shape19-38">
+				<path d="M0 595.28 L43.09 595.28 L53.86 584.5 L53.86 541.42 L0 541.42 L0 595.28 Z" class="st9"/>
+				<text x="10.34" y="554.42" class="st5">Личные</text>			</g>
+			<g id="shape20-41" transform="translate(43.0866,0)">
+				<title>Лист.20</title>
+				<path d="M0 595.28 L10.77 584.5 L0 584.5 L0 595.28 Z" class="st10"/>
+			</g>
+		</g>
+		<g id="shape21-43" transform="translate(225.354,-378.752)">
+			<title>Прямоугольник.21</title>
+			<desc>Пользовательский интерфейс</desc>
+			<rect x="0" y="510.236" width="87.874" height="85.0394" class="st9"/>
+			<text x="4.59" y="549.76" class="st5">Пользовательский <tspan x="21.09" dy="1.2em" class="st3">интерфейс</tspan></text>		</g>
+		<g id="shape22-47" transform="translate(122.835,-378.752)">
+			<title>Прямоугольник.22</title>
+			<desc>SQL редактор</desc>
+			<rect x="0" y="510.236" width="87.874" height="85.0394" class="st9"/>
+			<text x="15.22" y="555.76" class="st5">SQL редактор</text>		</g>
+		<g id="shape26-50" transform="translate(233.858,-194.5)">
+			<title>Дисковый накопитель</title>
+			<desc>Файловая система</desc>
+			<path d="M0 545.67 L0 588.19 A35.4331 7.08661 -180 1 0 70.87 588.19 L70.87 545.67 A35.4331 7.08661 -180 1 0 -0 545.67
+						 Z" class="st11"/>
+			<path d="M0 545.67 L0 588.19 A35.4331 7.08661 -180 1 0 70.87 588.19 L70.87 545.67 A35.4331 7.08661 -180 1 0 -0 545.67"
+					class="st6"/>
+			<path d="M0 545.67 A35.4331 7.08661 -180 1 0 70.87 545.67" class="st6"/>
+			<path d="M0 549.21 A35.4331 7.08661 -180 1 0 70.87 549.21" class="st6"/>
+			<text x="18.69" y="575.16" class="st12">Файловая <tspan x="21.73" dy="1.2em" class="st3">система</tspan></text>		</g>
+		<g id="shape27-57" transform="translate(262.205,-273.87)">
+			<title>Динамическая соединительная линия.27</title>
+			<path d="M7.09 595.28 L7.09 610.91" class="st13"/>
+		</g>
+		<g id="shape29-63" transform="translate(575.433,-334.815)">
+			<title>Прямоугольник.29</title>
+			<desc>Модели скриптов и шаблоны элементов</desc>
+			<rect x="0" y="422.362" width="87.874" height="172.913" class="st8"/>
+			<text x="6.03" y="435.36" class="st5">Модели скриптов <tspan x="20.21" dy="1.2em" class="st3">и шаблоны </tspan><tspan
+						x="21.17" dy="1.2em" class="st3">элементов</tspan></text>		</g>
+		<g id="group30-68" transform="translate(592.441,-409.933)">
+			<title>Загнутый угол.30</title>
+			<desc>Стандарт-ные</desc>
+			<g id="shape30-69">
+				<path d="M0 595.28 L43.09 595.28 L53.86 584.5 L53.86 541.42 L0 541.42 L0 595.28 Z" class="st9"/>
+				<text x="5.98" y="554.42" class="st5">Стандарт-<tspan x="18.44" dy="1.2em" class="st3">ные</tspan></text>			</g>
+			<g id="shape31-73" transform="translate(43.0866,0)">
+				<title>Лист.31</title>
+				<path d="M0 595.28 L10.77 584.5 L0 584.5 L0 595.28 Z" class="st10"/>
+			</g>
+		</g>
+		<g id="group32-75" transform="translate(592.441,-346.154)">
+			<title>Загнутый угол.32</title>
+			<desc>Публич-ные</desc>
+			<g id="shape32-76">
+				<path d="M0 595.28 L43.09 595.28 L53.86 584.5 L53.86 541.42 L0 541.42 L0 595.28 Z" class="st9"/>
+				<text x="9.77" y="554.42" class="st5">Публич-<tspan x="18.44" dy="1.2em" class="st3">ные</tspan></text>			</g>
+			<g id="shape33-80" transform="translate(43.0866,0)">
+				<title>Лист.33</title>
+				<path d="M0 595.28 L10.77 584.5 L0 584.5 L0 595.28 Z" class="st10"/>
+			</g>
+		</g>
+		<g id="shape34-82" transform="translate(700.157,-392.925)">
+			<title>Дисковый накопитель.34</title>
+			<desc>Файловая система</desc>
+			<path d="M0 545.67 L0 588.19 A35.4331 7.08661 -180 1 0 70.87 588.19 L70.87 545.67 A35.4331 7.08661 -180 1 0 -0 545.67
+						 Z" class="st11"/>
+			<path d="M0 545.67 L0 588.19 A35.4331 7.08661 -180 1 0 70.87 588.19 L70.87 545.67 A35.4331 7.08661 -180 1 0 -0 545.67"
+					class="st6"/>
+			<path d="M0 545.67 A35.4331 7.08661 -180 1 0 70.87 545.67" class="st6"/>
+			<path d="M0 549.21 A35.4331 7.08661 -180 1 0 70.87 549.21" class="st6"/>
+			<text x="18.69" y="575.16" class="st12">Файловая <tspan x="21.73" dy="1.2em" class="st3">система</tspan></text>		</g>
+		<g id="shape35-89" transform="translate(663.307,-414.185)">
+			<title>Динамическая соединительная линия.35</title>
+			<path d="M0 588.19 L29.81 588.19" class="st13"/>
+		</g>
+		<g id="shape36-94" transform="translate(493.228,-378.752)">
+			<title>Прямоугольник.36</title>
+			<desc>Сетевой интерфейс REST Web API</desc>
+			<rect x="0" y="510.236" width="64.252" height="85.0394" class="st4"/>
+			<text x="14.81" y="537.76" class="st5">Сетевой <tspan x="9.27" dy="1.2em" class="st3">интерфейс </tspan><tspan
+						x="22.24" dy="1.2em" class="st3">REST </tspan><tspan x="14.7" dy="1.2em" class="st3">Web API </tspan></text>		</g>
+		<g id="shape38-101" transform="translate(428.031,-414.185)">
+			<title>Динамическая соединительная линия.38</title>
+			<path d="M6.68 588.19 L7.04 588.19 L58.16 588.19" class="st15"/>
+		</g>
+		<g id="shape39-109" transform="translate(313.228,-414.185)">
+			<title>Динамическая соединительная линия</title>
+			<path d="M1.71 588.19 L2.07 588.19 L13.52 588.19" class="st16"/>
+		</g>
+		<g id="shape40-118" transform="translate(262.205,-378.752)">
+			<title>Динамическая соединительная линия.40</title>
+			<path d="M7.09 596.98 L7.09 597.34 L7.09 613.05" class="st16"/>
+		</g>
+		<g id="shape41-125" transform="translate(557.48,-414.185)">
+			<title>Динамическая соединительная линия.41</title>
+			<path d="M1.71 588.19 L2.07 588.19 L15.88 588.19" class="st16"/>
+		</g>
+		<g id="shape55-132" transform="translate(26.4567,-389.146)">
+			<title>Внешний процесс</title>
+			<desc>Внешний текстовый редактор</desc>
+			<path d="M0 563.15 L32.13 531.02 L64.25 563.15 L32.13 595.28 L0 563.15 Z" class="st11"/>
+			<path d="M24.09 539.06 L40.16 539.06" class="st6"/>
+			<path d="M8.03 571.18 L8.03 555.12" class="st6"/>
+			<path d="M0 563.15 L32.13 531.02 L64.25 563.15 L32.13 595.28 L0 563.15" class="st6"/>
+			<path d="M56.22 555.12 L56.22 571.18" class="st6"/>
+			<path d="M24.09 587.24 L40.16 587.24" class="st6"/>
+			<text x="16.44" y="555.95" class="st12">Внешний <tspan x="14.64" dy="1.2em" class="st3">текстовый </tspan><tspan
+						x="16.27" dy="1.2em" class="st3">редактор</tspan></text>		</g>
+		<g id="shape56-142" transform="translate(122.835,-414.185)">
+			<title>Динамическая соединительная линия.56</title>
+			<path d="M0 588.19 L-25.09 588.19" class="st13"/>
+		</g>
+		<g id="shape57-147" transform="translate(225.354,-414.185)">
+			<title>Динамическая соединительная линия.57</title>
+			<path d="M-1.71 588.19 L-2.07 588.19 L-12.58 588.19" class="st16"/>
+		</g>
+	</g>
+</svg>
