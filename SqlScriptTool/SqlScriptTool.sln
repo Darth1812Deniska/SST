@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlScriptToolClient", "SqlScriptToolClient\SqlScriptToolClient.csproj", "{F53BBF6A-E69B-4DC2-B06F-359599094E15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTCommonClasses", "SSTCommonClasses\SSTCommonClasses.csproj", "{E1B3AD59-E321-44EB-BF8E-2C087892A4A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F53BBF6A-E69B-4DC2-B06F-359599094E15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F53BBF6A-E69B-4DC2-B06F-359599094E15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F53BBF6A-E69B-4DC2-B06F-359599094E15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1B3AD59-E321-44EB-BF8E-2C087892A4A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1B3AD59-E321-44EB-BF8E-2C087892A4A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1B3AD59-E321-44EB-BF8E-2C087892A4A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1B3AD59-E321-44EB-BF8E-2C087892A4A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
