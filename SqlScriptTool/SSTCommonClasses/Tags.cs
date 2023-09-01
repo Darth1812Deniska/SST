@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
 namespace SSTCommonClasses;
 
 public enum TagDataType
@@ -21,39 +22,26 @@ public enum TagDataType
 public enum TagType
 {
     UserParameter,
-    ModelItemparent
+    ModelItemParent
 }
 
 [Serializable]
-
 public class TagTemplate
 {
-    
     public Guid Uuid { get; set; }
     public string Name { get; set; }
     public string DisplayLabel { get; set; }
     public string Description { get; set; }
     public TagType TagType { get; set; }
-    public TagDataType DataType { get; set; }
+    public TagDataType? DataType { get; set; }
     public LdObjectType? LdObjectType { get; set; }
 
-    private TagTemplate()
+    /*private TagTemplate()
     {
     }
+    */
 
-    public TagTemplate(Guid? uuid, string name, string displayLabel, string description, TagType tagType,
-        TagDataType dataType, LdObjectType? ldObjectType)
-    {
-        Uuid = uuid ?? Guid.NewGuid();
-        Name = name;
-        DisplayLabel = displayLabel;
-        Description = description;
-        TagType = tagType;
-        DataType = dataType;
-        LdObjectType = ldObjectType;
-    }
-
-    public TagTemplate(string name, string displayLabel, string description, TagType tagType, TagDataType dataType,
+    public TagTemplate(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType)
     {
         Uuid = Guid.NewGuid();
@@ -64,6 +52,7 @@ public class TagTemplate
         DataType = dataType;
         LdObjectType = ldObjectType;
     }
+
     public bool Equals(TagTemplate? other)
     {
         if (other == null)
@@ -95,31 +84,32 @@ public class Tag
     public string DisplayLabel { get; set; }
     public string Description { get; set; }
     public TagType TagType { get; set; }
-    public TagDataType DataType { get; set; }
-    public TagTemplate TagTemplate { get; set; }
+    public TagDataType? DataType { get; set; }
+    public TagTemplate? TagTemplate { get; set; }
     public LdObjectType? LdObjectType { get; set; }
     public ModelItem? ChildModelItem { get; set; }
 
+    /*
     public Tag()
     {
     }
+    */
 
-    public Tag(Guid? uuid, TagTemplate tagTemplate, string name, string displayLabel, string description,
-        TagType tagType, TagDataType dataType, LdObjectType? ldObjectType, ModelItem? childModelItem)
+    public Tag(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
+        LdObjectType? ldObjectType, ModelItem? childModelItem)
     {
-        Uuid = uuid ?? Guid.NewGuid();
+        Uuid = Guid.NewGuid();
         Name = name;
         DisplayLabel = displayLabel;
         Description = description;
         TagType = tagType;
         DataType = dataType;
-        TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
     }
 
     public Tag(TagTemplate tagTemplate, string name, string displayLabel, string description, TagType tagType,
-        TagDataType dataType, LdObjectType? ldObjectType, ModelItem? childModelItem)
+        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -161,6 +151,7 @@ public class Tag
 
         return obj is Tag tag && Equals(tag);
     }
+
     public override string ToString()
     {
         return $"{Name} ({DisplayLabel})";

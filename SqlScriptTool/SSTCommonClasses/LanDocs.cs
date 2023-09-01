@@ -14,7 +14,7 @@ public class LdObjectType
     public int ID { get; set; }
     public string Name { get; set; }
     public string DisplayLabel { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public Guid UID { get; set; }
 
     public LdObjectType()
