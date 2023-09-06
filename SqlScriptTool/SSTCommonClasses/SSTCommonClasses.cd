@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SSTCommonClasses.LdObjectType">
+    <Position X="1.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAggAAEgAAAAAQAgAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>LanDocs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Model">
+    <Position X="5.75" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAggAAUgAAAAAQQgAAAACAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.SqlTemplate">
+    <Position X="1.25" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAgAAAUgAAAAAQAgAAACGAAEAAAAAAAAAA=</HashCode>
+      <FileName>Models.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.ModelItem">
+    <Position X="5.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAUgAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.TagTemplate">
+    <Position X="8.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAUgIAAAAQAgAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Tags.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Tag">
+    <Position X="8.5" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAKgAAAUgIAAAAQCgAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Tags.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SSTCommonClasses.DbType">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAABAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SSTCommonClasses.ModelAccessType">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SSTCommonClasses.TagDataType">
+    <Position X="4" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAACQRAAAAAAAgACA=</HashCode>
+      <FileName>Tags.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SSTCommonClasses.TagType">
+    <Position X="4" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Tags.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
