@@ -16,7 +16,7 @@ public enum TagDataType
     DateTime,
     String,
     Char,
-    LdObjectType
+    LdObject
 }
 
 public enum TagType
