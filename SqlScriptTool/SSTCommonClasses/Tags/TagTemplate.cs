@@ -1,4 +1,6 @@
-﻿namespace SSTCommonClasses.Tags;
+﻿using SSTCommonClasses.Landocs;
+
+namespace SSTCommonClasses.Tags;
 
 [Serializable]
 public class TagTemplate
@@ -11,10 +13,10 @@ public class TagTemplate
     public TagDataType? DataType { get; set; }
     public LdObjectType? LdObjectType { get; set; }
 
-    /*private TagTemplate()
+    public TagTemplate()
     {
     }
-    */
+    
 
     public TagTemplate(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType)

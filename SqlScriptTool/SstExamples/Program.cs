@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using SSTCommonClasses;
+using SSTCommonClasses.Models;
 
 var model = new Model(); // дефолт
 var options = new JsonSerializerOptions { WriteIndented = true };
@@ -13,5 +14,5 @@ Model modelMssql = new Model("TypeMsSqlModel", "Типовая модель MS S
     ModelAccessType.Common, 0);
 
 var rootModelItem = modelMssql.RootModelItem;
-string testMssqlJsonModel =  JsonSerializer.Serialize(rootModelItem, options);
+string testMssqlJsonModel = JsonSerializer.Serialize(rootModelItem, options);
 Console.WriteLine(testMssqlJsonModel);

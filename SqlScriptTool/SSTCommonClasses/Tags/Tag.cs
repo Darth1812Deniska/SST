@@ -1,4 +1,7 @@
-﻿namespace SSTCommonClasses.Tags;
+﻿using SSTCommonClasses.Landocs;
+using SSTCommonClasses.Models;
+
+namespace SSTCommonClasses.Tags;
 
 [Serializable]
 public class Tag
