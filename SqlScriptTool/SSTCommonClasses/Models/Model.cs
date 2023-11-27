@@ -57,7 +57,7 @@ public class Model
         SqlTemplate rootSqlTemplate =
             new SqlTemplate(name, displayLabel, description, creatorName, dbType, version, @"<script>");
         rootSqlTemplate.Tags.Add(new Tag("script", "Тело скрипта", "Тело скрипта", TagType.ModelItemParent, null, null,
-            null));
+            null, false));
         RootModelItem = new ModelItem(rootSqlTemplate);
     }
 

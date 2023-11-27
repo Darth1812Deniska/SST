@@ -16,14 +16,15 @@ public class Tag
     public LdObjectType? LdObjectType { get; set; }
     public ModelItem? ChildModelItem { get; set; }
 
-    /*
+    public bool IsMultiplePattern { get; set; }
+
+    
     public Tag()
     {
     }
-    */
 
     public Tag(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
-        LdObjectType? ldObjectType, ModelItem? childModelItem)
+        LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -33,10 +34,11 @@ public class Tag
         DataType = dataType;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
+        IsMultiplePattern = isMultiplePattern;
     }
 
     public Tag(TagTemplate tagTemplate, string name, string displayLabel, string description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem)
+        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -47,9 +49,10 @@ public class Tag
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
+        IsMultiplePattern = isMultiplePattern;
     }
 
-    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, ModelItem? childModelItem)
+    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
         Name = tagTemplate.Name;
@@ -60,6 +63,7 @@ public class Tag
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
+        IsMultiplePattern = isMultiplePattern;
     }
 
     public bool Equals(Tag? other)

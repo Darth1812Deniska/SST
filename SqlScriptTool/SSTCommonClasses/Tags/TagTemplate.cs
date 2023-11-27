@@ -1,6 +1,8 @@
 ﻿using SSTCommonClasses.Landocs;
+using SSTCommonClasses.Models;
 
 namespace SSTCommonClasses.Tags;
+
 
 [Serializable]
 public class TagTemplate
@@ -12,6 +14,8 @@ public class TagTemplate
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public LdObjectType? LdObjectType { get; set; }
+    public SqlTemplate? SqlTemplate { get; set; }
+    public bool IsMultiplePattern { get; set; }
 
     public TagTemplate()
     {
@@ -19,7 +23,7 @@ public class TagTemplate
     
 
     public TagTemplate(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
-        LdObjectType? ldObjectType)
+        LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -28,6 +32,8 @@ public class TagTemplate
         TagType = tagType;
         DataType = dataType;
         LdObjectType = ldObjectType;
+        SqlTemplate = sqlTemplate;
+        IsMultiplePattern = isMultiplePattern;
     }
 
     public bool Equals(TagTemplate? other)

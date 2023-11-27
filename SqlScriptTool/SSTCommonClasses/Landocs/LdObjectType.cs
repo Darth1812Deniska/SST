@@ -2,6 +2,9 @@
 
 namespace SSTCommonClasses.Landocs;
 
+/// <summary>
+/// Класс для хранения информации об объектах Ландокса
+/// </summary>
 [Serializable]
 public class LdObjectType
 {
@@ -13,42 +16,63 @@ public class LdObjectType
     private Project _project;
     private Guid _sstGuid;
 
+    /// <summary>
+    /// Идентификатор типа объекта Ландокс на конкретном проекте
+    /// </summary>
     public int ID
     {
         get => _id;
         set => _id = value;
     }
 
+    /// <summary>
+    /// Название типа объекта Ландокс
+    /// </summary>
     public string Name
     {
         get => _name;
         set => _name = value;
     }
 
+    /// <summary>
+    /// Отображаемое наименование объекта Ландокс
+    /// </summary>
     public string DisplayLabel
     {
         get => _displayLabel;
         set => _displayLabel = value;
     }
 
+    /// <summary>
+    /// Краткое описание объекта
+    /// </summary>
     public string? Description
     {
         get => _description;
         set => _description = value;
     }
 
+    /// <summary>
+    /// Uid типа объекта в рамках проекта
+    /// </summary>
     public Guid DbUid
     {
         get => _dbUid;
         set => _dbUid = value;
     }
 
+    /// <summary>
+    /// Проект в котором используется этот тип объекта  
+    /// </summary>
     public Project Project
     {
         get => _project;
         set => _project = value;
     }
 
+    /// <summary>
+    /// Уникальный идентификатор типа объекта в системе SST
+    /// </summary>
     public Guid SstGuid
     {
         get => _sstGuid;
@@ -56,6 +80,9 @@ public class LdObjectType
     }
 
 
+    /// <summary>
+    /// Конструктор объекта класса LdObjectType
+    /// </summary>
     public LdObjectType()
     {
     }
