@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="450">
+        Title="MainWindow" Height="250" Width="450" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0" >
-            <Button Margin="5" Padding="3">Создать новую Модель</Button>
-            <Button Margin="5" Padding="3">Создать новый SQL-шаблон</Button>
-            <Button Margin="5" Padding="3">Создать новый тэг</Button>
+            <Button x:Name="BtnCreateNewModel" Margin="5" Padding="3" Click="BtnCreateNewModel_Click" >Создать новую Модель</Button>
+            <Button x:Name="BtnCreateNewSqlTemplate" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_Click" >Создать новый SQL-шаблон</Button>
+            <Button x:Name="BtnCreateNewTag" Margin="5" Padding="3" Click="BtnCreateNewTag_Click" >Создать новый тэг</Button>
         </StackPanel>
         <Grid Grid.Row="0" Column="1">
             <Button Margin="20">Сгенерировать скрипт</Button>

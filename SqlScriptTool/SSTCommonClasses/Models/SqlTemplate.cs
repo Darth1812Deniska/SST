@@ -28,7 +28,22 @@ public class SqlTemplate
         Tags = new List<Tag>();
     }
 
-    public SqlTemplate(string name, string displayLabel, string description, string creator, DbType dbType, int version,
+    // Для создания Шаблона RootModelItem
+    public SqlTemplate(string name, string displayLabel, string description, DbType dbType)
+    {
+        Uuid = Guid.NewGuid();
+        Name = name;
+        DisplayLabel = displayLabel;
+        Description = description;
+        Creator = string.Empty;
+        DbType = dbType;
+        Version = 0;
+        SqlText = string.Empty;
+        Tags = new List<Tag>();
+    }
+
+    public SqlTemplate(string name, string displayLabel, string description, string creator, DbType dbType,
+        int version,
         string sqlText)
     {
         Uuid = Guid.NewGuid();
@@ -57,6 +72,16 @@ public class SqlTemplate
         }
 
         return obj is SqlTemplate sqlTemplate && Equals(sqlTemplate);
+    }
+
+    public void SetName(string name)
+    {
+        Name = name;
+    }
+
+    public void SetDisplayLabel(string displayLabel)
+    {
+        DisplayLabel = displayLabel;
     }
 
     public override string ToString()

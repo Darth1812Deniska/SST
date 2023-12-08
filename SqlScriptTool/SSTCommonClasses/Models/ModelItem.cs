@@ -21,6 +21,14 @@ public class ModelItem
         ChildModelItems = new Dictionary<Guid, ModelItem>();
     }
 
+    // Для создания rootmodelItem
+    public ModelItem(string name, string displayLabel, string description, DbType dbType)
+    {
+        Uuid = Guid.NewGuid();
+        SqlTemplate = new SqlTemplate(name, displayLabel, description, dbType);
+        ChildModelItems = new Dictionary<Guid, ModelItem>();
+    }
+
     public bool Equals(ModelItem? other)
     {
         if (other == null)
