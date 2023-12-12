@@ -5,7 +5,10 @@ namespace SSTCommonClasses.Models;
 [Serializable]
 public class SqlTemplate
 {
+    #region Properties
+
     public Guid Uuid { get; set; }
+
     public string Name { get; set; }
     public string DisplayLabel { get; set; }
     public string Description { get; set; }
@@ -14,6 +17,10 @@ public class SqlTemplate
     public int Version { get; set; }
     public string SqlText { get; set; }
     public List<Tag> Tags { get; }
+
+    #endregion
+
+    #region Constructors
 
     public SqlTemplate()
     {
@@ -28,7 +35,6 @@ public class SqlTemplate
         Tags = new List<Tag>();
     }
 
-    // Для создания Шаблона RootModelItem
     public SqlTemplate(string name, string displayLabel, string description, DbType dbType)
     {
         Uuid = Guid.NewGuid();
@@ -57,6 +63,45 @@ public class SqlTemplate
         Tags = new List<Tag>();
     }
 
+    #endregion
+
+
+    // Для создания Шаблона RootModelItem
+
+    #region Public methods
+
+    public void SetName(string name)
+    {
+        Name = name;
+    }
+
+    public void SetDisplayLabel(string displayLabel)
+    {
+        DisplayLabel = displayLabel;
+    }
+
+    public Guid AddModelItemTag(string tagName, ModelItem modelItem)
+    {
+        Tag modelItemTag = new Tag(tagName,
+            null,
+            null,
+            TagType.ModelItemParent,
+            null,
+            null,
+            modelItem,
+            false);
+        Tags.Add(modelItemTag);
+        AddModelItemTagToScript(tagName);
+        return modelItemTag.Uuid;
+    }
+
+    public void AddModelItemTagToScript(string tagName)
+    {
+        SqlText = string.IsNullOrEmpty(SqlText)
+            ? tagName
+            : string.Concat(SqlText, Environment.NewLine, tagName);
+    }
+
     public bool Equals(SqlTemplate? other)
     {
         if (other == null)
@@ -74,18 +119,14 @@ public class SqlTemplate
         return obj is SqlTemplate sqlTemplate && Equals(sqlTemplate);
     }
 
-    public void SetName(string name)
-    {
-        Name = name;
-    }
-
-    public void SetDisplayLabel(string displayLabel)
-    {
-        DisplayLabel = displayLabel;
-    }
-
     public override string ToString()
     {
         return $"{Name} ({DisplayLabel})";
     }
+
+    #endregion
+
+    #region Private Methods
+
+    #endregion
 }

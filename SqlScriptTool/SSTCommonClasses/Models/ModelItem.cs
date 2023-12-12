@@ -3,9 +3,16 @@
 [Serializable]
 public class ModelItem
 {
+    #region properties
+
     public Guid Uuid { get; set; }
+
     public SqlTemplate SqlTemplate { get; set; }
     public Dictionary<Guid, ModelItem> ChildModelItems { get; }
+
+    #endregion
+
+    #region Construnctors
 
     public ModelItem()
     {
@@ -21,12 +28,24 @@ public class ModelItem
         ChildModelItems = new Dictionary<Guid, ModelItem>();
     }
 
-    // Для создания rootmodelItem
+    // Для создания rootmodelItem?
     public ModelItem(string name, string displayLabel, string description, DbType dbType)
     {
         Uuid = Guid.NewGuid();
         SqlTemplate = new SqlTemplate(name, displayLabel, description, dbType);
         ChildModelItems = new Dictionary<Guid, ModelItem>();
+    }
+
+    #endregion
+
+    #region Public methods
+
+    public ModelItem AddChildModelItem(string nodeName)
+    {
+        var childModelItem = new ModelItem();
+        Guid newChildTagGuid = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
+        ChildModelItems.Add(newChildTagGuid, childModelItem);
+        return childModelItem;
     }
 
     public bool Equals(ModelItem? other)
@@ -50,4 +69,6 @@ public class ModelItem
     {
         return Uuid.ToString();
     }
+
+    #endregion
 }

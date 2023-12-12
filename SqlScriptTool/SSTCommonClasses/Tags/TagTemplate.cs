@@ -9,8 +9,8 @@ public class TagTemplate
 {
     public Guid Uuid { get; set; }
     public string Name { get; set; }
-    public string DisplayLabel { get; set; }
-    public string Description { get; set; }
+    public string? DisplayLabel { get; set; }
+    public string? Description { get; set; }
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public LdObjectType? LdObjectType { get; set; }
@@ -22,7 +22,7 @@ public class TagTemplate
     }
     
 
-    public TagTemplate(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
+    public TagTemplate(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();

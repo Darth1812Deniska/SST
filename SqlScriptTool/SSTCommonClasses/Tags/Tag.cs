@@ -8,8 +8,8 @@ public class Tag
 {
     public Guid Uuid { get; set; }
     public string Name { get; set; }
-    public string DisplayLabel { get; set; }
-    public string Description { get; set; }
+    public string? DisplayLabel { get; set; }
+    public string? Description { get; set; }
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public TagTemplate? TagTemplate { get; set; }
@@ -23,7 +23,7 @@ public class Tag
     {
     }
 
-    public Tag(string name, string displayLabel, string description, TagType tagType, TagDataType? dataType,
+    public Tag(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
@@ -37,7 +37,7 @@ public class Tag
         IsMultiplePattern = isMultiplePattern;
     }
 
-    public Tag(TagTemplate tagTemplate, string name, string displayLabel, string description, TagType tagType,
+    public Tag(TagTemplate tagTemplate, string name, string? displayLabel, string? description, TagType tagType,
         TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
     {
         Uuid = Guid.NewGuid();
@@ -64,6 +64,11 @@ public class Tag
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
         IsMultiplePattern = isMultiplePattern;
+    }
+
+    public void SetName(string name)
+    {
+        Name = name;
     }
 
     public bool Equals(Tag? other)
