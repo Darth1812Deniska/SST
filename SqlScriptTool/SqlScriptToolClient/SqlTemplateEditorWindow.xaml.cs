@@ -33,10 +33,5 @@ namespace SqlScriptToolClient
             InitializeComponent();
             MessageBox.Show(ModelItem.Uuid.ToString());
         }
-        public SqlTemplateEditorWindow(SqlTemplate sqlTemplate)
-        {
-            SqlTemplate = sqlTemplate;
-            InitializeComponent();
-        }
     }
 }

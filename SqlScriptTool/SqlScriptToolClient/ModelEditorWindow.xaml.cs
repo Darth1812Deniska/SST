@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,8 +13,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
 using SqlScriptToolClient.Constants;
 using SSTCommonClasses.Models;
+using Path = System.IO.Path;
 
 namespace SqlScriptToolClient
 {
@@ -26,7 +30,12 @@ namespace SqlScriptToolClient
         private Model SelectedModel { get; set; }
         private ModelEditorFormState FormState { get; set; }
         private string ModelName => GetModelName();
+        private string ModelDisplayLabel => GetModelDisplayLabel();
+        private string ModelDescription => GetModelDescription();
         private Guid ModelUuid { get; set; }
+        private DbType ModelDbType => GetModelDbType();
+        private ModelItem ModelRootItem => GetModelRootItem();
+        private Model CurrentModel => GetCurrentModel();
         private TreeViewItem VisualRootModelItem => TvModelTree.Items[0] as TreeViewItem ?? new TreeViewItem();
         private int AllNodesCount => GetAllNodesCount();
 
@@ -43,6 +52,39 @@ namespace SqlScriptToolClient
         {
             var curItems = TvModelTree.Items;
             return curItems.Count + GetNodesCount(curItems);
+        }
+
+        private Model GetCurrentModel()
+        {
+            Model result = new Model(ModelUuid, ModelName, ModelDescription, ModelDbType, ModelDisplayLabel,
+                String.Empty, ModelAccessType.Private, 0, ModelRootItem);
+
+            return result;
+        }
+
+        private DbType GetModelDbType()
+        {
+            if (RbPostgreSql.IsChecked != null && RbPostgreSql.IsChecked.Value)
+                return DbType.PostgreSql;
+            if (RbMsSql.IsChecked != null && RbMsSql.IsChecked.Value)
+                return DbType.MsSql;
+            return DbType.None;
+        }
+
+        private string GetModelDisplayLabel()
+        {
+            return TbDisplayLabel.Text.Trim();
+        }
+
+        private string GetModelDescription()
+        {
+            return TbDescription.Text.Trim();
+        }
+
+        private ModelItem GetModelRootItem()
+        {
+            ModelItem result = VisualRootModelItem.Tag as ModelItem ?? new ModelItem();
+            return result;
         }
 
         #endregion
@@ -211,9 +253,54 @@ namespace SqlScriptToolClient
             return resultCount;
         }
 
-        #endregion
+        private void SaveModelInFileSystem(Model model)
+        {
+            // Создать папку в AppData?
+            // Коренная папка - UserData
+            const string userDataFolderName = "UserData";
+            if (!Directory.Exists(userDataFolderName))
+            {
+                Directory.CreateDirectory(userDataFolderName);
+            }
 
-        //private 
+            Directory.SetCurrentDirectory(userDataFolderName);
+
+            // Папка с личными моделями
+            const string privateFolderName = "Private";
+            if (!Directory.Exists(privateFolderName))
+            {
+                Directory.CreateDirectory(privateFolderName);
+            }
+
+            Directory.SetCurrentDirectory(privateFolderName);
+
+            // Папка с моделями
+            const string modelsFolderName = "Models";
+
+            if (!Directory.Exists(modelsFolderName))
+            {
+                Directory.CreateDirectory(modelsFolderName);
+            }
+            Directory.SetCurrentDirectory(modelsFolderName);
+
+            // Текущая модель
+            string newModelFolderName = model.Uuid.ToString();
+            string newModelFileName = $"{model.Uuid}.json";
+            if (!Directory.Exists(newModelFolderName))
+            {
+                Directory.CreateDirectory(newModelFolderName);
+            }
+            Directory.SetCurrentDirectory(newModelFolderName);
+            JsonSerializerOptions options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+            string jsonModel = JsonSerializer.Serialize(model, options);
+            File.WriteAllText(newModelFileName, jsonModel);
+
+        }
+
+        #endregion
 
         #region events
 
@@ -227,6 +314,7 @@ namespace SqlScriptToolClient
             if (CheckFields())
             {
                 MessageBox.Show("Поля заполнены");
+                SaveModelInFileSystem(CurrentModel);
             }
             else
             {
@@ -320,12 +408,17 @@ namespace SqlScriptToolClient
                     foreach (var item in selTreeViewItem.Items)
                     {
                         var treeViewItem = item as TreeViewItem;
+                        if (treeViewItem == null)
+                        {
+                            continue;
+                        }
+
                         TreeViewItem newItem = new TreeViewItem()
                         {
                             Header = treeViewItem.Header,
                             Tag = treeViewItem.Tag
                         };
-                        parentTreeViewItem.Items.Add(newItem);
+                        parentTreeViewItem?.Items.Add(newItem);
                     }
                 }
 

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using SqlScriptToolClient.ConstructorStorage;
 
 namespace SqlScriptToolClient;
 
@@ -10,6 +11,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        StaticConstructorStorage.LoadStorage();
     }
 
     private void BtnCreateNewModel_Click(object sender, RoutedEventArgs e)

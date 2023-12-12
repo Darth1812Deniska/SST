@@ -61,6 +61,35 @@ public class Model
         RootModelItem = new ModelItem(rootSqlTemplate);
     }
 
+    public Model(Guid uuid, string name, string? description, DbType dbType, string displayLabel, string creatorName,
+        ModelAccessType accessType, int version, ModelItem rootModelItem)
+    {
+        Uuid = uuid;
+        Name = name;
+        Description = description;
+        DbType = dbType;
+        DisplayLabel = displayLabel;
+        CreatorName = creatorName;
+        AccessType = accessType;
+        Version = version;
+        RootModelItem = rootModelItem;
+    }
+
+
+    /*
+      Model result = new Model()
+            {
+                Uuid = ModelUuid,
+                Name = ModelName,
+                Description = ModelDescription,
+                DbType = ModelDbType,
+                DisplayLabel = ModelDisplayLabel,
+                CreatorName = string.Empty,
+                AccessType = ModelAccessType.Private,
+                Version = 0
+            };
+     */
+
     public bool Equals(Model? other)
     {
         if (other == null)
