@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,27 +12,240 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SqlScriptToolClient.Constants;
 using SSTCommonClasses.Models;
+using SSTCommonClasses.Tags;
 
-namespace SqlScriptToolClient
+namespace SqlScriptToolClient;
+
+/// <summary>
+/// Логика взаимодействия для SqlTemplateEditorWindow.xaml
+/// </summary>
+public partial class SqlTemplateEditorWindow : Window
 {
-    /// <summary>
-    /// Логика взаимодействия для SqlTemplateEditorWindow.xaml
-    /// </summary>
-    public partial class SqlTemplateEditorWindow : Window
-    {
-        public SqlTemplate SqlTemplate { get; }
-        public ModelItem ModelItem { get; }
+    #region fields
 
-        public SqlTemplateEditorWindow()
+    private string _sqlTemplateName;
+    private string _sqlTemplateDisplayLabel;
+    private string? _sqlTemplateDescription;
+    private DbType _sqlTemplateDbType;
+    private string _sqlTemplateText = String.Empty;
+
+    #endregion
+
+    #region Properties
+
+    private TemplateEditorFormState FormState { get; }
+
+    public SqlTemplate InputSqlTemplate { get; set; }
+    public SqlTemplate CurrentSqlTemplate => GetCurrentSqlTemplate();
+
+    private Guid SqlTemplateUuid { get; set; }
+
+    private string SqlTemplateName
+    {
+        get => GetSqlTemplateName();
+        set => _sqlTemplateName = value;
+    }
+
+    private string SqlTemplateDisplayLabel
+    {
+        get => GetSqlTemplateDisplayLabel();
+        set => _sqlTemplateDisplayLabel = value;
+    }
+
+    private string? SqlTemplateDescription
+    {
+        get => GetSqlTemplateDescription();
+        set => _sqlTemplateDescription = value;
+    }
+
+    private DbType SqlTemplateDbType
+    {
+        get => GetSqlTemplateDbType();
+        set => _sqlTemplateDbType = value;
+    }
+
+    private string SqlTemplateText
+    {
+        get => GetSqlTemplateText();
+        set => _sqlTemplateText = value;
+    }
+
+    private List<Tag> SqlTemplateTags { get; set; }
+
+    #endregion
+
+    #region Getters-Setters
+
+    private string GetSqlTemplateName()
+    {
+        return string.IsNullOrEmpty(_sqlTemplateName) ? TbName.Text.Trim() : _sqlTemplateName;
+    }
+
+    private string GetSqlTemplateDisplayLabel()
+    {
+        return string.IsNullOrEmpty(_sqlTemplateDisplayLabel)
+            ? TbDisplayLabel.Text.Trim()
+            : _sqlTemplateDisplayLabel;
+    }
+
+    private string GetSqlTemplateDescription()
+    {
+        return string.IsNullOrWhiteSpace(_sqlTemplateDescription)
+            ? TbDescription.Text.Trim()
+            : _sqlTemplateDescription;
+    }
+
+    private DbType GetSqlTemplateDbType()
+    {
+        DbType result = _sqlTemplateDbType;
+        if (RbPostgreSql.IsChecked != null && RbPostgreSql.IsChecked.Value)
         {
-            InitializeComponent();
+            result = DbType.PostgreSql;
         }
-        public SqlTemplateEditorWindow(ModelItem modelItem)
+
+        if (RbMsSql.IsChecked != null && RbMsSql.IsChecked.Value)
         {
-            ModelItem = modelItem;
-            InitializeComponent();
-            MessageBox.Show(ModelItem.Uuid.ToString());
+            result = DbType.MsSql;
+        }
+
+        return result;
+    }
+
+    private string GetSqlTemplateText()
+    {
+        return string.IsNullOrEmpty(TbCodeEditor.Text.Trim()) ? _sqlTemplateText : TbCodeEditor.Text.Trim();
+    }
+
+    private SqlTemplate GetCurrentSqlTemplate()
+    {
+        SqlTemplate sqlTemplate = new SqlTemplate(SqlTemplateUuid,
+            SqlTemplateName,
+            SqlTemplateDisplayLabel,
+            SqlTemplateDescription,
+            string.Empty,
+            SqlTemplateDbType,
+            0,
+            SqlTemplateText,
+            SqlTemplateTags);
+
+        return sqlTemplate;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public SqlTemplateEditorWindow()
+    {
+        FormState = TemplateEditorFormState.Creation;
+        InitializeComponent();
+        InitializeProperties();
+    }
+
+    public SqlTemplateEditorWindow(SqlTemplate sqlTemplate)
+    {
+        FormState = TemplateEditorFormState.Editing;
+        InputSqlTemplate = sqlTemplate;
+        InitializeComponent();
+        InitializeProperties();
+    }
+
+    #endregion
+
+    #region private methods
+
+    private void InitializeProperties()
+    {
+        switch (FormState)
+        {
+            case TemplateEditorFormState.Creation:
+                SqlTemplateUuid = Guid.NewGuid();
+                TbUuid.Text = SqlTemplateUuid.ToString();
+                SqlTemplateTags = new List<Tag>();
+                break;
+            case TemplateEditorFormState.Editing:
+                SqlTemplateUuid = InputSqlTemplate.Uuid;
+                SqlTemplateName = InputSqlTemplate.Name;
+                SqlTemplateDisplayLabel = InputSqlTemplate.DisplayLabel;
+                SqlTemplateDescription = InputSqlTemplate.Description;
+                SqlTemplateDbType = InputSqlTemplate.DbType;
+                SqlTemplateText = InputSqlTemplate.SqlText;
+                SqlTemplateTags = InputSqlTemplate.Tags;
+
+                TbName.Text = SqlTemplateName;
+                TbDisplayLabel.Text = SqlTemplateDisplayLabel;
+                TbDescription.Text = SqlTemplateDescription;
+                TbCodeEditor.Text = SqlTemplateText;
+                TbUuid.Text = SqlTemplateUuid.ToString();
+
+                switch (SqlTemplateDbType)
+                {
+                    case DbType.PostgreSql:
+                        RbPostgreSql.IsChecked = true;
+                        break;
+                    case DbType.MsSql:
+                        RbMsSql.IsChecked = true;
+                        break;
+                }
+
+                InitializeNodeTags();
+
+                break;
         }
     }
+
+    private void InitializeNodeTags()
+    {
+        LbNodeTags.ItemsSource = SqlTemplateTags;
+    }
+
+    #endregion
+
+    #region Events
+
+    private void BtnSave_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBox.Show("!");
+    }
+
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void BtnTagEdit_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBox.Show("!");
+    }
+
+    private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        LbNodeTags.ItemsSource = null;
+        // Выбираем все тэги в тектсе
+        Regex rx = new Regex(@"<\w+>");
+        var tagsInTextlist = rx.Matches(SqlTemplateText).Select(match => match.Value).Distinct().ToList();
+
+        //Убираем существующие тэги, если их нет в тексте
+        var tagsToRemove = SqlTemplateTags.Where(tag => !tagsInTextlist.Contains(tag.Name)).ToList();
+        foreach (var tag in tagsToRemove)
+        {
+            SqlTemplateTags.Remove(tag);
+        }
+
+        // Выбираем только те строки тэгов, которых еще нет в списке тэгов
+        var tagNames = SqlTemplateTags.Select(tag => tag.Name).ToList();
+        var newTagNames = tagsInTextlist.Where(tagName => !tagNames.Contains(tagName)).ToList();
+
+        foreach (string newTagName in newTagNames)
+        {
+            Tag newTag = new Tag(newTagName);
+            SqlTemplateTags.Add(newTag);
+        }
+
+        LbNodeTags.ItemsSource = SqlTemplateTags;
+    }
+
+    #endregion
 }

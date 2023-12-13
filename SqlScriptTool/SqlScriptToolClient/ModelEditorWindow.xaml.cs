@@ -28,7 +28,7 @@ namespace SqlScriptToolClient
         #region properties
 
         private Model SelectedModel { get; set; }
-        private ModelEditorFormState FormState { get; set; }
+        private ModelEditorFormState FormState { get; }
         private string ModelName => GetModelName();
         private string ModelDisplayLabel => GetModelDisplayLabel();
         private string ModelDescription => GetModelDescription();
@@ -151,7 +151,7 @@ namespace SqlScriptToolClient
             // Добавить визуальный коренной узел
             TreeViewItem rootNodeItem = new TreeViewItem()
             {
-                Header = "ModelItem",
+                Header = "<ModelItem>",
                 IsExpanded = true
             };
             rootNodeItem.Tag = rootModelItem;
@@ -281,6 +281,7 @@ namespace SqlScriptToolClient
             {
                 Directory.CreateDirectory(modelsFolderName);
             }
+
             Directory.SetCurrentDirectory(modelsFolderName);
 
             // Текущая модель
@@ -290,6 +291,7 @@ namespace SqlScriptToolClient
             {
                 Directory.CreateDirectory(newModelFolderName);
             }
+
             Directory.SetCurrentDirectory(newModelFolderName);
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
@@ -297,7 +299,14 @@ namespace SqlScriptToolClient
             };
             string jsonModel = JsonSerializer.Serialize(model, options);
             File.WriteAllText(newModelFileName, jsonModel);
+        }
 
+        private void SetRootSqlTemplateDbType()
+        {
+            if (VisualRootModelItem.Tag is ModelItem rootModelItem)
+            {
+                rootModelItem.SqlTemplate.SetDbType(ModelDbType);
+            }
         }
 
         #endregion
@@ -374,7 +383,7 @@ namespace SqlScriptToolClient
                 return;
             }
 
-            SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem);
+            SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
             sqlTemplateEditorWindow.ShowDialog();
         }
 
@@ -460,6 +469,32 @@ namespace SqlScriptToolClient
             {
                 rootModelItem.SqlTemplate.SetName(nodeName);
             }
+        }
+
+        private void TbDisplayLabel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (VisualRootModelItem.Tag is ModelItem rootModelItem)
+            {
+                rootModelItem.SqlTemplate.SetDisplayLabel(ModelDisplayLabel);
+            }
+        }
+
+        private void TbDescription_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (VisualRootModelItem.Tag is ModelItem rootModelItem)
+            {
+                rootModelItem.SqlTemplate.SetDescription(ModelDescription);
+            }
+        }
+
+        private void RbPostgreSql_Checked(object sender, RoutedEventArgs e)
+        {
+            SetRootSqlTemplateDbType();
+        }
+
+        private void RbMsSql_Checked(object sender, RoutedEventArgs e)
+        {
+            SetRootSqlTemplateDbType();
         }
 
         #endregion

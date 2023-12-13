@@ -11,8 +11,8 @@ public class SqlTemplate
 
     public string Name { get; set; }
     public string DisplayLabel { get; set; }
-    public string Description { get; set; }
-    public string Creator { get; set; }
+    public string? Description { get; set; }
+    public string? Creator { get; set; }
     public DbType DbType { get; set; }
     public int Version { get; set; }
     public string SqlText { get; set; }
@@ -63,6 +63,20 @@ public class SqlTemplate
         Tags = new List<Tag>();
     }
 
+    public SqlTemplate(Guid uuid, string name, string displayLabel, string? description, string? creator, DbType dbType,
+        int version, string sqlText, List<Tag> tags)
+    {
+        Uuid = uuid;
+        Name = name;
+        DisplayLabel = displayLabel;
+        Description = description;
+        Creator = creator;
+        DbType = dbType;
+        Version = version;
+        SqlText = sqlText;
+        Tags = tags;
+    }
+
     #endregion
 
 
@@ -78,6 +92,15 @@ public class SqlTemplate
     public void SetDisplayLabel(string displayLabel)
     {
         DisplayLabel = displayLabel;
+    }
+    public void SetDescription(string? description)
+    {
+        Description = description;
+    }
+
+    public void SetDbType(DbType dbType)
+    {
+        DbType = dbType;
     }
 
     public Guid AddModelItemTag(string tagName, ModelItem modelItem)

@@ -1,6 +1,6 @@
 ﻿namespace SqlScriptToolClient.ConstructorStorage;
 
-public class TemplateInfo()
+public class TemplateInfo
 {
 
 }

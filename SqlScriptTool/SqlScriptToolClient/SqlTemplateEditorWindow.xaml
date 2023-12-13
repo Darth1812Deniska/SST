@@ -30,10 +30,10 @@
             <Label Grid.Column="0" Grid.Row="2">Описание шаблона</Label>
             <Label Grid.Column="0" Grid.Row="3">Uid</Label>
             <Label Grid.Column="0" Grid.Row="4">Тип СУБД</Label>
-            <TextBox x:Name="tbName" Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
-            <TextBox x:Name="tbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
-            <TextBox x:Name="tbDescription" Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
-            <TextBox x:Name="tbUuid" Grid.Column="1" Grid.Row="3" Margin="2"></TextBox>
+            <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
+            <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
+            <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
+            <TextBox x:Name="TbUuid" Grid.Column="1" Grid.Row="3" Margin="2" IsReadOnly="True"></TextBox>
             <Grid Grid.Column="1" Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -50,14 +50,30 @@
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="TbCodeEditor" Margin="10" Grid.Column="0"></TextBox>
+            <TextBox x:Name="TbCodeEditor" Margin="10" Grid.Column="0" TextChanged="TbCodeEditor_TextChanged"></TextBox>
             <Grid Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <ListBox x:Name="LbTemplateTags" Grid.Row="0" Margin="10"></ListBox>
-                <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10"></ListBox>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" VerticalAlignment="Top">Шаблоны</Label>
+                    <ListBox x:Name="LbTemplateTags" Grid.Row="1" Margin="10" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0">Текущие</Label>
+                    <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10"></ListBox>
+                </Grid>
+
+
             </Grid>
             <Grid Column="2">
                 <Grid.RowDefinitions>
@@ -67,7 +83,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0">Предпросмотр тэга:</Label>
                 <TextBlock x:Name="TbTagPreview" Grid.Row="1"></TextBlock>
-                <Button x:Name="BtnTagEdit" Grid.Row="2" Padding="10,5" Margin="5">Редактировать</Button>
+                <Button x:Name="BtnTagEdit" Grid.Row="2" Padding="10,5" Margin="5" Click="BtnTagEdit_Click">Редактировать</Button>
             </Grid>
         </Grid>
 
@@ -77,8 +93,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel">Отменить</Button>
-            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave">Сохранить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
         </Grid>
     </Grid>
 </Window>

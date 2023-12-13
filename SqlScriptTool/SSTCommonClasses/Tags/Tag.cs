@@ -22,6 +22,11 @@ public class Tag
     public Tag()
     {
     }
+    public Tag(string name)
+    {
+        Uuid = Guid.NewGuid();
+        Name = name;
+    }
 
     public Tag(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)

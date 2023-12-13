@@ -32,16 +32,16 @@
             <Label Grid.Column="0" Grid.Row="4">Тип СУБД</Label>
 
             <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2" TextChanged="TbName_TextChanged"></TextBox>
-            <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
-            <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
+            <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2" TextChanged="TbDisplayLabel_TextChanged"></TextBox>
+            <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2" TextChanged="TbDescription_TextChanged"></TextBox>
             <TextBox x:Name="TbUuid" Grid.Column="1" Grid.Row="3" Margin="2" IsReadOnly="True"></TextBox>
             <Grid Grid.Column="1" Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <RadioButton x:Name="RbPostgreSql" Grid.Row="0" GroupName="DbmsType">PostgreSQL</RadioButton>
-                <RadioButton x:Name="RbMsSql" Grid.Row="1" GroupName="DbmsType">MS SQL</RadioButton>
+                <RadioButton x:Name="RbPostgreSql" Grid.Row="0" GroupName="DbmsType" Checked="RbPostgreSql_Checked">PostgreSQL</RadioButton>
+                <RadioButton x:Name="RbMsSql" Grid.Row="1" GroupName="DbmsType" Checked="RbMsSql_Checked">MS SQL</RadioButton>
             </Grid>
 
         </Grid>
