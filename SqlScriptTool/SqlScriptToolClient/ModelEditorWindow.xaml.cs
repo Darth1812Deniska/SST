@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
 using SqlScriptToolClient.Constants;
+using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Models;
 using Path = System.IO.Path;
 
@@ -322,7 +323,7 @@ namespace SqlScriptToolClient
         {
             if (CheckFields())
             {
-                MessageBox.Show("Поля заполнены");
+                StaticConstructorStorage.Models.Add(CurrentModel);
                 SaveModelInFileSystem(CurrentModel);
             }
             else

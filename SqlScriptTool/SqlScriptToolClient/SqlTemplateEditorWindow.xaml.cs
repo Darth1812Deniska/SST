@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SqlScriptToolClient.Constants;
+using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Models;
 using SSTCommonClasses.Tags;
 
@@ -207,7 +210,15 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("!");
+        StaticConstructorStorage.SqlTemplates.Add(CurrentSqlTemplate);
+        string pathToSave = "Private\\Templates";
+        Directory.SetCurrentDirectory(pathToSave);
+        JsonSerializerOptions options = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
+        string jsonTemplate = JsonSerializer.Serialize(CurrentSqlTemplate, options);
+        File.WriteAllText($"{CurrentSqlTemplate.Uuid}.json", jsonTemplate);
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -217,7 +228,9 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnTagEdit_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("!");
+        // Просто открытие без отправки параметра
+        TagEditorWindow tagEditor = new TagEditorWindow();
+        tagEditor.ShowDialog();
     }
 
     private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)
