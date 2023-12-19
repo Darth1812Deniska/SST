@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Tags;
+﻿using SSTCommonClasses.Constants;
+using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
 
@@ -11,7 +12,7 @@ public class Model
     public DbType DbType { get; set; }
     public string DisplayLabel { get; set; }
     public string CreatorName { get; set; }
-    public ModelAccessType AccessType { get; set; }
+    public AccessType AccessType { get; set; }
     public int Version { get; set; }
     public ModelItem RootModelItem { get; }
 
@@ -26,43 +27,16 @@ public class Model
         DbType = DbType.None;
         DisplayLabel = string.Empty;
         CreatorName = string.Empty;
-        AccessType = ModelAccessType.Private;
+        AccessType = AccessType.Private;
         Version = 0;
         SqlTemplate rootSqlTemplate =
-            new SqlTemplate(Name, DisplayLabel, Description, CreatorName, DbType, Version, @"<script>");
+            new SqlTemplate(Name, DisplayLabel, Description, CreatorName, DbType, AccessType, Version, @"<script>");
         RootModelItem = new ModelItem(rootSqlTemplate);
     }
 
-    /// <summary>
-    /// Создание новой модели с задаными параметрами
-    /// </summary>
-    /// <param name="name">Физическое наименование модели</param>
-    /// <param name="displayLabel">Отображаемое пользователсьское наименование</param>
-    /// <param name="description">Описание модели</param>
-    /// <param name="dbType">Тип СУБД, для которой создается модель</param>
-    /// <param name="creatorName">Имя пользователя</param>
-    /// <param name="accessType">Доступность модели</param>
-    /// <param name="version">Версия</param>
-    public Model(string name, string displayLabel, string description, DbType dbType, string creatorName,
-        ModelAccessType accessType, int version)
-    {
-        Uuid = Guid.NewGuid();
-        Name = name;
-        Description = description;
-        DbType = dbType;
-        DisplayLabel = displayLabel;
-        CreatorName = creatorName;
-        AccessType = accessType;
-        Version = version;
-        SqlTemplate rootSqlTemplate =
-            new SqlTemplate(name, displayLabel, description, creatorName, dbType, version, @"<script>");
-        rootSqlTemplate.Tags.Add(new Tag("script", "Тело скрипта", "Тело скрипта", TagType.ModelItemParent, null, null,
-            null, false));
-        RootModelItem = new ModelItem(rootSqlTemplate);
-    }
 
     public Model(Guid uuid, string name, string? description, DbType dbType, string displayLabel, string creatorName,
-        ModelAccessType accessType, int version, ModelItem rootModelItem)
+        AccessType accessType, int version, ModelItem rootModelItem)
     {
         Uuid = uuid;
         Name = name;
@@ -74,21 +48,6 @@ public class Model
         Version = version;
         RootModelItem = rootModelItem;
     }
-
-
-    /*
-      Model result = new Model()
-            {
-                Uuid = ModelUuid,
-                Name = ModelName,
-                Description = ModelDescription,
-                DbType = ModelDbType,
-                DisplayLabel = ModelDisplayLabel,
-                CreatorName = string.Empty,
-                AccessType = ModelAccessType.Private,
-                Version = 0
-            };
-     */
 
     public bool Equals(Model? other)
     {

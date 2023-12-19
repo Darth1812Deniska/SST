@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Landocs;
+﻿using SSTCommonClasses.Constants;
+using SSTCommonClasses.Landocs;
 using SSTCommonClasses.Models;
 
 namespace SSTCommonClasses.Tags;
@@ -6,6 +7,8 @@ namespace SSTCommonClasses.Tags;
 [Serializable]
 public class Tag
 {
+    #region Properties
+
     public Guid Uuid { get; set; }
     public string Name { get; set; }
     public string? DisplayLabel { get; set; }
@@ -15,13 +18,17 @@ public class Tag
     public TagTemplate? TagTemplate { get; set; }
     public LdObjectType? LdObjectType { get; set; }
     public ModelItem? ChildModelItem { get; set; }
+    public AccessType AccessType { get; set; }
 
-    public bool IsMultiplePattern { get; set; }
+    #endregion
 
-    
+
+    #region Constructors
+
     public Tag()
     {
     }
+
     public Tag(string name)
     {
         Uuid = Guid.NewGuid();
@@ -29,7 +36,7 @@ public class Tag
     }
 
     public Tag(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
-        LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
+        LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -39,11 +46,25 @@ public class Tag
         DataType = dataType;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
-        IsMultiplePattern = isMultiplePattern;
+        AccessType = accessType;
+    }
+
+    public Tag(Guid uuid, string name, string? displayLabel, string? description, TagType tagType,
+        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
+    {
+        Uuid = uuid;
+        Name = name;
+        DisplayLabel = displayLabel;
+        Description = description;
+        TagType = tagType;
+        DataType = dataType;
+        LdObjectType = ldObjectType;
+        ChildModelItem = childModelItem;
+        AccessType = accessType;
     }
 
     public Tag(TagTemplate tagTemplate, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
+        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -54,10 +75,10 @@ public class Tag
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
-        IsMultiplePattern = isMultiplePattern;
+        AccessType = accessType;
     }
 
-    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, ModelItem? childModelItem, bool isMultiplePattern)
+    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = tagTemplate.Name;
@@ -68,12 +89,21 @@ public class Tag
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
         ChildModelItem = childModelItem;
-        IsMultiplePattern = isMultiplePattern;
+        AccessType = accessType;
     }
+
+    #endregion
+
+    #region Public methods
 
     public void SetName(string name)
     {
         Name = name;
+    }
+
+    public void SetAccessType(AccessType accessType)
+    {
+        AccessType = accessType;
     }
 
     public bool Equals(Tag? other)
@@ -97,4 +127,6 @@ public class Tag
     {
         return $"{Name} ({DisplayLabel})";
     }
+
+    #endregion
 }

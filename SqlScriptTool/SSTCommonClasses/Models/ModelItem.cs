@@ -1,4 +1,6 @@
-﻿namespace SSTCommonClasses.Models;
+﻿using SSTCommonClasses.Constants;
+
+namespace SSTCommonClasses.Models;
 
 [Serializable]
 public class ModelItem
@@ -25,14 +27,6 @@ public class ModelItem
     {
         Uuid = Guid.NewGuid();
         SqlTemplate = sqlTemplate;
-        ChildModelItems = new Dictionary<Guid, ModelItem>();
-    }
-
-    // Для создания rootmodelItem?
-    public ModelItem(string name, string displayLabel, string description, DbType dbType)
-    {
-        Uuid = Guid.NewGuid();
-        SqlTemplate = new SqlTemplate(name, displayLabel, description, dbType);
         ChildModelItems = new Dictionary<Guid, ModelItem>();
     }
 

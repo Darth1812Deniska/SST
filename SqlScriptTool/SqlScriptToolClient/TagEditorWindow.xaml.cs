@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,17 +12,257 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SqlScriptToolClient.Constants;
+using SqlScriptToolClient.ConstructorStorage;
+using SSTCommonClasses.Constants;
+using SSTCommonClasses.Landocs;
+using SSTCommonClasses.Models;
+using SSTCommonClasses.Tags;
 
-namespace SqlScriptToolClient
+namespace SqlScriptToolClient;
+
+/// <summary>
+/// Логика взаимодействия для TagEditorWindow.xaml
+/// </summary>
+public partial class TagEditorWindow : Window
 {
-    /// <summary>
-    /// Логика взаимодействия для TagEditorWindow.xaml
-    /// </summary>
-    public partial class TagEditorWindow : Window
+    #region Fields
+
+    private ModelItem? _childModelItem;
+
+    #endregion
+
+    #region Properties
+
+    private TagEditorFormState FormState { get; }
+    private Tag? SelectedTag { get; set; }
+    private Tag CurrentTag => GetCurrentTag();
+    private Guid TagUuid { get; set; }
+
+    private string TagName => GetTagName();
+
+    private string? TagDescription => GetTagDescription();
+
+    private string TagDisplayLabel => GetTagDisplayLabel();
+
+    private TagType TagType => GetTagType();
+
+    private TagDataType? TagDataType => GetTagDataType();
+
+    private LdObjectType? LdObjectType => GetLdObjectType();
+
+    private SqlTemplate? SqlTemplate => GetSqlTemplate();
+
+    private ModelItem? ChildModelItem => GetChildModelItem();
+
+    #endregion
+
+    #region Getters - setters
+
+    private string GetTagName()
     {
-        public TagEditorWindow()
+        return TbName.Text.Trim();
+    }
+
+    private string GetTagDescription()
+    {
+        return TbDescription.Text.Trim();
+    }
+
+    private string GetTagDisplayLabel()
+    {
+        return TbDisplayLabel.Text.Trim();
+    }
+
+
+    private TagType GetTagType()
+    {
+        if (RbCalculatedValue.IsChecked != null && RbCalculatedValue.IsChecked.Value)
         {
-            InitializeComponent();
+            return TagType.CalculatedValue;
+        }
+
+        if (RbConstant.IsChecked != null && RbConstant.IsChecked.Value)
+        {
+            return TagType.Constant;
+        }
+
+        if (RbModelItemParent.IsChecked != null && RbModelItemParent.IsChecked.Value)
+        {
+            return TagType.ModelItemParent;
+        }
+
+        if (RbMultiplePattern.IsChecked != null && RbMultiplePattern.IsChecked.Value)
+        {
+            return TagType.MultiplePattern;
+        }
+
+        if (RbUserParameter.IsChecked != null && RbUserParameter.IsChecked.Value)
+        {
+            return TagType.UserParameter;
+        }
+
+        return TagType.None;
+    }
+
+    private TagDataType? GetTagDataType()
+    {
+        if (CmbDataType.SelectedItem == null)
+        {
+            return null;
+        }
+
+        return CmbDataType.SelectedItem as TagDataType?;
+    }
+
+    private LdObjectType? GetLdObjectType()
+    {
+        if (CmbLdObjectType.SelectedItem == null)
+        {
+            return null;
+        }
+
+        return CmbLdObjectType.SelectedItem as LdObjectType;
+    }
+
+    private SqlTemplate? GetSqlTemplate()
+    {
+        if (CmbSqlTemplate.SelectedItem == null)
+        {
+            return null;
+        }
+
+        return CmbSqlTemplate.SelectedItem as SqlTemplate;
+    }
+
+    private ModelItem? GetChildModelItem()
+    {
+        if (SelectedTag == null)
+        {
+            return null;
+        }
+
+        _childModelItem = SelectedTag.ChildModelItem;
+        if (_childModelItem != null)
+        {
+            _childModelItem.SqlTemplate = SqlTemplate;
+            return _childModelItem;
+        }
+
+        return null;
+    }
+
+    private Tag GetCurrentTag()
+    {
+        Tag result = new Tag(TagUuid, TagName, TagDisplayLabel, TagDescription, TagType,
+            TagDataType, LdObjectType, ChildModelItem, AccessType.Private);
+        return result;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public TagEditorWindow()
+    {
+        FormState = TagEditorFormState.Creation;
+        InitializeComponent();
+        InitializeProperties();
+    }
+
+    public TagEditorWindow(Tag tag)
+    {
+        SelectedTag = tag;
+        FormState = TagEditorFormState.Editing;
+        InitializeComponent();
+        InitializeProperties();
+    }
+
+    public TagEditorWindow(TagTemplate tagTemplate)
+    {
+        FormState = TagEditorFormState.Editing;
+        InitializeComponent();
+        InitializeProperties();
+    }
+
+    #endregion
+
+    #region Private methods
+
+    private void InitializeProperties()
+    {
+        // Присваиваем просто значения без отображаемых наименований
+        CmbDataType.ItemsSource = Enum.GetValues(typeof(TagDataType)).Cast<TagDataType>();
+        // Присваиваем пока все sql-шаблоны
+        CmbSqlTemplate.ItemsSource = StaticConstructorStorage.SqlTemplates;
+
+        switch (FormState)
+        {
+            case TagEditorFormState.Creation:
+                TagUuid = Guid.NewGuid();
+                TbUuid.Text = TagUuid.ToString();
+                break;
+            case TagEditorFormState.Editing:
+                if (SelectedTag != null)
+                {
+                    TagUuid = SelectedTag.Uuid;
+                    TbUuid.Text = TagUuid.ToString();
+                    TbName.Text = SelectedTag.Name;
+                    TbDisplayLabel.Text = SelectedTag.DisplayLabel;
+                    TbDescription.Text = SelectedTag.Description;
+                    switch (SelectedTag.TagType)
+                    {
+                        case TagType.ModelItemParent:
+                            RbModelItemParent.IsChecked = true;
+                            break;
+                        case TagType.CalculatedValue:
+                            RbCalculatedValue.IsChecked = true;
+                            break;
+                        case TagType.Constant:
+                            RbConstant.IsChecked = true;
+                            break;
+                        case TagType.MultiplePattern:
+                            RbMultiplePattern.IsChecked = true;
+                            break;
+                        case TagType.UserParameter:
+                            RbUserParameter.IsChecked = true;
+                            break;
+                    }
+
+                    if (SelectedTag.DataType != null)
+                    {
+                        CmbDataType.SelectedItem = SelectedTag.DataType;
+                    }
+
+                    // пока еще не закружались Типы объектов
+                    if (SelectedTag.LdObjectType != null)
+                    {
+                        CmbLdObjectType.SelectedItem = SelectedTag.LdObjectType;
+                    }
+
+                    if (SelectedTag.ChildModelItem != null)
+                    {
+                        CmbSqlTemplate.SelectedItem = SelectedTag.ChildModelItem.SqlTemplate;
+                    }
+                }
+
+                break;
         }
     }
+
+    #endregion
+
+    #region Events
+
+    private void BtnSave_Click(object sender, RoutedEventArgs e)
+    {
+        StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+    }
+
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    #endregion
 }

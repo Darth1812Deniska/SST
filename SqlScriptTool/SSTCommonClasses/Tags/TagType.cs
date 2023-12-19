@@ -3,5 +3,9 @@
 public enum TagType
 {
     UserParameter,
-    ModelItemParent
+    ModelItemParent,
+    CalculatedValue,
+    Constant,
+    MultiplePattern,
+    None
 }

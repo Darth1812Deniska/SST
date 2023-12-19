@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
+using SSTCommonClasses.Constants;
 using SSTCommonClasses.Models;
 using Path = System.IO.Path;
 
@@ -58,7 +59,7 @@ namespace SqlScriptToolClient
         private Model GetCurrentModel()
         {
             Model result = new Model(ModelUuid, ModelName, ModelDescription, ModelDbType, ModelDisplayLabel,
-                String.Empty, ModelAccessType.Private, 0, ModelRootItem);
+                String.Empty, AccessType.Private, 0, ModelRootItem);
 
             return result;
         }
@@ -254,54 +255,6 @@ namespace SqlScriptToolClient
             return resultCount;
         }
 
-        private void SaveModelInFileSystem(Model model)
-        {
-            // Создать папку в AppData?
-            // Коренная папка - UserData
-            const string userDataFolderName = "UserData";
-            if (!Directory.Exists(userDataFolderName))
-            {
-                Directory.CreateDirectory(userDataFolderName);
-            }
-
-            Directory.SetCurrentDirectory(userDataFolderName);
-
-            // Папка с личными моделями
-            const string privateFolderName = "Private";
-            if (!Directory.Exists(privateFolderName))
-            {
-                Directory.CreateDirectory(privateFolderName);
-            }
-
-            Directory.SetCurrentDirectory(privateFolderName);
-
-            // Папка с моделями
-            const string modelsFolderName = "Models";
-
-            if (!Directory.Exists(modelsFolderName))
-            {
-                Directory.CreateDirectory(modelsFolderName);
-            }
-
-            Directory.SetCurrentDirectory(modelsFolderName);
-
-            // Текущая модель
-            string newModelFolderName = model.Uuid.ToString();
-            string newModelFileName = $"{model.Uuid}.json";
-            if (!Directory.Exists(newModelFolderName))
-            {
-                Directory.CreateDirectory(newModelFolderName);
-            }
-
-            Directory.SetCurrentDirectory(newModelFolderName);
-            JsonSerializerOptions options = new JsonSerializerOptions()
-            {
-                WriteIndented = true
-            };
-            string jsonModel = JsonSerializer.Serialize(model, options);
-            File.WriteAllText(newModelFileName, jsonModel);
-        }
-
         private void SetRootSqlTemplateDbType()
         {
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
@@ -317,14 +270,12 @@ namespace SqlScriptToolClient
         /// <summary>
         /// Обработка кнопки "Сохранить"
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             if (CheckFields())
             {
-                StaticConstructorStorage.Models.Add(CurrentModel);
-                SaveModelInFileSystem(CurrentModel);
+                StaticConstructorStorage.SaveModel(CurrentModel);
             }
             else
             {
@@ -335,8 +286,7 @@ namespace SqlScriptToolClient
         /// <summary>
         /// Обработка кнопки отменить
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

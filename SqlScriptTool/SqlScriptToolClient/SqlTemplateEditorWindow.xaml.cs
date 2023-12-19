@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
+using SSTCommonClasses.Constants;
 using SSTCommonClasses.Models;
 using SSTCommonClasses.Tags;
 
@@ -129,6 +130,7 @@ public partial class SqlTemplateEditorWindow : Window
             SqlTemplateDescription,
             string.Empty,
             SqlTemplateDbType,
+            AccessType.Private,
             0,
             SqlTemplateText,
             SqlTemplateTags);
@@ -210,15 +212,7 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
-        StaticConstructorStorage.SqlTemplates.Add(CurrentSqlTemplate);
-        string pathToSave = "Private\\Templates";
-        Directory.SetCurrentDirectory(pathToSave);
-        JsonSerializerOptions options = new JsonSerializerOptions()
-        {
-            WriteIndented = true
-        };
-        string jsonTemplate = JsonSerializer.Serialize(CurrentSqlTemplate, options);
-        File.WriteAllText($"{CurrentSqlTemplate.Uuid}.json", jsonTemplate);
+        StaticConstructorStorage.SaveSqlTemplate(CurrentSqlTemplate);
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -228,8 +222,12 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnTagEdit_Click(object sender, RoutedEventArgs e)
     {
-        // Просто открытие без отправки параметра
-        TagEditorWindow tagEditor = new TagEditorWindow();
+        var selTag = LbNodeTags.SelectedItem as Tag;
+        if (selTag == null)
+        {
+            return;
+        }
+        TagEditorWindow tagEditor = new TagEditorWindow(selTag);
         tagEditor.ShowDialog();
     }
 

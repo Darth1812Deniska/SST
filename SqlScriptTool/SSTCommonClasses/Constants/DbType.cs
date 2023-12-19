@@ -1,4 +1,4 @@
-﻿namespace SSTCommonClasses.Models;
+﻿namespace SSTCommonClasses.Constants;
 
 public enum DbType
 {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="TagEditorWindow" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+        Title="TagEditorWindow" Height="350" Width="500" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -30,15 +31,17 @@
             <Label Grid.Column="0" Grid.Row="0">Название</Label>
             <Label Grid.Column="0" Grid.Row="1">Отображаемое название</Label>
             <Label Grid.Column="0" Grid.Row="2">Описание</Label>
-            <Label Grid.Column="0" Grid.Row="3">Тип тэга</Label>
-            <Label Grid.Column="0" Grid.Row="4">Тип пользовательского параметра</Label>
-            <Label Grid.Column="0" Grid.Row="5">Тип объекта LD</Label>
-            <Label Grid.Column="0" Grid.Row="6">SQL шаблон</Label>
+            <Label Grid.Column="0" Grid.Row="3">Uuid</Label>
+            <Label Grid.Column="0" Grid.Row="4">Тип тэга</Label>
+            <Label Grid.Column="0" Grid.Row="5">Тип пользовательского параметра</Label>
+            <Label Grid.Column="0" Grid.Row="6" IsEnabled="False">Тип объекта LD</Label>
+            <Label Grid.Column="0" Grid.Row="7">SQL шаблон</Label>
 
-            <TextBox Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
-            <TextBox Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
-            <TextBox Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
-            <Grid Grid.Column="1" Grid.Row="3" Margin="2">
+            <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
+            <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
+            <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
+            <TextBox x:Name="TbUuid" Grid.Column="1" Grid.Row="3" Margin="2" IsReadOnly="True"></TextBox>
+            <Grid Grid.Column="1" Grid.Row="4" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -46,17 +49,17 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <RadioButton Grid.Row="0" ></RadioButton>
-                <RadioButton Grid.Row="1" ></RadioButton>
-                <RadioButton Grid.Row="2" ></RadioButton>
-                <RadioButton Grid.Row="3" ></RadioButton>
-                <RadioButton Grid.Row="4" ></RadioButton>
-                
+
+                <RadioButton x:Name="RbUserParameter" Grid.Row="0"  GroupName="TagTypeRbGroup" >Пользовательский параметр</RadioButton>
+                <RadioButton x:Name="RbModelItemParent" Grid.Row="1" GroupName="TagTypeRbGroup" >SQL шаблон</RadioButton>
+                <RadioButton x:Name="RbCalculatedValue" Grid.Row="2" GroupName="TagTypeRbGroup" >Вычисляемое значение</RadioButton>
+                <RadioButton x:Name="RbConstant" Grid.Row="3" GroupName="TagTypeRbGroup" >Константа</RadioButton>
+                <RadioButton x:Name="RbMultiplePattern" Grid.Row="4" GroupName="TagTypeRbGroup" >Множественный паттерн</RadioButton>
 
             </Grid>
-            <ComboBox Grid.Column="1" Grid.Row="4" Margin="2"></ComboBox>
-            <ComboBox Grid.Column="1" Grid.Row="5" Margin="2"></ComboBox>
-            <ComboBox Grid.Column="1" Grid.Row="6" Margin="2"></ComboBox>
+            <ComboBox x:Name="CmbDataType" Grid.Column="1" Grid.Row="5" Margin="2"></ComboBox>
+            <ComboBox x:Name="CmbLdObjectType" Grid.Column="1" Grid.Row="6" Margin="2" IsEnabled="False"></ComboBox>
+            <ComboBox x:Name="CmbSqlTemplate" Grid.Column="1" Grid.Row="7" Margin="2"></ComboBox>
             
 
         </Grid>
@@ -66,8 +69,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel">Отменить</Button>
-            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave">Сохранить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
         </Grid>
 
     </Grid>

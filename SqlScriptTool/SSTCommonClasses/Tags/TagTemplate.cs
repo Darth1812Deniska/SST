@@ -3,7 +3,6 @@ using SSTCommonClasses.Models;
 
 namespace SSTCommonClasses.Tags;
 
-
 [Serializable]
 public class TagTemplate
 {
@@ -20,7 +19,7 @@ public class TagTemplate
     public TagTemplate()
     {
     }
-    
+
 
     public TagTemplate(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
         LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, bool isMultiplePattern)

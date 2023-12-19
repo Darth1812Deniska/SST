@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Tags;
+﻿using SSTCommonClasses.Constants;
+using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
 
@@ -16,6 +17,7 @@ public class SqlTemplate
     public DbType DbType { get; set; }
     public int Version { get; set; }
     public string SqlText { get; set; }
+    public AccessType AccessType { get; set; }
     public List<Tag> Tags { get; }
 
     #endregion
@@ -35,22 +37,8 @@ public class SqlTemplate
         Tags = new List<Tag>();
     }
 
-    public SqlTemplate(string name, string displayLabel, string description, DbType dbType)
-    {
-        Uuid = Guid.NewGuid();
-        Name = name;
-        DisplayLabel = displayLabel;
-        Description = description;
-        Creator = string.Empty;
-        DbType = dbType;
-        Version = 0;
-        SqlText = string.Empty;
-        Tags = new List<Tag>();
-    }
-
     public SqlTemplate(string name, string displayLabel, string description, string creator, DbType dbType,
-        int version,
-        string sqlText)
+        AccessType accessType, int version, string sqlText)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -61,10 +49,11 @@ public class SqlTemplate
         Version = version;
         SqlText = sqlText;
         Tags = new List<Tag>();
+        AccessType = accessType;
     }
 
     public SqlTemplate(Guid uuid, string name, string displayLabel, string? description, string? creator, DbType dbType,
-        int version, string sqlText, List<Tag> tags)
+        AccessType accessType, int version, string sqlText, List<Tag> tags)
     {
         Uuid = uuid;
         Name = name;
@@ -75,6 +64,7 @@ public class SqlTemplate
         Version = version;
         SqlText = sqlText;
         Tags = tags;
+        AccessType = accessType;
     }
 
     #endregion
@@ -93,6 +83,7 @@ public class SqlTemplate
     {
         DisplayLabel = displayLabel;
     }
+
     public void SetDescription(string? description)
     {
         Description = description;
@@ -103,6 +94,11 @@ public class SqlTemplate
         DbType = dbType;
     }
 
+    public void SetAccessType(AccessType accessType)
+    {
+        AccessType = accessType;
+    }
+
     public Guid AddModelItemTag(string tagName, ModelItem modelItem)
     {
         Tag modelItemTag = new Tag(tagName,
@@ -111,8 +107,9 @@ public class SqlTemplate
             TagType.ModelItemParent,
             null,
             null,
-            modelItem,
-            false);
+            modelItem, 
+            AccessType
+        );
         Tags.Add(modelItemTag);
         AddModelItemTagToScript(tagName);
         return modelItemTag.Uuid;
