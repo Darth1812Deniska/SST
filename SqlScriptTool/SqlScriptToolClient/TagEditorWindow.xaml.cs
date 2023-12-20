@@ -36,7 +36,7 @@ public partial class TagEditorWindow : Window
 
     private TagEditorFormState FormState { get; }
     private Tag? SelectedTag { get; set; }
-    private Tag CurrentTag => GetCurrentTag();
+    public Tag CurrentTag => GetCurrentTag();
     private Guid TagUuid { get; set; }
 
     private string TagName => GetTagName();

@@ -21,17 +21,6 @@ public class Model
     /// </summary>
     public Model()
     {
-        Uuid = Guid.NewGuid();
-        Name = string.Empty;
-        Description = string.Empty;
-        DbType = DbType.None;
-        DisplayLabel = string.Empty;
-        CreatorName = string.Empty;
-        AccessType = AccessType.Private;
-        Version = 0;
-        SqlTemplate rootSqlTemplate =
-            new SqlTemplate(Name, DisplayLabel, Description, CreatorName, DbType, AccessType, Version, @"<script>");
-        RootModelItem = new ModelItem(rootSqlTemplate);
     }
 
 

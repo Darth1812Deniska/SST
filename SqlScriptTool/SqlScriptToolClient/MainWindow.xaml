@@ -5,18 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="450" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="250" Width="600" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="0" >
-            <Button x:Name="BtnCreateNewModel" Margin="5" Padding="3" Click="BtnCreateNewModel_Click" >Создать новую Модель</Button>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="BtnCreateNewModel" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewModel_Click" >Создать новую Модель</Button>
+            <ListBox x:Name="LbModels" Grid.Row="1" ></ListBox>
+        </Grid>
+            
+        <StackPanel Grid.Row="0" Grid.Column="1" >
             <Button x:Name="BtnCreateNewSqlTemplate" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_Click" >Создать новый SQL-шаблон</Button>
             <Button x:Name="BtnCreateNewTag" Margin="5" Padding="3" Click="BtnCreateNewTag_Click" >Создать новый тэг</Button>
         </StackPanel>
-        <Grid Grid.Row="0" Column="1">
+        <Grid Grid.Row="0" Column="2">
             <Button Margin="20">Сгенерировать скрипт</Button>
         </Grid>
     </Grid>

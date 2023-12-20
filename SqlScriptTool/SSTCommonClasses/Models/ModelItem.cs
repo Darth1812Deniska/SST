@@ -18,9 +18,6 @@ public class ModelItem
 
     public ModelItem()
     {
-        Uuid = Guid.NewGuid();
-        SqlTemplate = new SqlTemplate();
-        ChildModelItems = new Dictionary<Guid, ModelItem>();
     }
 
     public ModelItem(SqlTemplate sqlTemplate)

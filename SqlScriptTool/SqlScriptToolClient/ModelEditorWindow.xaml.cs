@@ -37,7 +37,7 @@ namespace SqlScriptToolClient
         private Guid ModelUuid { get; set; }
         private DbType ModelDbType => GetModelDbType();
         private ModelItem ModelRootItem => GetModelRootItem();
-        private Model CurrentModel => GetCurrentModel();
+        public Model CurrentModel => GetCurrentModel();
         private TreeViewItem VisualRootModelItem => TvModelTree.Items[0] as TreeViewItem ?? new TreeViewItem();
         private int AllNodesCount => GetAllNodesCount();
 
@@ -276,6 +276,7 @@ namespace SqlScriptToolClient
             if (CheckFields())
             {
                 StaticConstructorStorage.SaveModel(CurrentModel);
+                
             }
             else
             {

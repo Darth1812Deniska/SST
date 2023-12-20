@@ -1,24 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Models;
 using SSTCommonClasses.Tags;
+using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 
 namespace SqlScriptToolClient;
 
@@ -163,6 +153,7 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void InitializeProperties()
     {
+
         switch (FormState)
         {
             case TemplateEditorFormState.Creation:
@@ -229,6 +220,11 @@ public partial class SqlTemplateEditorWindow : Window
         }
         TagEditorWindow tagEditor = new TagEditorWindow(selTag);
         tagEditor.ShowDialog();
+
+        LbNodeTags.ItemsSource = null;
+        SqlTemplateTags.Remove(selTag);
+        SqlTemplateTags.Add(tagEditor.CurrentTag);
+        LbNodeTags.ItemsSource = SqlTemplateTags;
     }
 
     private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)

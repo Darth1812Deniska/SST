@@ -11,7 +11,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        StaticConstructorStorage.LoadStorage();
+        LbModels.ItemsSource = StaticConstructorStorage.Models;
     }
 
     private void BtnCreateNewModel_Click(object sender, RoutedEventArgs e)

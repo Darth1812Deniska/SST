@@ -26,15 +26,6 @@ public class SqlTemplate
 
     public SqlTemplate()
     {
-        Uuid = Guid.NewGuid();
-        Name = string.Empty;
-        DisplayLabel = string.Empty;
-        Description = string.Empty;
-        Creator = string.Empty;
-        DbType = DbType.None;
-        Version = 0;
-        SqlText = string.Empty;
-        Tags = new List<Tag>();
     }
 
     public SqlTemplate(string name, string displayLabel, string description, string creator, DbType dbType,

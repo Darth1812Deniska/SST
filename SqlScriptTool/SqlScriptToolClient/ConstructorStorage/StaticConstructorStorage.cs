@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using SqlScriptToolClient.ConstructorStorage.ObjectInfos;
 using SqlScriptToolClient.ConstructorStorage.ObjectLists;
 using SSTCommonClasses.Constants;
@@ -21,6 +22,8 @@ public static class StaticConstructorStorage
     private static SqlTemplatesList _sqlTemplates = new SqlTemplatesList();
     private static TagsList _tags = new TagsList();
     private static List<StorageInfo> _storageInfos = new List<StorageInfo>();
+    private static List<ModelInfo> _modelInfos = new List<ModelInfo>();
+    private static List<TemplateInfo> _templateInfos = new List<TemplateInfo>();
 
     #endregion
 
@@ -30,7 +33,11 @@ public static class StaticConstructorStorage
     public static SqlTemplatesList SqlTemplates => _sqlTemplates;
     public static TagsList Tags => _tags;
     public static List<StorageInfo> StorageInfos => _storageInfos;
-    public static string? UserDataRootPath { get; set; }
+    private static string? UserDataRootPath { get; set; }
+
+    private static List<ModelInfo> ModelInfos => _modelInfos;
+
+    private static List<TemplateInfo> TemplateInfos => _templateInfos;
 
     #endregion
 
@@ -39,11 +46,37 @@ public static class StaticConstructorStorage
     public static void LoadModels()
     {
         _models = new ModelsList();
+        foreach (var modelInfo in ModelInfos)
+        {
+            string modelPath = modelInfo.ModelPath;
+            Directory.SetCurrentDirectory(modelPath);
+            string modelFileName = modelInfo.ModelFileName;
+            string json = File.ReadAllText(modelFileName);
+            Model? model = JsonSerializer.Deserialize<Model>(json);
+            if (model != null)
+            {
+                Models.AddOrReplace(model);
+            }
+        }
     }
 
     public static void LoadSqlTemplates()
     {
         _sqlTemplates = new SqlTemplatesList();
+        foreach (var templateInfo in TemplateInfos)
+        {
+            string templateFolderPath = templateInfo.TemplateFolderPath;
+            Directory.SetCurrentDirectory(templateFolderPath);
+            string templateFileName = templateInfo.TemplateFileName;
+            //string templateTagsFileName = templateInfo.TemplateTagsFileName;
+            string templateJson = File.ReadAllText(templateFileName);
+            //string tagsJson = File.ReadAllText(templateTagsFileName);
+            SqlTemplate? sqlTemplate = JsonSerializer.Deserialize<SqlTemplate>(templateJson);
+            if (sqlTemplate != null)
+            {
+                SqlTemplates.AddOrReplace(sqlTemplate);
+            }
+        }
     }
 
     public static void LoadTags()
@@ -54,12 +87,14 @@ public static class StaticConstructorStorage
     public static void LoadStorage()
     {
         LoadStorageInfos();
+        LoadModelInfos();
+        LoadTemplateInfos();
         LoadModels();
         LoadSqlTemplates();
         LoadTags();
     }
 
-    public static void LoadStorageInfos()
+    private static void LoadStorageInfos()
     {
         if (string.IsNullOrEmpty(UserDataRootPath))
         {
@@ -71,6 +106,40 @@ public static class StaticConstructorStorage
         {
             string json = File.ReadAllText("StorageInfos.json");
             _storageInfos = JsonSerializer.Deserialize<List<StorageInfo>>(json) ?? new List<StorageInfo>();
+        }
+    }
+
+    private static void LoadModelInfos()
+    {
+        _modelInfos = new List<ModelInfo>();
+        var modelsStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorObjectTypes.Model).ToList();
+        foreach (var storageInfo in modelsStorages)
+        {
+            string path = storageInfo.Path;
+            Directory.SetCurrentDirectory(path);
+            if (File.Exists("ModelInfos.json"))
+            {
+                string json = File.ReadAllText("ModelInfos.json");
+                var listToAppend = JsonSerializer.Deserialize<List<ModelInfo>>(json) ?? new List<ModelInfo>();
+                _modelInfos.AddRange(listToAppend);
+            }
+        }
+    }
+
+    private static void LoadTemplateInfos()
+    {
+        _templateInfos = new List<TemplateInfo>();
+        var templateStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorObjectTypes.SqlTemplate).ToList();
+        foreach (var storageInfo in templateStorages)
+        {
+            string path = storageInfo.Path;
+            Directory.SetCurrentDirectory(path);
+            if (File.Exists("TemplateInfos.json"))
+            {
+                string json = File.ReadAllText("TemplateInfos.json");
+                var listToAppend = JsonSerializer.Deserialize<List<TemplateInfo>>(json) ?? new List<TemplateInfo>();
+                _templateInfos.AddRange(listToAppend);
+            }
         }
     }
 
@@ -122,6 +191,15 @@ public static class StaticConstructorStorage
             };
             string jsonModel = JsonSerializer.Serialize(model, options);
             File.WriteAllText(fileName, jsonModel);
+            ModelInfo modelInfo = new ModelInfo(model.Uuid, model.Name, accessType, Directory.GetCurrentDirectory(),
+                fileName);
+            if (ModelInfos.Exists(x => x.Equals(modelInfo)))
+            {
+                ModelInfos.Remove(modelInfo);
+            }
+
+            ModelInfos.Add(modelInfo);
+            SaveModelInfos();
         }
     }
 
@@ -185,6 +263,16 @@ public static class StaticConstructorStorage
             string tagsFileName = $"Tags_{sqlTemplate.Uuid}.json";
             string jsonTags = JsonSerializer.Serialize(tags, options);
             File.WriteAllText(tagsFileName, jsonTags);
+
+            TemplateInfo templateInfo = new TemplateInfo(sqlTemplate.Uuid, sqlTemplate.Name, accessType,
+                Directory.GetCurrentDirectory(), templateFileName, tagsFileName);
+            if (TemplateInfos.Exists(x => x.Equals(templateInfo)))
+            {
+                TemplateInfos.Remove(templateInfo);
+            }
+
+            TemplateInfos.Add(templateInfo);
+            SaveTemplateInfos();
         }
     }
 
@@ -207,9 +295,61 @@ public static class StaticConstructorStorage
 
     public static void SaveStorage()
     {
+        SaveModelInfos();
+        SaveTemplateInfos();
         SaveAllModels();
         SaveAllSqlTemplates();
         SaveAllTags();
+    }
+
+    private static void SaveModelInfos()
+    {
+        foreach (var accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
+        {
+            // Получить путь для сохранения
+            var storageInfo = StorageInfos.FirstOrDefault(si =>
+                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorObjectTypes.Model);
+            if (storageInfo == null)
+            {
+                continue;
+            }
+
+            // Слбираем информацию для сохранения
+            var infosToSave = ModelInfos.Where(x => x.ModelAccessType == accessType).ToList();
+
+            string pathToSave = storageInfo.Path;
+            JsonSerializerOptions options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(infosToSave, options);
+            Directory.SetCurrentDirectory(pathToSave);
+            File.WriteAllText("ModelInfos.json", json);
+        }
+    }
+
+    private static void SaveTemplateInfos()
+    {
+        foreach (var accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
+        {
+            // Получить путь для сохранения
+            var storageInfo = StorageInfos.FirstOrDefault(si =>
+                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorObjectTypes.SqlTemplate);
+            if (storageInfo == null)
+            {
+                continue;
+            }
+
+            var infosToSave = TemplateInfos.Where(x => x.TemplateAccessType == accessType).ToList();
+            string pathToSave = storageInfo.Path;
+            JsonSerializerOptions options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(infosToSave, options);
+            Directory.SetCurrentDirectory(pathToSave);
+            File.WriteAllText("TemplateInfos.json", json);
+        }
     }
 
     public static void SaveStorageInfo()
