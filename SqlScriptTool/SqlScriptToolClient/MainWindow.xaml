@@ -5,27 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="600" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="250" Width="700" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <Button x:Name="BtnCreateNewModel" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewModel_Click" >Создать новую Модель</Button>
-            <ListBox x:Name="LbModels" Grid.Row="1" ></ListBox>
+            <Button x:Name="BtnCreateNewModel" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewModel_Click">Создать новую Модель</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+            <StackPanel x:Name="SpModelsList" Grid.Row="2"></StackPanel>
         </Grid>
-            
-        <StackPanel Grid.Row="0" Grid.Column="1" >
-            <Button x:Name="BtnCreateNewSqlTemplate" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_Click" >Создать новый SQL-шаблон</Button>
-            <Button x:Name="BtnCreateNewTag" Margin="5" Padding="3" Click="BtnCreateNewTag_Click" >Создать новый тэг</Button>
-        </StackPanel>
-        <Grid Grid.Row="0" Column="2">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button x:Name="BtnCreateNewSqlTemplate" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_Click">Создать новый SQL-шаблон</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+            <StackPanel x:Name="SpTemplatesList" Grid.Row="2"></StackPanel>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button x:Name="BtnCreateNewTag" Margin="5" Padding="3" Click="BtnCreateNewTag_Click">Создать новый тэг</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+            <StackPanel x:Name="SpTagsList" Grid.Row="2"></StackPanel>
+        </Grid>
+        <Grid Grid.Row="0" Column="3">
             <Button Margin="20">Сгенерировать скрипт</Button>
         </Grid>
     </Grid>
