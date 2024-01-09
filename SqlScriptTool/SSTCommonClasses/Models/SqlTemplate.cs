@@ -6,19 +6,78 @@ namespace SSTCommonClasses.Models;
 [Serializable]
 public class SqlTemplate
 {
+    private List<Tag> _tags = null;
+    private Guid _uuid = Guid.Empty;
+    private string _name;
+    private string _displayLabel;
+    private string? _description;
+    private string? _creator;
+    private DbType _dbType;
+    private int _version;
+    private string _sqlText;
+    private AccessType _accessType;
+
     #region Properties
 
-    public Guid Uuid { get; set; }
+    public Guid Uuid
+    {
+        get => _uuid == Guid.Empty ? _uuid = Guid.NewGuid() : _uuid;
+        set => _uuid = value;
+    }
 
-    public string Name { get; set; }
-    public string DisplayLabel { get; set; }
-    public string? Description { get; set; }
-    public string? Creator { get; set; }
-    public DbType DbType { get; set; }
-    public int Version { get; set; }
-    public string SqlText { get; set; }
-    public AccessType AccessType { get; set; }
-    public List<Tag> Tags { get; }
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
+
+    public string DisplayLabel
+    {
+        get => _displayLabel;
+        set => _displayLabel = value;
+    }
+
+    public string? Description
+    {
+        get => _description;
+        set => _description = value;
+    }
+
+    public string? Creator
+    {
+        get => _creator;
+        set => _creator = value;
+    }
+
+    public DbType DbType
+    {
+        get => _dbType;
+        set => _dbType = value;
+    }
+
+    public int Version
+    {
+        get => _version;
+        set => _version = value;
+    }
+
+    public string SqlText
+    {
+        get => _sqlText;
+        set => _sqlText = value;
+    }
+
+    public AccessType AccessType
+    {
+        get => _accessType;
+        set => _accessType = value;
+    }
+
+    public List<Tag> Tags
+    {
+        get => _tags ??= new List<Tag>();
+        set => _tags = value;
+    }
 
     #endregion
 
@@ -90,7 +149,7 @@ public class SqlTemplate
         AccessType = accessType;
     }
 
-    public Guid AddModelItemTag(string tagName, ModelItem modelItem)
+    public Tag AddModelItemTag(string tagName, ModelItem modelItem)
     {
         Tag modelItemTag = new Tag(tagName,
             null,
@@ -98,12 +157,12 @@ public class SqlTemplate
             TagType.ModelItemParent,
             null,
             null,
-            modelItem, 
+            modelItem,
             AccessType
         );
         Tags.Add(modelItemTag);
         AddModelItemTagToScript(tagName);
-        return modelItemTag.Uuid;
+        return modelItemTag;
     }
 
     public void AddModelItemTagToScript(string tagName)

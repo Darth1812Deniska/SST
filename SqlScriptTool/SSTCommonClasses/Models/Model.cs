@@ -6,15 +6,70 @@ namespace SSTCommonClasses.Models;
 [Serializable]
 public class Model
 {
-    public Guid Uuid { get; set; }
-    public string Name { get; set; }
-    public string? Description { get; set; }
-    public DbType DbType { get; set; }
-    public string DisplayLabel { get; set; }
-    public string CreatorName { get; set; }
-    public AccessType AccessType { get; set; }
-    public int Version { get; set; }
-    public ModelItem RootModelItem { get; }
+    private ModelItem _rootModelItem = null;
+    private Guid _uuid;
+    private string _name;
+    private string? _description;
+    private DbType _dbType;
+    private string _displayLabel;
+    private string _creatorName;
+    private AccessType _accessType;
+    private int _version;
+
+
+    public Guid Uuid
+    {
+        get => _uuid;
+        set => _uuid = value;
+    }
+
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
+
+    public string? Description
+    {
+        get => _description;
+        set => _description = value;
+    }
+
+    public DbType DbType
+    {
+        get => _dbType;
+        set => _dbType = value;
+    }
+
+    public string DisplayLabel
+    {
+        get => _displayLabel;
+        set => _displayLabel = value;
+    }
+
+    public string CreatorName
+    {
+        get => _creatorName;
+        set => _creatorName = value;
+    }
+
+    public AccessType AccessType
+    {
+        get => _accessType;
+        set => _accessType = value;
+    }
+
+    public int Version
+    {
+        get => _version;
+        set => _version = value;
+    }
+
+    public ModelItem RootModelItem
+    {
+        get => _rootModelItem??= new ModelItem();
+        set => _rootModelItem = value;
+    }
 
     /// <summary>
     /// Создание новой модели с параметрами по-умолчанию
@@ -35,7 +90,15 @@ public class Model
         CreatorName = creatorName;
         AccessType = accessType;
         Version = version;
-        RootModelItem = rootModelItem;
+        _rootModelItem = rootModelItem;
+    }
+
+    public void InitRootModelItem()
+    {
+        _rootModelItem = new ModelItem()
+        {
+            SqlTemplate = new SqlTemplate()
+        };
     }
 
     public bool Equals(Model? other)

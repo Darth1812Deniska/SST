@@ -148,17 +148,14 @@ public static class StaticConstructorStorage
     /// </summary>
     public static void SaveAllModels()
     {
+        foreach (Model model in Models)
+        {
+            SaveModelToFileStorage(model);
+        }
     }
 
-    /// <summary>
-    /// Добавление модели в общее хранилище объектов конструктора
-    /// и сохранение этой модели в файловую систему
-    /// </summary>
-    /// <param name="model">Сохраняемая модель</param>
-    public static void SaveModel(Model model)
+    private static void SaveModelToFileStorage(Model model)
     {
-        // Добавляем в хранилище конструктора/клиента
-        Models.AddOrReplace(model);
         // определяем какого типа эта модель
         var accessType = model.AccessType;
         // находим папку для сохранения
@@ -201,6 +198,18 @@ public static class StaticConstructorStorage
             ModelInfos.Add(modelInfo);
             SaveModelInfos();
         }
+    }
+
+    /// <summary>
+    /// Добавление модели в общее хранилище объектов конструктора
+    /// и сохранение этой модели в файловую систему
+    /// </summary>
+    /// <param name="model">Сохраняемая модель</param>
+    public static void SaveModel(Model model)
+    {
+        // Добавляем в хранилище конструктора/клиента
+        Models.AddOrReplace(model);
+        SaveModelToFileStorage(model);
     }
 
     /// <summary>

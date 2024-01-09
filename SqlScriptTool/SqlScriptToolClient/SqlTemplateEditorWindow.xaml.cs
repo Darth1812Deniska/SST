@@ -23,7 +23,7 @@ public partial class SqlTemplateEditorWindow : Window
     private string _sqlTemplateDisplayLabel;
     private string? _sqlTemplateDescription;
     private DbType _sqlTemplateDbType;
-    private string _sqlTemplateText = String.Empty;
+    private string _sqlTemplateText;
 
     #endregion
 
@@ -230,25 +230,28 @@ public partial class SqlTemplateEditorWindow : Window
     private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)
     {
         LbNodeTags.ItemsSource = null;
-        // Выбираем все тэги в тектсе
-        Regex rx = new Regex(@"<\w+>");
-        var tagsInTextlist = rx.Matches(SqlTemplateText).Select(match => match.Value).Distinct().ToList();
-
-        //Убираем существующие тэги, если их нет в тексте
-        var tagsToRemove = SqlTemplateTags.Where(tag => !tagsInTextlist.Contains(tag.Name)).ToList();
-        foreach (var tag in tagsToRemove)
+        if (!string.IsNullOrEmpty(SqlTemplateText))
         {
-            SqlTemplateTags.Remove(tag);
-        }
+            // Выбираем все тэги в тектсе
+            Regex rx = new Regex(@"<\w+>");
+            var tagsInTextlist = rx.Matches(SqlTemplateText).Select(match => match.Value).Distinct().ToList();
 
-        // Выбираем только те строки тэгов, которых еще нет в списке тэгов
-        var tagNames = SqlTemplateTags.Select(tag => tag.Name).ToList();
-        var newTagNames = tagsInTextlist.Where(tagName => !tagNames.Contains(tagName)).ToList();
+            //Убираем существующие тэги, если их нет в тексте
+            var tagsToRemove = SqlTemplateTags.Where(tag => !tagsInTextlist.Contains(tag.Name)).ToList();
+            foreach (var tag in tagsToRemove)
+            {
+                SqlTemplateTags.Remove(tag);
+            }
 
-        foreach (string newTagName in newTagNames)
-        {
-            Tag newTag = new Tag(newTagName);
-            SqlTemplateTags.Add(newTag);
+            // Выбираем только те строки тэгов, которых еще нет в списке тэгов
+            var tagNames = SqlTemplateTags.Select(tag => tag.Name).ToList();
+            var newTagNames = tagsInTextlist.Where(tagName => !tagNames.Contains(tagName)).ToList();
+
+            foreach (string newTagName in newTagNames)
+            {
+                Tag newTag = new Tag(newTagName);
+                SqlTemplateTags.Add(newTag);
+            }
         }
 
         LbNodeTags.ItemsSource = SqlTemplateTags;

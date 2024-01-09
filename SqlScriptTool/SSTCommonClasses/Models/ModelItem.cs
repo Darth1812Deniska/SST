@@ -1,16 +1,34 @@
 ﻿using SSTCommonClasses.Constants;
+using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
 
 [Serializable]
 public class ModelItem
 {
+    private Dictionary<Tag, ModelItem> _childModelItems = null;
+    private SqlTemplate _sqlTemplate = null;
+    private Guid _uuid = Guid.Empty;
+
     #region properties
 
-    public Guid Uuid { get; set; }
+    public Guid Uuid
+    {
+        get => _uuid == Guid.Empty ? _uuid=Guid.NewGuid() : _uuid;
+        set => _uuid = value;
+    }
 
-    public SqlTemplate SqlTemplate { get; set; }
-    public Dictionary<Guid, ModelItem> ChildModelItems { get; }
+    public SqlTemplate SqlTemplate
+    {
+        get => _sqlTemplate ??= new SqlTemplate();
+        set => _sqlTemplate = value;
+    }
+
+    public Dictionary<Tag, ModelItem> ChildModelItems
+    {
+        get => _childModelItems ??= new Dictionary<Tag, ModelItem>();
+        set => _childModelItems = value;
+    }
 
     #endregion
 
@@ -24,7 +42,7 @@ public class ModelItem
     {
         Uuid = Guid.NewGuid();
         SqlTemplate = sqlTemplate;
-        ChildModelItems = new Dictionary<Guid, ModelItem>();
+        _childModelItems = new Dictionary<Tag, ModelItem>();
     }
 
     #endregion
@@ -34,8 +52,8 @@ public class ModelItem
     public ModelItem AddChildModelItem(string nodeName)
     {
         var childModelItem = new ModelItem();
-        Guid newChildTagGuid = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
-        ChildModelItems.Add(newChildTagGuid, childModelItem);
+        var newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
+        ChildModelItems.Add(newChildTag, childModelItem);
         return childModelItem;
     }
 

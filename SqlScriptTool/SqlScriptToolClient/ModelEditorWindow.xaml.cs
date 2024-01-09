@@ -1,24 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Models;
-using Path = System.IO.Path;
 
 namespace SqlScriptToolClient
 {
@@ -38,7 +26,7 @@ namespace SqlScriptToolClient
         private DbType ModelDbType => GetModelDbType();
         private ModelItem ModelRootItem => GetModelRootItem();
         public Model CurrentModel => GetCurrentModel();
-        private TreeViewItem VisualRootModelItem => TvModelTree.Items[0] as TreeViewItem ?? new TreeViewItem();
+        private TreeViewItem VisualRootModelItem => GetVisualRootModelItem();
         private int AllNodesCount => GetAllNodesCount();
 
         #endregion
@@ -89,6 +77,16 @@ namespace SqlScriptToolClient
             return result;
         }
 
+        private TreeViewItem GetVisualRootModelItem()
+        {
+            if (TvModelTree.Items.Count == 0)
+            {
+                return new TreeViewItem();
+            }
+
+            return TvModelTree.Items[0] as TreeViewItem ?? new TreeViewItem();
+        }
+
         #endregion
 
 
@@ -102,6 +100,7 @@ namespace SqlScriptToolClient
             InitializeComponent();
             FormState = ModelEditorFormState.Creation;
             SelectedModel = new Model();
+            SelectedModel.InitRootModelItem();
             InitializeProperties();
         }
 
@@ -136,6 +135,10 @@ namespace SqlScriptToolClient
                 case ModelEditorFormState.Editing:
                     ModelUuid = SelectedModel.Uuid;
                     TbUuid.Text = ModelUuid.ToString();
+                    TbName.Text = SelectedModel.Name;
+                    TbDisplayLabel.Text = SelectedModel.DisplayLabel;
+                    TbDescription.Text = SelectedModel.Description;
+                    SetModelDbType();
                     InitializeModelTree(SelectedModel);
                     break;
             }
@@ -166,6 +169,43 @@ namespace SqlScriptToolClient
         /// <param name="model"></param>
         private void InitializeModelTree(Model model)
         {
+            var rootModelItem = model.RootModelItem;
+
+            DrawModelNode(TvModelTree.Items, rootModelItem);
+        }
+
+        private void DrawModelNode(ItemCollection items, ModelItem? modelItem)
+        {
+            if (modelItem == null)
+            {
+                return;
+            }
+
+            TreeViewItem treeViewItem = new TreeViewItem()
+            {
+                Header = modelItem.SqlTemplate.Name,
+                IsExpanded = true
+            };
+            treeViewItem.Tag = modelItem;
+            items.Add(treeViewItem);
+            var childList = modelItem.ChildModelItems.Select(dict => dict.Value).ToList();
+            foreach (var item in childList)
+            {
+                DrawModelNode(treeViewItem.Items, item);
+            }
+        }
+
+        private void SetModelDbType()
+        {
+            switch (SelectedModel.DbType)
+            {
+                case DbType.PostgreSql:
+                    RbPostgreSql.IsChecked = true;
+                    break;
+                case DbType.MsSql:
+                    RbPostgreSql.IsChecked = true;
+                    break;
+            }
         }
 
         private void SetTreeButtonsEnabled()
@@ -270,13 +310,11 @@ namespace SqlScriptToolClient
         /// <summary>
         /// Обработка кнопки "Сохранить"
         /// </summary>
-
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             if (CheckFields())
             {
                 StaticConstructorStorage.SaveModel(CurrentModel);
-                
             }
             else
             {
@@ -287,7 +325,6 @@ namespace SqlScriptToolClient
         /// <summary>
         /// Обработка кнопки отменить
         /// </summary>
-
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -337,6 +374,7 @@ namespace SqlScriptToolClient
 
             SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
             sqlTemplateEditorWindow.ShowDialog();
+            selModelItem.SqlTemplate=sqlTemplateEditorWindow.CurrentSqlTemplate;
         }
 
         private void BtnDeleteNode_Click(object sender, RoutedEventArgs e)
