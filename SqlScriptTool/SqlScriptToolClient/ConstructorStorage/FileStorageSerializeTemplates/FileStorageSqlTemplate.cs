@@ -14,11 +14,10 @@ public class FileStorageSqlTemplate
     public string? Description { get; set; }
     public DbType DbType { get; set; }
     public int Version { get; set; }
-    public string SqlText { get; set; }
     public AccessType AccessType { get; set; }
-    public List<Tag> Tags { get; set; }
+    public List<Guid> Tags { get; set; }
     public FileStorageSqlTemplate(Guid uuid, string name, string displayLabel, string? description, DbType dbType,
-        int version, string sqlText, AccessType accessType, List<Tag> tags)
+        int version, AccessType accessType, List<Guid> tags)
     {
         Uuid = uuid;
         Name = name;
@@ -26,7 +25,6 @@ public class FileStorageSqlTemplate
         Description = description;
         DbType = dbType;
         Version = version;
-        SqlText = sqlText;
         AccessType = accessType;
         Tags = tags;
     }

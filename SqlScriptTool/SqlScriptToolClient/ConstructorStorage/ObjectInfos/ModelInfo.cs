@@ -11,19 +11,21 @@ public class ModelInfo
     public AccessType ModelAccessType { get; set; }
     public string ModelPath { get; set; }
     public string ModelFileName { get; set; }
+    public string ModelItemsFileName { get; set; }
 
     public ModelInfo()
     {
-
     }
 
-    public ModelInfo(Guid modelGuid, string modelName, AccessType modelAccessType, string modelPath, string modelFileName)
+    public ModelInfo(Guid modelGuid, string modelName, AccessType modelAccessType, string modelPath,
+        string modelFileName, string modelItemsFileName)
     {
         ModelUuid = modelGuid;
         ModelName = modelName;
         ModelAccessType = modelAccessType;
         ModelPath = modelPath;
         ModelFileName = modelFileName;
+        ModelItemsFileName = modelItemsFileName;
     }
 
     public bool Equals(ModelInfo? other)
