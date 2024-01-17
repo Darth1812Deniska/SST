@@ -14,11 +14,11 @@ public class FileStorageTag
     public TagDataType? DataType { get; set; }
     public Guid? TagTemplate { get; set; }
     public Guid? LdObjectType { get; set; }
-    public Guid? ChildModelItem { get; set; }
+    public Guid? SqlTemplate { get; set; }
     public AccessType AccessType { get; set; }
 
     public FileStorageTag(Guid uuid, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, Guid? tagTemplate, Guid? ldObjectType, Guid? childModelItem, AccessType accessType)
+        TagDataType? dataType, Guid? tagTemplate, Guid? ldObjectType, Guid? sqlTemplate, AccessType accessType)
     {
         Uuid = uuid;
         Name = name;
@@ -28,7 +28,7 @@ public class FileStorageTag
         DataType = dataType;
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
-        ChildModelItem = childModelItem;
+        SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 

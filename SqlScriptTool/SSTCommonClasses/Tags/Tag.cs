@@ -17,7 +17,8 @@ public class Tag
     public TagDataType? DataType { get; set; }
     public TagTemplate? TagTemplate { get; set; }
     public LdObjectType? LdObjectType { get; set; }
-    public ModelItem? ChildModelItem { get; set; }
+    //public ModelItem? ChildModelItem { get; set; }
+    public SqlTemplate? SqlTemplate { get; set; }
     public AccessType AccessType { get; set; }
 
     #endregion
@@ -36,7 +37,7 @@ public class Tag
     }
 
     public Tag(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
-        LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
+        LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -45,12 +46,12 @@ public class Tag
         TagType = tagType;
         DataType = dataType;
         LdObjectType = ldObjectType;
-        ChildModelItem = childModelItem;
+        SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
     public Tag(Guid uuid, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
+        TagDataType? dataType, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = uuid;
         Name = name;
@@ -59,12 +60,12 @@ public class Tag
         TagType = tagType;
         DataType = dataType;
         LdObjectType = ldObjectType;
-        ChildModelItem = childModelItem;
+        SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
     public Tag(TagTemplate tagTemplate, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
+        TagDataType? dataType, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -74,11 +75,11 @@ public class Tag
         DataType = dataType;
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
-        ChildModelItem = childModelItem;
+        SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
-    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, ModelItem? childModelItem, AccessType accessType)
+    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = tagTemplate.Name;
@@ -88,7 +89,7 @@ public class Tag
         DataType = tagTemplate.DataType;
         TagTemplate = tagTemplate;
         LdObjectType = ldObjectType;
-        ChildModelItem = childModelItem;
+        SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 

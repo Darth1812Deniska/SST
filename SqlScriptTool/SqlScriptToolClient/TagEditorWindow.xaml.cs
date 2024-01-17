@@ -53,8 +53,6 @@ public partial class TagEditorWindow : Window
 
     private SqlTemplate? SqlTemplate => GetSqlTemplate();
 
-    private ModelItem? ChildModelItem => GetChildModelItem();
-
     #endregion
 
     #region Getters - setters
@@ -135,14 +133,14 @@ public partial class TagEditorWindow : Window
         return CmbSqlTemplate.SelectedItem as SqlTemplate;
     }
 
-    private ModelItem? GetChildModelItem()
+    /*private SqlTemplate? GetSqlTemplate()
     {
         if (SelectedTag == null)
         {
             return null;
         }
 
-        _childModelItem = SelectedTag.ChildModelItem;
+        _childModelItem = SelectedTag.SqlTemplate;
         if (_childModelItem != null)
         {
             _childModelItem.SqlTemplate = SqlTemplate;
@@ -150,12 +148,12 @@ public partial class TagEditorWindow : Window
         }
 
         return null;
-    }
+    }*/
 
     private Tag GetCurrentTag()
     {
         Tag result = new Tag(TagUuid, TagName, TagDisplayLabel, TagDescription, TagType,
-            TagDataType, LdObjectType, ChildModelItem, AccessType.Private);
+            TagDataType, LdObjectType, SqlTemplate, AccessType.Private);
         return result;
     }
 
@@ -240,9 +238,9 @@ public partial class TagEditorWindow : Window
                         CmbLdObjectType.SelectedItem = SelectedTag.LdObjectType;
                     }
 
-                    if (SelectedTag.ChildModelItem != null)
+                    if (SelectedTag.SqlTemplate != null)
                     {
-                        CmbSqlTemplate.SelectedItem = SelectedTag.ChildModelItem.SqlTemplate;
+                        CmbSqlTemplate.SelectedItem = SelectedTag.SqlTemplate;
                     }
                 }
 

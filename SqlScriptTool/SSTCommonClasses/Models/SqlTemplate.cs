@@ -157,7 +157,7 @@ public class SqlTemplate
             TagType.ModelItemParent,
             null,
             null,
-            modelItem,
+            modelItem.SqlTemplate,
             AccessType
         );
         Tags.Add(modelItemTag);

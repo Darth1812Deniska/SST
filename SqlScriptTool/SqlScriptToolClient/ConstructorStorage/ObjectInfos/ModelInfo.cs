@@ -11,21 +11,21 @@ public class ModelInfo
     public AccessType ModelAccessType { get; set; }
     public string ModelPath { get; set; }
     public string ModelFileName { get; set; }
-    public string ModelItemsFileName { get; set; }
+    //public string ModelItemsFileName { get; set; }
 
     public ModelInfo()
     {
     }
 
     public ModelInfo(Guid modelGuid, string modelName, AccessType modelAccessType, string modelPath,
-        string modelFileName, string modelItemsFileName)
+        string modelFileName/*, string modelItemsFileName*/)
     {
         ModelUuid = modelGuid;
         ModelName = modelName;
         ModelAccessType = modelAccessType;
         ModelPath = modelPath;
         ModelFileName = modelFileName;
-        ModelItemsFileName = modelItemsFileName;
+        //ModelItemsFileName = modelItemsFileName;
     }
 
     public bool Equals(ModelInfo? other)
@@ -43,5 +43,10 @@ public class ModelInfo
         }
 
         return obj is ModelInfo model && Equals(model);
+    }
+
+    public override int GetHashCode()
+    {
+        return ModelUuid.GetHashCode();
     }
 }

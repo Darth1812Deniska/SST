@@ -1,11 +1,10 @@
-﻿using System;
-using System.CodeDom;
+﻿using SqlScriptToolClient.ConstructorStorage;
+using SSTCommonClasses.Models;
+using SSTCommonClasses.Tags;
+using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using SqlScriptToolClient.ConstructorStorage;
-using SSTCommonClasses.Models;
-using SSTCommonClasses.Tags;
 
 namespace SqlScriptToolClient;
 

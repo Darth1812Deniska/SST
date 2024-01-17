@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using SSTCommonClasses.Tags;
+using SSTCommonClasses.Landocs;
 
 namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
 
@@ -11,7 +12,8 @@ public static class FileStorageTemplatesConverter
 {
     #region public methods
 
-    public static FileStorageModel GetFileStorageModel(Model model)
+    // Временно комментируем методы по преобразованию объектов для хранения в ФС
+    /*public static FileStorageModel GenerateFileStorageModel(Model model)
     {
         Guid uuid = model.Uuid;
         string name = model.Name;
@@ -27,14 +29,14 @@ public static class FileStorageTemplatesConverter
         return result;
     }
 
-    public static List<FileStorageModelItem> GetFileStorageModelItems(ModelItem rootModelItem)
+    public static List<FileStorageModelItem> GenerateFileStorageModelItems(ModelItem rootModelItem)
     {
         List<FileStorageModelItem> result = new List<FileStorageModelItem>();
         result.AddRange(GetChildFileStorageModelItems(rootModelItem));
         return result;
     }
 
-    public static FileStorageSqlTemplate GetFileStorageSqlTemplate(SqlTemplate sqlTemplate)
+    public static FileStorageSqlTemplate GenerateFileStorageSqlTemplate(SqlTemplate sqlTemplate)
     {
         Guid uuid = sqlTemplate.Uuid;
         string name = sqlTemplate.Name;
@@ -49,7 +51,7 @@ public static class FileStorageTemplatesConverter
         return result;
     }
 
-    public static FileStorageTag GetFileStorageTag(Tag tag)
+    public static FileStorageTag GenerateFileStorageTag(Tag tag)
     {
         Guid uuid = tag.Uuid;
         string name = tag.Name;
@@ -59,11 +61,41 @@ public static class FileStorageTemplatesConverter
         TagDataType? dataType = tag.DataType;
         Guid? tagTemplate = tag.TagTemplate?.Uuid;
         Guid? ldObjectType = tag.LdObjectType?.SstGuid;
-        Guid? childModelItem = tag.ChildModelItem?.Uuid;
+        //Guid? childModelItem = tag.ChildModelItem?.Uuid;
+        Guid? sqlTemplate = tag.SqlTemplate?.Uuid;
         AccessType accessType = tag.AccessType;
         FileStorageTag result = new FileStorageTag(uuid, name, displayLabel, description, tagType, dataType,
-            tagTemplate, ldObjectType, childModelItem, accessType);
+            tagTemplate, ldObjectType, sqlTemplate, accessType);
         return result;
+    }
+
+    public static Model ResoreModel()
+    {
+        return new Model();
+    }
+
+    public static ModelItem RestoreModelItem()
+    {
+        return new ModelItem();
+    }
+
+    public static Tag RestoreTag(FileStorageTag fileStorageTag)
+    {
+        Guid uuid = fileStorageTag.Uuid;
+        string name = fileStorageTag.Name;
+        string? displayLabel = fileStorageTag.DisplayLabel;
+        string? description = fileStorageTag.Description;
+        TagType tagType = fileStorageTag.TagType;
+        TagDataType? dataType = fileStorageTag.DataType;
+        LdObjectType? ldObjectType = null;
+        SqlTemplate? sqlTemplate = null;
+        AccessType accessType = fileStorageTag.AccessType;
+        return new Tag();
+    }
+
+    public static SqlTemplate RestoreSqlTemplate()
+    {
+        return new SqlTemplate();
     }
 
     #endregion
@@ -89,6 +121,6 @@ public static class FileStorageTemplatesConverter
 
         return result;
     }
-
+    */
     #endregion
 }
