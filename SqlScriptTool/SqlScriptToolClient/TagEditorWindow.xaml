@@ -57,7 +57,7 @@
                 <RadioButton x:Name="RbMultiplePattern" Grid.Row="4" GroupName="TagTypeRbGroup" >Множественный паттерн</RadioButton>
 
             </Grid>
-            <ComboBox x:Name="CmbDataType" Grid.Column="1" Grid.Row="5" Margin="2"></ComboBox>
+            <ComboBox x:Name="CmbDataType" Grid.Column="1" Grid.Row="5" Margin="2"/>
             <ComboBox x:Name="CmbLdObjectType" Grid.Column="1" Grid.Row="6" Margin="2" IsEnabled="False"></ComboBox>
             <ComboBox x:Name="CmbSqlTemplate" Grid.Column="1" Grid.Row="7" Margin="2"></ComboBox>
             
