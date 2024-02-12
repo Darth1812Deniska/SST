@@ -3,7 +3,7 @@
 /// <summary>
 /// Класс для хранения информации о стендах разработки
 /// </summary>
-public class Stand
+public class ServerInfo
 {
     private Guid _uuid;
     private string _name;
@@ -77,7 +77,7 @@ public class Stand
     }
 
     /// <summary>
-    /// Конструктор класса Stand
+    /// Конструктор класса ServerInfo
     /// </summary>
-    public Stand() { }
+    public ServerInfo() { }
 }

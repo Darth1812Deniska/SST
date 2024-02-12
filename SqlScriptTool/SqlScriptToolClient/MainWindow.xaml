@@ -7,13 +7,24 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="250" Width="700" WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Grid.Column="0">
+
+        <Grid Row="0" Grid.ColumnSpan="4" >
+            <Menu>
+                <MenuItem x:Name="MiSettings" Header="Настройки"/>
+            </Menu>
+        </Grid>
+            <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -23,7 +34,7 @@
             <Separator Grid.Row="1" Margin="0,3" />
             <StackPanel x:Name="SpModelsList" Grid.Row="2"></StackPanel>
         </Grid>
-        <Grid Grid.Column="1">
+        <Grid Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -33,7 +44,7 @@
             <Separator Grid.Row="1" Margin="0,3" />
             <StackPanel x:Name="SpTemplatesList" Grid.Row="2"></StackPanel>
         </Grid>
-        <Grid Grid.Column="2">
+        <Grid Row="1" Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -43,7 +54,7 @@
             <Separator Grid.Row="1" Margin="0,3" />
             <StackPanel x:Name="SpTagsList" Grid.Row="2"></StackPanel>
         </Grid>
-        <Grid Grid.Row="0" Column="3">
+        <Grid Grid.Row="1" Column="3">
             <Button Margin="20">Сгенерировать скрипт</Button>
         </Grid>
     </Grid>
