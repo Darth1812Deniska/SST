@@ -32,7 +32,7 @@
         </ComboBox>
 
         <Label Grid.Column="0" Grid.Row="2">Стенд (IP адрес)</Label>
-        <ComboBox x:Name="adress"  Grid.Column="1" Grid.Row="2" Width="150px" Height="20px" HorizontalAlignment="Left" Margin="0,5,0,5" IsEditable="True"/>
+        <ComboBox x:Name="address"  Grid.Column="1" Grid.Row="2" Width="150px" Height="20px" HorizontalAlignment="Left" Margin="0,5,0,5" IsEditable="True"/>
 
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal">
             <Label >Порт</Label>

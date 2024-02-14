@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SqlScriptToolClient.Connection
 {
-    public abstract class ConnectionChecker
+    public class ConnectionChecker
     {
-        public abstract bool CheckConnection(string connectionString);
+        public virtual bool CheckConnection(string connectionString) { return false; }
     }
 }

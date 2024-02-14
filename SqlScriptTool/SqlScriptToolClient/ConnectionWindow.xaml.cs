@@ -24,7 +24,6 @@ namespace SqlScriptToolClient
         {
             InitializeComponent();
         }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (port is null)
@@ -53,31 +52,27 @@ namespace SqlScriptToolClient
         {
             //Микрокостыль, первое событие вызывается еще до того, как инициализируется поле port
             //Можно конечно таску заставить ждать, но так будет быстрее
-
             ComboBox_SelectionChanged(DBType, null);
         }
 
         private void CheckConnection()
         {
-            ConnectionChecker connectionChecker;
+            ConnectionChecker connectionChecker = new ConnectionChecker();
             string connectionString = string.Empty;
 
             switch (((ComboBoxItem)DBType.SelectedItem).Content) 
             {
                 case "PostgreSQL":
                     {
-                        connectionString = $"Server={adress.Text};User Id={login.Text};Password={password.Password};Port={port.Text};Database={dbName.Text};";
+                        connectionString = $"Server={address.Text};User Id={login.Text};Password={password.Password};Port={port.Text};Database={dbName.Text};";
                         connectionChecker = new Connection.PGConnectionChecker();
                         break;
                     }
                 case "MSSQL":
                     {
-                        connectionChecker = new Connection.PGConnectionChecker();
-                        break;
-                    }
-                default: 
-                    {
-                        connectionChecker = new Connection.PGConnectionChecker();
+                        connectionString = $"Persist Security Info=False;User ID={login};Password={password};Initial Catalog={dbName.Text};Server={address.Text},{port.Text};Encrypt=True;";
+
+                        connectionChecker = new Connection.MSConnectionChecker();
                         break;
                     }
             }
