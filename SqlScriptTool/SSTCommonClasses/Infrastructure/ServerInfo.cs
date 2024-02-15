@@ -1,4 +1,6 @@
-﻿namespace SSTCommonClasses.Infrastructure;
+﻿using System.Data;
+
+namespace SSTCommonClasses.Infrastructure;
 
 /// <summary>
 /// Класс для хранения информации о стендах разработки
@@ -12,6 +14,8 @@ public class ServerInfo
     private string _host;
     private Project _project;
     private int? _port;
+    private DbType _dbType;
+    private string _displayLabel;
 
     /// <summary>
     /// Уникальный идентифкатор стенда в системе SST
@@ -74,6 +78,18 @@ public class ServerInfo
     {
         get => _project;
         set => _project = value;
+    }
+
+    public DbType DbType
+    {
+        get => _dbType;
+        set => _dbType = value;
+    }
+
+    public string DisplayLabel
+    {
+        get => _displayLabel;
+        set => _displayLabel = value;
     }
 
     /// <summary>
