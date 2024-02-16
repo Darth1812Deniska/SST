@@ -25,10 +25,6 @@
             </Menu>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="19*"/>
-                <ColumnDefinition Width="40*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -61,6 +57,5 @@
         <Grid Grid.Row="1" Column="3">
             <Button Margin="20">Сгенерировать скрипт</Button>
         </Grid>
-        <TextBox Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="162,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="120"/>
     </Grid>
 </Window>
