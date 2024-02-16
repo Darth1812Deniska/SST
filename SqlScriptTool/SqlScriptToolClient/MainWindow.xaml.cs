@@ -86,7 +86,7 @@ public partial class MainWindow : Window
                         }
 
                         break;
-                    
+
                 }
             }
         }
@@ -108,5 +108,11 @@ public partial class MainWindow : Window
     {
         TagEditorWindow tagEditorWindow = new TagEditorWindow();
         tagEditorWindow.Show();
+    }
+
+    private void BtnSettings_Click(object sender, RoutedEventArgs e)
+    {
+        SettingsWindow settingsWindow = new SettingsWindow();
+        settingsWindow.Show();
     }
 }
