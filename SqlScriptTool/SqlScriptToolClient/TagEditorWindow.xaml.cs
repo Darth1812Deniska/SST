@@ -216,7 +216,7 @@ public partial class TagEditorWindow : Window
                             RbConstant.IsChecked = true;
                             break;
                         case TagType.MultiplePattern:
-                            cbMultiplePattern.IsChecked = true;
+                            CbMultiplePattern.IsChecked = true;
                             break;
                         case TagType.UserParameter:
                             RbUserParameter.IsChecked = true;
@@ -258,14 +258,9 @@ public partial class TagEditorWindow : Window
         Close();
     }
 
-    private void TbUuid_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
-    }
-
     private void cbMultiplePattern_Checked(object sender, RoutedEventArgs e)
     {
-        if (cbMultiplePattern.IsChecked == true)
+        if (CbMultiplePattern.IsChecked == true)
         {
             RbModelItemParent.IsChecked = true;
             RbUserParameter.IsEnabled = false;
