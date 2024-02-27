@@ -60,5 +60,11 @@ namespace SqlScriptToolClient
         {
             this.Close();
         }
+
+        private void btnChange_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionWindow connectionWindow = new ConnectionWindow();
+            connectionWindow.Show();
+        }
     }
 }

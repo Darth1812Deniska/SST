@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="Редактор тэгов" Height="340" Width="750" WindowStartupLocation="CenterScreen" MinWidth="750" MinHeight="340">
+        Title="Редактор тэгов" Height="350" Width="750" WindowStartupLocation="CenterScreen" MinWidth="750" MinHeight="350">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
