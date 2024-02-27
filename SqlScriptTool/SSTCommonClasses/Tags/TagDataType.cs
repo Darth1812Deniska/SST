@@ -3,10 +3,11 @@
 public enum TagDataType
 {
     Int,
-    Float,
+    Double,
     Date,
     DateTime,
     String,
     Char,
-    LdObject
+    LdObject,
+    LdObjectType
 }
