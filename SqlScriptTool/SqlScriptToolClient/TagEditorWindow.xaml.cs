@@ -90,11 +90,6 @@ public partial class TagEditorWindow : Window
             return TagType.ModelItemParent;
         }
 
-        if (RbMultiplePattern.IsChecked != null && RbMultiplePattern.IsChecked.Value)
-        {
-            return TagType.MultiplePattern;
-        }
-
         if (RbUserParameter.IsChecked != null && RbUserParameter.IsChecked.Value)
         {
             return TagType.UserParameter;
@@ -208,6 +203,7 @@ public partial class TagEditorWindow : Window
                     TbName.Text = SelectedTag.Name;
                     TbDisplayLabel.Text = SelectedTag.DisplayLabel;
                     TbDescription.Text = SelectedTag.Description;
+
                     switch (SelectedTag.TagType)
                     {
                         case TagType.ModelItemParent:
@@ -220,7 +216,7 @@ public partial class TagEditorWindow : Window
                             RbConstant.IsChecked = true;
                             break;
                         case TagType.MultiplePattern:
-                            RbMultiplePattern.IsChecked = true;
+                            cbMultiplePattern.IsChecked = true;
                             break;
                         case TagType.UserParameter:
                             RbUserParameter.IsChecked = true;
@@ -262,5 +258,31 @@ public partial class TagEditorWindow : Window
         Close();
     }
 
+    private void TbUuid_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
+    }
+
+    private void cbMultiplePattern_Checked(object sender, RoutedEventArgs e)
+    {
+        if (cbMultiplePattern.IsChecked == true)
+        {
+            RbModelItemParent.IsChecked = true;
+            RbUserParameter.IsEnabled = false;
+            RbCalculatedValue.IsEnabled = false;
+            RbConstant.IsEnabled = false;
+        }
+        else
+        {
+            RbModelItemParent.IsChecked = false;
+            RbUserParameter.IsEnabled = true;
+            RbCalculatedValue.IsEnabled = true;
+            RbConstant.IsEnabled = true;
+        }
+
+    }
+
     #endregion
+
+
 }
