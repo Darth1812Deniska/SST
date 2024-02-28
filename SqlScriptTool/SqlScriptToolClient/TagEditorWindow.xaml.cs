@@ -158,7 +158,7 @@ public partial class TagEditorWindow : Window
 
     public TagEditorWindow()
     {
-        FormState = TagEditorFormState.Creation;
+        FormState = TagEditorFormState.TemplateCreation;
         InitializeComponent();
         InitializeProperties();
     }
@@ -166,14 +166,14 @@ public partial class TagEditorWindow : Window
     public TagEditorWindow(Tag tag)
     {
         SelectedTag = tag;
-        FormState = TagEditorFormState.Editing;
+        FormState = TagEditorFormState.TagEditing;
         InitializeComponent();
         InitializeProperties();
     }
 
     public TagEditorWindow(TagTemplate tagTemplate)
     {
-        FormState = TagEditorFormState.Editing;
+        FormState = TagEditorFormState.TemplateEditing;
         InitializeComponent();
         InitializeProperties();
     }
@@ -191,11 +191,11 @@ public partial class TagEditorWindow : Window
 
         switch (FormState)
         {
-            case TagEditorFormState.Creation:
+            case TagEditorFormState.TemplateCreation:
                 TagUuid = Guid.NewGuid();
                 TbUuid.Text = TagUuid.ToString();
                 break;
-            case TagEditorFormState.Editing:
+            case TagEditorFormState.TagEditing:
                 if (SelectedTag != null)
                 {
                     TagUuid = SelectedTag.Uuid;

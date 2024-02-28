@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace SSTCommonClasses.Infrastructure;
 
@@ -20,6 +21,7 @@ public class ServerInfo
     /// <summary>
     /// Уникальный идентифкатор стенда в системе SST
     /// </summary>
+    [Key]
     public Guid Uuid
     {
         get => _uuid;

@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Infrastructure;
+﻿using System.ComponentModel.DataAnnotations;
+using SSTCommonClasses.Infrastructure;
 
 namespace SSTCommonClasses.Landocs;
 
@@ -73,6 +74,7 @@ public class LdObjectType
     /// <summary>
     /// Уникальный идентификатор типа объекта в системе SST
     /// </summary>
+    [Key]
     public Guid SstGuid
     {
         get => _sstGuid;
@@ -91,7 +93,7 @@ public class LdObjectType
     {
         if (other == null)
             return false;
-        return ID == other.ID;
+        return SstGuid == other.SstGuid;
     }
 
     public override bool Equals(object? obj)

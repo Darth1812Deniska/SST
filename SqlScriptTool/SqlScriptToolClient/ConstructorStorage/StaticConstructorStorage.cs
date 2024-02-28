@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -205,6 +206,13 @@ public static class StaticConstructorStorage
         foreach (Model model in Models)
         {
             SaveModelToFileStorage(model);
+            /*
+            using (ClientDbContext db = new ClientDbContext())
+            {
+                db.Models.Remove(model);
+                db.Models.Add(model);
+            }
+            */
         }
     }
 
@@ -218,6 +226,23 @@ public static class StaticConstructorStorage
         // Добавляем в хранилище конструктора/клиента
         Models.AddOrReplace(model);
         SaveModelToFileStorage(model);
+            /*using (ClientDbContext db = new ClientDbContext())
+        {
+            var findModel = db.Models.Find(model.Uuid);
+            if (findModel != null)
+            {
+                db.Models.Update(model);
+
+            }
+            else
+            {
+                db.Models.Add(model);
+            }
+            
+            
+            
+            db.SaveChanges();
+        }*/
     }
 
     /// <summary>
@@ -240,6 +265,20 @@ public static class StaticConstructorStorage
     {
         SqlTemplates.AddOrReplace(sqlTemplate);
         SaveSqlTemplateToFileStorage(sqlTemplate);
+        /*using (ClientDbContext db = new ClientDbContext())
+        {
+            var findSqlTemplate = db.SqlTemplates.Find(sqlTemplate.Uuid);
+            if (findSqlTemplate != null)
+            {
+                db.SqlTemplates.Update(sqlTemplate);
+            }
+            else
+            {
+                db.SqlTemplates.Add(sqlTemplate);
+            }
+            
+            db.SaveChanges();
+        }*/
     }
 
 

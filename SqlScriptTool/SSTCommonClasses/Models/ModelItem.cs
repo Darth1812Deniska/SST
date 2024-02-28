@@ -1,4 +1,6 @@
-﻿using SSTCommonClasses.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using SSTCommonClasses.Constants;
 using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
@@ -13,6 +15,7 @@ public class ModelItem
 
     #region properties
 
+    [Key]
     public Guid Uuid
     {
         get => _uuid == Guid.Empty ? _uuid=Guid.NewGuid() : _uuid;
@@ -25,6 +28,7 @@ public class ModelItem
         set => _sqlTemplate = value;
     }
 
+    [NotMapped]
     public Dictionary<string, ModelItem> ChildModelItems
     {
         get => _childModelItems ??= new Dictionary<string, ModelItem>();

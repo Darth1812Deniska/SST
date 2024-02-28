@@ -1,4 +1,6 @@
-﻿namespace SSTCommonClasses.Infrastructure;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SSTCommonClasses.Infrastructure;
 
 /// <summary>
 /// Класс описывает проект в рамках которого ведется рабочая деятельность
@@ -11,6 +13,7 @@ public class Project
     /// <summary>
     /// Уникальный идентификатор проекта
     /// </summary>
+    [Key]
     public Guid Uuid
     {
         get => _uuid;
