@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using SSTCommonClasses.Constants;
 using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
@@ -16,7 +17,7 @@ public class Model
     private AccessType _accessType;
     private int _version;
 
-
+    [Key]
     public Guid Uuid
     {
         get => _uuid;

@@ -1,4 +1,5 @@
-﻿using SSTCommonClasses.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using SSTCommonClasses.Constants;
 using SSTCommonClasses.Tags;
 
 namespace SSTCommonClasses.Models;
@@ -18,7 +19,7 @@ public class SqlTemplate
     private AccessType _accessType;
 
     #region Properties
-
+    [Key]
     public Guid Uuid
     {
         get => _uuid == Guid.Empty ? _uuid = Guid.NewGuid() : _uuid;

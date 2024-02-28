@@ -2,6 +2,8 @@
 
 public enum TagEditorFormState
 {
-    Creation,
-    Editing
+    TemplateCreation,
+    TemplateEditing,
+    TagEditing
+
 }

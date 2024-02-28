@@ -1,4 +1,6 @@
-﻿namespace SSTCommonClasses.Infrastructure;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SSTCommonClasses.Infrastructure;
 
 /// <summary>
 /// Класс описывает пользователей системы SST
@@ -14,6 +16,7 @@ public class User
     /// <summary>
     /// Уникальный идентифкатор пользователя
     /// </summary>
+    [Key]
     public Guid Uuid
     {
         get => _uuid;
