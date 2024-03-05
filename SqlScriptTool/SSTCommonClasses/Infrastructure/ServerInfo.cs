@@ -9,10 +9,10 @@ namespace SSTCommonClasses.Infrastructure;
 public class ServerInfo
 {
     private Guid _uuid;
-    private string _name;
     private string _login;
     private string _password;
     private string _host;
+    private string _name;
     private Project _project;
     private int? _port;
     private DbType _dbType;
@@ -26,15 +26,6 @@ public class ServerInfo
     {
         get => _uuid;
         set => _uuid = value;
-    }
-
-    /// <summary>
-    /// Удобное название стенда
-    /// </summary>
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
     }
 
     /// <summary>
@@ -64,6 +55,12 @@ public class ServerInfo
         set => _host = value;
     }
 
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
+
     /// <summary>
     /// Порт стенда для подключения к БД
     /// </summary>
@@ -87,7 +84,9 @@ public class ServerInfo
         get => _dbType;
         set => _dbType = value;
     }
-
+    /// <summary>
+    /// Удобное название стенда
+    /// </summary>
     public string DisplayLabel
     {
         get => _displayLabel;

@@ -115,4 +115,10 @@ public partial class MainWindow : Window
         SettingsWindow settingsWindow = new SettingsWindow();
         settingsWindow.Show();
     }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        ScriptGenerationParamsWindow window = new ScriptGenerationParamsWindow();
+        window.Show();
+    }
 }
