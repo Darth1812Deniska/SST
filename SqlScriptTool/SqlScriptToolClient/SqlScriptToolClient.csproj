@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="pics\icon_remove_button.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.16" />
     <PackageReference Include="Npgsql" Version="8.0.2" />
@@ -16,6 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SSTCommonClasses\SSTCommonClasses.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="pics\icon_remove_button.png" />
   </ItemGroup>
 
 </Project>

@@ -7,14 +7,21 @@
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid Row="0">
-            <Label>Заголовок</Label>
+            <Label x:Name="LblPaternName">Заголовок</Label>
         </Grid>
-        <Grid Row="1">
-            <Button x:Name="BtnAddRow" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="10,5" Margin="10">Добавить</Button>
+        <Grid x:Name="GrMain" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="RdDisplayLabels" Height="Auto"/>
+            </Grid.RowDefinitions>
+
+        </Grid>
+        <Grid Row="2">
+            <Button x:Name="BtnAddRow" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="10,5" Margin="10" Click="BtnAddRow_Click">Добавить</Button>
         </Grid>
 
 

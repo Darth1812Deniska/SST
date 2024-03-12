@@ -67,6 +67,7 @@ public partial class SqlTemplateEditorWindow : Window
     }
 
     private List<Tag> SqlTemplateTags { get; set; }
+    private bool SqlTemplateIsMultiplePattern => ChbIsMultiplePattern.IsChecked != null && ChbIsMultiplePattern.IsChecked.Value;
 
     #endregion
 
@@ -114,16 +115,19 @@ public partial class SqlTemplateEditorWindow : Window
 
     private SqlTemplate GetCurrentSqlTemplate()
     {
-        SqlTemplate sqlTemplate = new SqlTemplate(SqlTemplateUuid,
-            SqlTemplateName,
-            SqlTemplateDisplayLabel,
-            SqlTemplateDescription,
-            string.Empty,
-            SqlTemplateDbType,
-            AccessType.Private,
-            0,
-            SqlTemplateText,
-            SqlTemplateTags);
+        SqlTemplate sqlTemplate = new SqlTemplate()
+        {
+            AccessType = AccessType.Private,
+            DbType = SqlTemplateDbType,
+            Creator = null,
+            Description = SqlTemplateDescription,
+            DisplayLabel = SqlTemplateDisplayLabel,
+            IsMultiplePattern = SqlTemplateIsMultiplePattern,
+            Name = SqlTemplateName,
+            SqlText = SqlTemplateText,
+            Tags = SqlTemplateTags,
+            Uuid = SqlTemplateUuid
+        };
 
         return sqlTemplate;
     }
@@ -175,6 +179,7 @@ public partial class SqlTemplateEditorWindow : Window
                 TbDescription.Text = SqlTemplateDescription;
                 TbCodeEditor.Text = SqlTemplateText;
                 TbUuid.Text = SqlTemplateUuid.ToString();
+                ChbIsMultiplePattern.IsChecked = InputSqlTemplate.IsMultiplePattern;
 
                 switch (SqlTemplateDbType)
                 {

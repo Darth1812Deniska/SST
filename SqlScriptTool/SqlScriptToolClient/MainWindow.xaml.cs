@@ -118,7 +118,7 @@ public partial class MainWindow : Window
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-        ScriptGenerationParamsWindow window = new ScriptGenerationParamsWindow();
+        ScriptGenerationSelectingModelsWindow window = new ScriptGenerationSelectingModelsWindow();
         window.Show();
     }
 }

@@ -5,11 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         xmlns:customComponents="clr-namespace:SqlScriptToolClient.CustomComponents"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="ScriptGenerationParamsWindow" Height="450" Width="800">
+        Title="ScriptGenerationParamsWindow" Height="500" Width="1000" WindowStartupLocation="CenterScreen">
     <Grid>
-        <StackPanel>
-            <customComponents:MultiplePatternControl/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
+            <StackPanel x:Name="SpParamsList">
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="BtnGenScript" Grid.Column="1" Margin="5" Padding="5" Click="BtnGenScript_Click">Сгенерировать</Button>
+            <Button x:Name="BtnClose" Grid.Column="2" Margin="5" Padding="5" Click="BtnClose_Click">Закрыть</Button>
+        </Grid>
+
     </Grid>
 </Window>

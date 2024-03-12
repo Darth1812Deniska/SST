@@ -80,6 +80,8 @@ public class SqlTemplate
         set => _tags = value;
     }
 
+    public bool IsMultiplePattern { get; set; }
+
     #endregion
 
     #region Constructors

@@ -19,6 +19,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -29,12 +30,13 @@
             <Label Grid.Column="0" Grid.Row="1">Отображаемое наименовение</Label>
             <Label Grid.Column="0" Grid.Row="2">Описание шаблона</Label>
             <Label Grid.Column="0" Grid.Row="3">Uid</Label>
-            <Label Grid.Column="0" Grid.Row="4">Тип СУБД</Label>
+            <Label Grid.Column="0" Grid.Row="5">Тип СУБД</Label>
             <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
             <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"></TextBox>
             <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2"></TextBox>
             <TextBox x:Name="TbUuid" Grid.Column="1" Grid.Row="3" Margin="2" IsReadOnly="True"></TextBox>
-            <Grid Grid.Column="1" Grid.Row="4">
+            <CheckBox x:Name="ChbIsMultiplePattern" Grid.Column="1" Grid.Row="4" Margin="2">Множественный шаблон</CheckBox>
+            <Grid Grid.Column="1" Grid.Row="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -42,7 +44,6 @@
                 <RadioButton x:Name="RbPostgreSql" Grid.Row="0" GroupName="DbmsType">PostgreSQL</RadioButton>
                 <RadioButton x:Name="RbMsSql" Grid.Row="1" GroupName="DbmsType">MS SQL</RadioButton>
             </Grid>
-
         </Grid>
         <Grid Row="1">
             <Grid.ColumnDefinitions>
@@ -51,8 +52,7 @@
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="TbCodeEditor" Margin="10" Grid.Column="0" TextChanged="TbCodeEditor_TextChanged" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"/>
-            
-                <Grid Column="1">
+            <Grid Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />

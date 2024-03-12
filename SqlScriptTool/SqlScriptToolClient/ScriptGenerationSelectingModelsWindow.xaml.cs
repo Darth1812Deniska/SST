@@ -1,27 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using SqlScriptToolClient.ConstructorStorage;
+using SSTCommonClasses.Models;
 
-namespace SqlScriptToolClient
+namespace SqlScriptToolClient;
+
+/// <summary>
+/// Логика взаимодействия для ScriptGenerationSelectingModelsWindow.xaml
+/// </summary>
+public partial class ScriptGenerationSelectingModelsWindow : Window
 {
-    /// <summary>
-    /// Логика взаимодействия для ScriptGenerationSelectingModelsWindow.xaml
-    /// </summary>
-    public partial class ScriptGenerationSelectingModelsWindow : Window
+    public ScriptGenerationSelectingModelsWindow()
     {
-        public ScriptGenerationSelectingModelsWindow()
+        InitializeComponent();
+        ShowModelList();
+    }
+
+    private void ShowModelList()
+    {
+        foreach (var model in StaticConstructorStorage.Models)
         {
-            InitializeComponent();
+            Button btn = new Button()
+            {
+                Content = model
+            };
+            btn.Click += Btn_Click;
+
+            SpModelList.Children.Add(btn);
         }
+    }
+
+    private void Btn_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            if (button.Content is Model model)
+            {
+                ScriptGenerationParamsWindow wnd = new ScriptGenerationParamsWindow(model);
+                wnd.Show();
+                Close();
+            }
+        }
+    }
+
+    private void btnClose_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }
