@@ -1,4 +1,4 @@
-﻿namespace SSTCommonClasses.Tags;
+﻿namespace SSTCommonClasses.Constructor.Tags;
 
 public enum TagType
 {

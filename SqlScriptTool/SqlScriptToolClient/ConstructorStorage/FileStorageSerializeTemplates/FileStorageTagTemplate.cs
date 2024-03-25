@@ -1,4 +1,4 @@
-﻿using SSTCommonClasses.Tags;
+﻿using SSTCommonClasses.Constructor.Tags;
 using System;
 
 namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;

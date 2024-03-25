@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Tags;
 
-namespace SSTCommonClasses.Models;
+
+namespace SSTCommonClasses.Constructor.Models;
 
 [Serializable]
-public class Model
+public class Model : ConstructorItem
 {
     private ModelItem _rootModelItem = null;
-    private Guid _uuid;
     private string _name;
     private string? _description;
     private DbType _dbType;
@@ -16,13 +15,6 @@ public class Model
     private string _creatorName;
     private AccessType _accessType;
     private int _version;
-
-    [Key]
-    public Guid Uuid
-    {
-        get => _uuid;
-        set => _uuid = value;
-    }
 
     public string Name
     {
@@ -36,16 +28,16 @@ public class Model
         set => _description = value;
     }
 
-    public DbType DbType
-    {
-        get => _dbType;
-        set => _dbType = value;
-    }
-
     public string DisplayLabel
     {
         get => _displayLabel;
         set => _displayLabel = value;
+    }
+
+    public DbType DbType
+    {
+        get => _dbType;
+        set => _dbType = value;
     }
 
     public string CreatorName
@@ -68,7 +60,7 @@ public class Model
 
     public ModelItem RootModelItem
     {
-        get => _rootModelItem??= new ModelItem();
+        get => _rootModelItem ??= new ModelItem();
         set => _rootModelItem = value;
     }
 

@@ -54,10 +54,10 @@
                 
             </TreeView>
             <StackPanel Grid.Column="1" Margin="5,0">
-                <Button Padding="5" Margin="0,3" x:Name="BtnAddChildNode" Click="BtnAddChildNode_Click">Добавить дочерний узел</Button>
-                <Button Padding="5" Margin="0,3" x:Name="BtnAddNode" Click="BtnAddNode_Click">Добавить узел</Button>
-                <Button Padding="5" Margin="0,3" x:Name="BtnEditNode" Click="BtnEditNode_Click">Изменить узел</Button>
-                <Button Padding="5" Margin="0,3" x:Name="BtnDeleteNode" Click="BtnDeleteNode_Click">Удалить узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnAddChildNode" Click="BtnAddChildNode_Click">Добавить дочерний узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnAddNode" Click="BtnAddNode_Click">Добавить узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnEditNode" Click="BtnEditNode_Click">Изменить узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnDeleteNode" Click="BtnDeleteNode_Click">Удалить узел</Button>
             </StackPanel>
 
         </Grid>

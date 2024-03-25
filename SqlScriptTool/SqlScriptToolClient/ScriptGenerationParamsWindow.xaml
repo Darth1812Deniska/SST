@@ -14,8 +14,13 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0">
-            <StackPanel x:Name="SpParamsList">
-            </StackPanel>
+            <Grid x:Name="GrParamsList">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+            </Grid>
         </ScrollViewer>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

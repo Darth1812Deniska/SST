@@ -1,20 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using SSTCommonClasses.Constants;
+using SSTCommonClasses.Constructor;
+using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Landocs;
-using SSTCommonClasses.Models;
 
-namespace SSTCommonClasses.Tags;
+namespace SSTCommonClasses.Constructor.Tags;
 
 [Serializable]
-public class Tag
+public class Tag : ConstructorItem
 {
     #region Properties
-
-    [Key]
-    public Guid Uuid { get; set; }
-    public string Name { get; set; }
-    public string? DisplayLabel { get; set; }
-    public string? Description { get; set; }
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public TagTemplate? TagTemplate { get; set; }

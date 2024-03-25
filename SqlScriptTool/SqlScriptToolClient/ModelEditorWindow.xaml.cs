@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Models;
+using SSTCommonClasses.Constructor.Models;
 
 namespace SqlScriptToolClient
 {
@@ -266,7 +266,8 @@ namespace SqlScriptToolClient
             if (node.Tag is ModelItem nodeModelItem)
             {
                 string childModelItemName = GetNewNodeName();
-                var childModelItem = nodeModelItem.AddChildModelItem(childModelItemName);
+                var childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
+
                 TreeViewItem newChildTreeViewItem = new TreeViewItem()
                 {
                     Header = childModelItemName,
@@ -301,6 +302,12 @@ namespace SqlScriptToolClient
             {
                 rootModelItem.SqlTemplate.SetDbType(ModelDbType);
             }
+        }
+
+        private void UpdateModelItemTree()
+        {
+            TvModelTree.Items.Clear();
+            InitializeModelTree(SelectedModel);
         }
 
         #endregion
@@ -375,6 +382,7 @@ namespace SqlScriptToolClient
             SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
             sqlTemplateEditorWindow.ShowDialog();
             selModelItem.SqlTemplate=sqlTemplateEditorWindow.CurrentSqlTemplate;
+            //UpdateModelItemTree();
         }
 
         private void BtnDeleteNode_Click(object sender, RoutedEventArgs e)

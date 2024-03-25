@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor;
+using SSTCommonClasses.Constructor.Tags;
 
-namespace SSTCommonClasses.Models;
+namespace SSTCommonClasses.Constructor.Models;
 
 [Serializable]
-public class SqlTemplate
+public class SqlTemplate : ConstructorItem
 {
     private List<Tag> _tags = null;
-    private Guid _uuid = Guid.Empty;
+    
     private string _name;
     private string _displayLabel;
     private string? _description;
@@ -19,12 +20,7 @@ public class SqlTemplate
     private AccessType _accessType;
 
     #region Properties
-    [Key]
-    public Guid Uuid
-    {
-        get => _uuid == Guid.Empty ? _uuid = Guid.NewGuid() : _uuid;
-        set => _uuid = value;
-    }
+    
 
     public string Name
     {
@@ -154,15 +150,14 @@ public class SqlTemplate
 
     public Tag AddModelItemTag(string tagName, ModelItem modelItem)
     {
-        Tag modelItemTag = new Tag(tagName,
-            null,
-            null,
-            TagType.ModelItemParent,
-            null,
-            null,
-            modelItem.SqlTemplate,
-            AccessType
-        );
+        Tag modelItemTag = new Tag()
+        {
+            Name = tagName,
+            TagType = TagType.ModelItemParent,
+            SqlTemplate = modelItem.SqlTemplate,
+            AccessType = AccessType
+        };
+
         Tags.Add(modelItemTag);
         AddModelItemTagToScript(tagName);
         return modelItemTag;

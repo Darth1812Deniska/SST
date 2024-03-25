@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SSTCommonClasses.Models;
+using SSTCommonClasses.Constructor.Models;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectLists;
 

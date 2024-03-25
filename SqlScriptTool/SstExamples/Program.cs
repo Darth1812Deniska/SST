@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using SSTCommonClasses;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Models;
+using SSTCommonClasses.Constructor.Models;
+
 
 var model = new Model(); // дефолт
 var options = new JsonSerializerOptions { WriteIndented = true };

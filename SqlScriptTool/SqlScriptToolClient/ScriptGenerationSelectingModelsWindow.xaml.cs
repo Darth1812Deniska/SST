@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using SqlScriptToolClient.ConstructorStorage;
-using SSTCommonClasses.Models;
+using SSTCommonClasses.Constructor.Models;
 
 namespace SqlScriptToolClient;
 

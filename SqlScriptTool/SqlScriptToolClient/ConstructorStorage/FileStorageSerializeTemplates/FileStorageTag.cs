@@ -1,6 +1,6 @@
 ﻿using System;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
 

@@ -6,8 +6,8 @@ using System.Windows;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Models;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Models;
+using SSTCommonClasses.Constructor.Tags;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 
 namespace SqlScriptToolClient;

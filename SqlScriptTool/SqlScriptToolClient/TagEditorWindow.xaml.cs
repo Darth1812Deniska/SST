@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
+using SSTCommonClasses.Constructor.Models;
+using SSTCommonClasses.Constructor.Tags;
 using SSTCommonClasses.Landocs;
-using SSTCommonClasses.Models;
-using SSTCommonClasses.Tags;
 
 namespace SqlScriptToolClient;
 

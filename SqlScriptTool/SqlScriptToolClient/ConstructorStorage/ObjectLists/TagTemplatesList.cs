@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Documents;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectLists;
 

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Tags;
 
-namespace SSTCommonClasses.Models;
+
+namespace SSTCommonClasses.Constructor.Models;
 
 [Serializable]
 public class ModelItem
@@ -18,7 +18,7 @@ public class ModelItem
     [Key]
     public Guid Uuid
     {
-        get => _uuid == Guid.Empty ? _uuid=Guid.NewGuid() : _uuid;
+        get => _uuid == Guid.Empty ? _uuid = Guid.NewGuid() : _uuid;
         set => _uuid = value;
     }
 
@@ -54,12 +54,23 @@ public class ModelItem
 
     #region Public methods
 
-    public ModelItem AddChildModelItem(string nodeName)
+    public ModelItem AddChildModelItem(string nodeName, DbType dbType)
     {
         var childModelItem = new ModelItem();
         var newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
+        childModelItem.SetDbType(dbType);
+        childModelItem.SqlTemplate.SetName(nodeName);
         ChildModelItems.Add(newChildTag.Name, childModelItem);
         return childModelItem;
+    }
+
+    public void SetDbType(DbType dbType)
+    {
+        SqlTemplate.SetDbType(dbType);
+        foreach (var childModelItem in ChildModelItems)
+        {
+            childModelItem.Value.SetDbType(dbType);
+        }
     }
 
     public bool Equals(ModelItem? other)

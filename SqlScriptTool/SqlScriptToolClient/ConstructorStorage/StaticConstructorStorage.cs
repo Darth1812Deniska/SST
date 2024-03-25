@@ -11,8 +11,8 @@ using SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
 using SqlScriptToolClient.ConstructorStorage.ObjectInfos;
 using SqlScriptToolClient.ConstructorStorage.ObjectLists;
 using SSTCommonClasses.Constants;
-using SSTCommonClasses.Models;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Models;
+
 
 namespace SqlScriptToolClient.ConstructorStorage;
 

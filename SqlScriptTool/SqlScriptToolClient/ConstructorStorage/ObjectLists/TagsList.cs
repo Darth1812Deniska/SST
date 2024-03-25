@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectLists;
 

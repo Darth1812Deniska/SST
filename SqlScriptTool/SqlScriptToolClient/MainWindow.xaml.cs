@@ -1,6 +1,6 @@
 ﻿using SqlScriptToolClient.ConstructorStorage;
-using SSTCommonClasses.Models;
-using SSTCommonClasses.Tags;
+using SSTCommonClasses.Constructor.Models;
+using SSTCommonClasses.Constructor.Tags;
 using System;
 using System.Collections;
 using System.Windows;
