@@ -24,6 +24,7 @@ public partial class SqlTemplateEditorWindow : Window
     private string? _sqlTemplateDescription;
     private DbType _sqlTemplateDbType;
     private string _sqlTemplateText;
+    private bool _isSaveAndCloseClicked;
 
     #endregion
 
@@ -67,7 +68,9 @@ public partial class SqlTemplateEditorWindow : Window
     }
 
     private List<Tag> SqlTemplateTags { get; set; }
-    private bool SqlTemplateIsMultiplePattern => ChbIsMultiplePattern.IsChecked != null && ChbIsMultiplePattern.IsChecked.Value;
+
+    private bool SqlTemplateIsMultiplePattern =>
+        ChbIsMultiplePattern.IsChecked != null && ChbIsMultiplePattern.IsChecked.Value;
 
     #endregion
 
@@ -157,7 +160,6 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void InitializeProperties()
     {
-
         switch (FormState)
         {
             case TemplateEditorFormState.Creation:
@@ -202,13 +204,25 @@ public partial class SqlTemplateEditorWindow : Window
         LbNodeTags.ItemsSource = SqlTemplateTags;
     }
 
+    private void Save()
+    {
+        StaticConstructorStorage.SaveSqlTemplate(CurrentSqlTemplate);
+    }
+
     #endregion
 
     #region Events
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
-        StaticConstructorStorage.SaveSqlTemplate(CurrentSqlTemplate);
+        Save();
+    }
+
+    private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
+    {
+        Save();
+        _isSaveAndCloseClicked = true;
+        Close();
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -223,6 +237,7 @@ public partial class SqlTemplateEditorWindow : Window
         {
             return;
         }
+
         TagEditorWindow tagEditor = new TagEditorWindow(selTag);
         tagEditor.ShowDialog();
 
@@ -260,6 +275,21 @@ public partial class SqlTemplateEditorWindow : Window
         }
 
         LbNodeTags.ItemsSource = SqlTemplateTags;
+    }
+
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (_isSaveAndCloseClicked)
+        {
+            return;
+        }
+
+        var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+        if (result == MessageBoxResult.Cancel)
+        {
+            e.Cancel = true;
+        }
     }
 
     #endregion

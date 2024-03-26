@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="Редактор SQL-шаблонов" Height="550" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Редактор SQL-шаблонов" Height="550" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -51,7 +51,7 @@
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="TbCodeEditor" Margin="10" Grid.Column="0" TextChanged="TbCodeEditor_TextChanged" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"/>
+            <TextBox x:Name="TbCodeEditor" Margin="10,10,10,0" Grid.Column="0" TextChanged="TbCodeEditor_TextChanged" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"/>
             <Grid Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -63,7 +63,7 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" VerticalAlignment="Top">Шаблоны</Label>
-                    <ListBox x:Name="LbTemplateTags" Grid.Row="1" Margin="10" />
+                    <ListBox x:Name="LbTemplateTags" Grid.Row="1" Margin="10,0,10,0" />
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -71,7 +71,7 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0">Текущие</Label>
-                    <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10"></ListBox>
+                    <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10,0,10,0"></ListBox>
                 </Grid>
 
 
@@ -93,8 +93,10 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="3" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnSaveAndClose" Click="BtnSaveAndClose_Click"   >Сохранить и закрыть</Button>
             <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
         </Grid>
     </Grid>
