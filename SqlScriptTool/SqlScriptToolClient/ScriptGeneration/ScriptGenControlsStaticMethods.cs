@@ -2,7 +2,8 @@
 using System.Windows;
 using Xceed.Wpf.Toolkit;
 using System.Collections.Generic;
-using System;
+using SqlScriptToolClient.CustomComponents;
+using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient.ScriptGeneration;
@@ -45,13 +46,9 @@ public static class ScriptGenControlsStaticMethods
                 IntegerUpDown intUpDown = new IntegerUpDown();
                 result = intUpDown;
                 break;
-            case TagDataType.LdObject:
+            case TagDataType.Custom:
                 ComboBox ldObjectComboBox = new ComboBox();
                 result = ldObjectComboBox;
-                break;
-            case TagDataType.LdObjectType:
-                ComboBox ldObjectTypeComboBox = new ComboBox();
-                result = ldObjectTypeComboBox;
                 break;
             case TagDataType.String:
                 TextBox textBox = new TextBox();
@@ -63,6 +60,7 @@ public static class ScriptGenControlsStaticMethods
         {
             result.Tag = tag;
         }
+
         return result;
     }
 
@@ -111,10 +109,7 @@ public static class ScriptGenControlsStaticMethods
                     var intControl = (control as IntegerUpDown).Value;
                     controlValue = intControl.HasValue ? intControl.Value.ToString() : "0";
                     break;
-                case TagDataType.LdObject:
-                    controlValue = "0";
-                    break;
-                case TagDataType.LdObjectType:
+                case TagDataType.Custom:
                     controlValue = "0";
                     break;
                 case TagDataType.String:
@@ -128,6 +123,20 @@ public static class ScriptGenControlsStaticMethods
             if (controlValue != null)
             {
                 result = new KeyValuePair<string, string>(tagName, controlValue);
+            }
+        }
+
+        if (control.Tag is SqlTemplate sqlTemplate)
+        {
+            if (!sqlTemplate.IsMultiplePattern)
+            {
+                return null;
+            }
+
+            if (control is MultiplePatternControl multiplePatternControl)
+            {
+                string controlText = multiplePatternControl.MultiplePatternsText;
+                result = new KeyValuePair<string, string>(sqlTemplate.Name, controlText);
             }
         }
 

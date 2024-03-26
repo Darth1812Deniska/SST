@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Microsoft.Win32;
 using SqlScriptToolClient.CustomComponents;
 using SqlScriptToolClient.ScriptGeneration;
 using SSTCommonClasses.Constructor;
@@ -45,13 +38,6 @@ public partial class ScriptGenerationParamsWindow : Window
         InitializeComponent();
         SelectedModel = model;
         UserParamControls = new Dictionary<Guid, int>();
-        /*var sqlTemplate = RootModelItem.SqlTemplate;
-        if (sqlTemplate.IsMultiplePattern)
-        {
-            MultiplePatternControl multiplePatternControl = new MultiplePatternControl(sqlTemplate);
-            SpParamsList.Children.Add(multiplePatternControl);
-        }*/
-
         DrawUserParams();
     }
 
@@ -67,20 +53,20 @@ public partial class ScriptGenerationParamsWindow : Window
     private Dictionary<string, string> GetUserParamValues()
     {
         Dictionary<string, string> result = new Dictionary<string, string>();
-/*
-foreach (var userParam in UserParamControls)
-{
-    if (GrParamsList.Children[userParam.Value] is Control control)
-    {
-        var val = GetControlValue(control);
-        if (val.HasValue)
+
+        foreach (var userParam in UserParamControls)
         {
-            var keyValue = val.Value;
-            result.Add(keyValue.Key, keyValue.Value);
+            if (GrParamsList.Children[userParam.Value] is Control control)
+            {
+                var val = GetControlValue(control);
+                if (val.HasValue)
+                {
+                    var keyValue = val.Value;
+                    result.Add(keyValue.Key, keyValue.Value);
+                }
+            }
         }
-    }
-}
-*/
+
         return result;
     }
 
@@ -148,7 +134,7 @@ foreach (var userParam in UserParamControls)
                         // Создаем множественный контрол
                         MultiplePatternControl multiplePatternControl = new MultiplePatternControl(multipleParam);
                         // Добавляем к нему тэг
-                        multiplePatternControl.Tag = controlGuid;
+                        multiplePatternControl.Tag = multipleParam;
                         // Добавляем на грид
                         int controlIndex = GrParamsList.Children.Add(multiplePatternControl);
                         // Привязываем к сетке
@@ -219,7 +205,28 @@ foreach (var userParam in UserParamControls)
 
     private void BtnGenScript_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(ModelSqlTemplateText);
+        try
+        {
+            string finalScript = ScriptGenerationStaticMethods.ReplaceParameters(ModelSqlTemplateText, UserParamValues);
+            string fileToSaveName = $"{SelectedModel.Name}_{DateTime.Now.ToFileTime()}.sql";
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                DefaultExt = ".sql",
+                Filter = "sql files (*.sql)|*.sql",
+                AddExtension = true,
+                FileName = fileToSaveName
+            };
+            var dialogRes = saveFileDialog.ShowDialog();
+            if (dialogRes.HasValue && dialogRes.Value)
+            {
+                fileToSaveName = saveFileDialog.FileName;
+                File.WriteAllText(fileToSaveName, finalScript);
+            }
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(exception.Message);
+        }
     }
 
     #endregion

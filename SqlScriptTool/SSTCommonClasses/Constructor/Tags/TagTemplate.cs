@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SSTCommonClasses.Constructor;
-using SSTCommonClasses.Constructor.Models;
+﻿using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Landocs;
 
 namespace SSTCommonClasses.Constructor.Tags;

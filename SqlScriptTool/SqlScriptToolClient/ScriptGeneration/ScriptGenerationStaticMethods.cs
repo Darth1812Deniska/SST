@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SSTCommonClasses.Constructor.Models;
 
@@ -33,6 +32,11 @@ public static class ScriptGenerationStaticMethods
     {
         var sqlTemplate = modelItem.SqlTemplate;
         if (sqlTemplate == null)
+        {
+            return string.Empty;
+        }
+
+        if (sqlTemplate.IsMultiplePattern)
         {
             return string.Empty;
         }

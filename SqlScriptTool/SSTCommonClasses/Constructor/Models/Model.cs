@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SSTCommonClasses.Constants;
+﻿using SSTCommonClasses.Constants;
 
 
 namespace SSTCommonClasses.Constructor.Models;

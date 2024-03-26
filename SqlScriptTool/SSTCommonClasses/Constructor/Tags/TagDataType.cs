@@ -8,6 +8,5 @@ public enum TagDataType
     DateTime,
     String,
     Char,
-    LdObject,
-    LdObjectType
+    Custom
 }
