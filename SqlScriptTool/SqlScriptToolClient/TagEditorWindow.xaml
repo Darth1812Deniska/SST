@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="Редактор тэгов" Height="350" Width="750" WindowStartupLocation="CenterScreen" MinWidth="750" MinHeight="350">
+        Title="Редактор тэгов" Height="350" Width="750" WindowStartupLocation="CenterScreen" MinWidth="750" MinHeight="350" Closing="WindowTagEditor_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -68,9 +68,11 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click" Width="120" FontSize="14" Height="30" >Отменить</Button>
-            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click" Width="120" FontSize="14" Height="30">Сохранить</Button>
+            <Button Grid.Column="3" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click"  >Отменить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnSaveAndClose" Click="BtnSaveAndClose_Click"   >Сохранить и закрыть</Button>
+            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click" >Сохранить</Button>
         </Grid>
     </Grid>
 </Window>

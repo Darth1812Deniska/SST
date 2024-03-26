@@ -15,6 +15,7 @@ public class Tag : ConstructorItem
     //public ModelItem? ChildModelItem { get; set; }
     public SqlTemplate? SqlTemplate { get; set; }
     public AccessType AccessType { get; set; }
+    public bool IsMultiplePattern { get; set; }
 
     #endregion
 

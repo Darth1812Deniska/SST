@@ -17,15 +17,19 @@ public partial class TagEditorWindow : Window
 {
     #region Fields
 
-    private ModelItem? _childModelItem;
+    private bool _isSaveAndCloseClicked = false;
 
     #endregion
 
     #region Properties
 
     private TagEditorFormState FormState { get; }
-    private Tag? SelectedTag { get; set; }
+    private Tag? SelectedTag { get; }
+    private TagTemplate? SelectedTagTemplate { get; }
     public Tag CurrentTag => GetCurrentTag();
+    public TagTemplate CurrentTagTemplate => GetCurrentTagTemplate();
+
+
     private Guid TagUuid { get; set; }
 
     private string TagName => GetTagName();
@@ -41,6 +45,8 @@ public partial class TagEditorWindow : Window
     private LdObjectType? LdObjectType => GetLdObjectType();
 
     private SqlTemplate? SqlTemplate => GetSqlTemplate();
+    private bool IsMultiplePattern => GetIsMultiplePattern();
+
 
     #endregion
 
@@ -117,6 +123,11 @@ public partial class TagEditorWindow : Window
         return CmbSqlTemplate.SelectedItem as SqlTemplate;
     }
 
+    private bool GetIsMultiplePattern()
+    {
+        return CbMultiplePattern.IsChecked.HasValue && CbMultiplePattern.IsChecked.Value;
+    }
+
     /*private SqlTemplate? GetSqlTemplate()
     {
         if (SelectedTag == null)
@@ -136,8 +147,36 @@ public partial class TagEditorWindow : Window
 
     private Tag GetCurrentTag()
     {
-        Tag result = new Tag(TagUuid, TagName, TagDisplayLabel, TagDescription, TagType,
-            TagDataType, LdObjectType, SqlTemplate, AccessType.Private);
+        Tag result = new Tag()
+        {
+            AccessType = AccessType.Private,
+            DataType = TagDataType,
+            Description = TagDescription,
+            DisplayLabel = TagDisplayLabel,
+            LdObjectType = LdObjectType,
+            Name = TagName,
+            SqlTemplate = SqlTemplate,
+            TagType = TagType,
+            Uuid = TagUuid,
+            IsMultiplePattern = IsMultiplePattern
+        };
+        return result;
+    }
+
+    private TagTemplate GetCurrentTagTemplate()
+    {
+        TagTemplate result = new TagTemplate()
+        {
+            Uuid = TagUuid,
+            Name = TagName,
+            DisplayLabel = TagDisplayLabel,
+            Description = TagDescription,
+            TagType = TagType,
+            DataType = TagDataType,
+            LdObjectType = LdObjectType,
+            SqlTemplate = SqlTemplate,
+            IsMultiplePattern = IsMultiplePattern
+        };
         return result;
     }
 
@@ -162,6 +201,7 @@ public partial class TagEditorWindow : Window
 
     public TagEditorWindow(TagTemplate tagTemplate)
     {
+        SelectedTagTemplate = tagTemplate;
         FormState = TagEditorFormState.TemplateEditing;
         InitializeComponent();
         InitializeProperties();
@@ -192,7 +232,7 @@ public partial class TagEditorWindow : Window
                     TbName.Text = SelectedTag.Name;
                     TbDisplayLabel.Text = SelectedTag.DisplayLabel;
                     TbDescription.Text = SelectedTag.Description;
-
+                    CbMultiplePattern.IsChecked = SelectedTag.IsMultiplePattern;
                     switch (SelectedTag.TagType)
                     {
                         case TagType.ModelItemParent:
@@ -233,13 +273,45 @@ public partial class TagEditorWindow : Window
         }
     }
 
+    private void Save()
+    {
+        switch (FormState)
+        {
+            case TagEditorFormState.TemplateCreation:
+            case TagEditorFormState.TemplateEditing:
+                SaveTemplate();
+                break;
+            case
+                TagEditorFormState.TagEditing:
+                SaveTag();
+                break;
+        }
+    }
+
+    private void SaveTemplate()
+    {
+        StaticConstructorStorage.TagTemplates.AddOrReplace(CurrentTagTemplate);
+    }
+
+    private void SaveTag()
+    {
+        StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+    }
+
     #endregion
 
     #region Events
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
-        StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+        Save();
+    }
+
+    private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
+    {
+        Save();
+        _isSaveAndCloseClicked = true;
+        Close();
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -263,10 +335,22 @@ public partial class TagEditorWindow : Window
             RbCalculatedValue.IsEnabled = true;
             RbConstant.IsEnabled = true;
         }
+    }
 
+    private void WindowTagEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (_isSaveAndCloseClicked)
+        {
+            return;
+        }
+
+        var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+        if (result == MessageBoxResult.Cancel)
+        {
+            e.Cancel = true;
+        }
     }
 
     #endregion
-
-
 }
