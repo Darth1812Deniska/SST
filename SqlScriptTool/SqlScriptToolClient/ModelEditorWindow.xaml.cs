@@ -14,6 +14,12 @@ namespace SqlScriptToolClient
     /// </summary>
     public partial class ModelEditorWindow : Window
     {
+        #region fields
+
+        private bool _isSaveAndCloseClicked = false;
+
+        #endregion
+
         #region properties
 
         private Model SelectedModel { get; set; }
@@ -119,6 +125,95 @@ namespace SqlScriptToolClient
 
         #region private methods
 
+        private void AddNodeToTreeViewItem(TreeViewItem node)
+        {
+            if (node.Tag is ModelItem nodeModelItem)
+            {
+                string childModelItemName = GetNewNodeName();
+                var childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
+
+                TreeViewItem newChildTreeViewItem = new TreeViewItem()
+                {
+                    Header = childModelItemName,
+                    IsExpanded = true,
+                    Tag = childModelItem
+                };
+                node.Items.Add(newChildTreeViewItem);
+            }
+        }
+
+        /// <summary>
+        /// Проверка полей перед сохранением
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckFields()
+        {
+            if (string.IsNullOrEmpty(TbName.Text.Trim()))
+            {
+                MessageBox.Show("Не заполнено поле \"Название\"");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(TbDisplayLabel.Text.Trim()))
+            {
+                MessageBox.Show("Не заполнено поле \"Отображаемое наименование\"");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(TbDescription.Text.Trim()))
+            {
+                MessageBox.Show("Не заполнено поле \"Описание модели\"");
+                return false;
+            }
+
+            if (!(RbMsSql.IsChecked.GetValueOrDefault() || RbPostgreSql.IsChecked.GetValueOrDefault()))
+            {
+                MessageBox.Show("Не выбран Тип СУБД");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void DrawModelNode(ItemCollection items, ModelItem? modelItem)
+        {
+            if (modelItem == null)
+            {
+                return;
+            }
+
+            TreeViewItem treeViewItem = new TreeViewItem()
+            {
+                Header = modelItem.SqlTemplate.Name,
+                IsExpanded = true
+            };
+            treeViewItem.Tag = modelItem;
+            items.Add(treeViewItem);
+            var childList = modelItem.ChildModelItems.Select(dict => dict.Value).ToList();
+            foreach (var item in childList)
+            {
+                DrawModelNode(treeViewItem.Items, item);
+            }
+        }
+
+        private string GetNewNodeName()
+        {
+            return $"<ModelItem_{AllNodesCount}>";
+        }
+
+        private int GetNodesCount(ItemCollection items)
+        {
+            int resultCount = 0;
+            foreach (TreeViewItem item in items)
+            {
+                var childItems = item.Items;
+                resultCount += childItems.Count;
+                resultCount += GetNodesCount(childItems);
+            }
+
+            return resultCount;
+        }
+
         /// <summary>
         /// Инициализация свойств и заполнение полей
         /// </summary>
@@ -173,24 +268,15 @@ namespace SqlScriptToolClient
             DrawModelNode(TvModelTree.Items, rootModelItem);
         }
 
-        private void DrawModelNode(ItemCollection items, ModelItem? modelItem)
+        private void Save()
         {
-            if (modelItem == null)
+            if (CheckFields())
             {
-                return;
+                StaticConstructorStorage.SaveModel(CurrentModel);
             }
-
-            TreeViewItem treeViewItem = new TreeViewItem()
+            else
             {
-                Header = modelItem.SqlTemplate.Name,
-                IsExpanded = true
-            };
-            treeViewItem.Tag = modelItem;
-            items.Add(treeViewItem);
-            var childList = modelItem.ChildModelItems.Select(dict => dict.Value).ToList();
-            foreach (var item in childList)
-            {
-                DrawModelNode(treeViewItem.Items, item);
+                MessageBox.Show("Поля не заполнены");
             }
         }
 
@@ -227,74 +313,6 @@ namespace SqlScriptToolClient
             }
         }
 
-        /// <summary>
-        /// Проверка полей перед сохранением
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckFields()
-        {
-            if (string.IsNullOrEmpty(TbName.Text.Trim()))
-            {
-                MessageBox.Show("Не заполнено поле \"Название\"");
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(TbDisplayLabel.Text.Trim()))
-            {
-                MessageBox.Show("Не заполнено поле \"Отображаемое наименование\"");
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(TbDescription.Text.Trim()))
-            {
-                MessageBox.Show("Не заполнено поле \"Описание модели\"");
-                return false;
-            }
-
-            if (!(RbMsSql.IsChecked.GetValueOrDefault() || RbPostgreSql.IsChecked.GetValueOrDefault()))
-            {
-                MessageBox.Show("Не выбран Тип СУБД");
-                return false;
-            }
-
-            return true;
-        }
-
-        private void AddNodeToTreeViewItem(TreeViewItem node)
-        {
-            if (node.Tag is ModelItem nodeModelItem)
-            {
-                string childModelItemName = GetNewNodeName();
-                var childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
-
-                TreeViewItem newChildTreeViewItem = new TreeViewItem()
-                {
-                    Header = childModelItemName,
-                    IsExpanded = true,
-                    Tag = childModelItem
-                };
-                node.Items.Add(newChildTreeViewItem);
-            }
-        }
-
-        private string GetNewNodeName()
-        {
-            return $"<ModelItem_{AllNodesCount}>";
-        }
-
-        private int GetNodesCount(ItemCollection items)
-        {
-            int resultCount = 0;
-            foreach (TreeViewItem item in items)
-            {
-                var childItems = item.Items;
-                resultCount += childItems.Count;
-                resultCount += GetNodesCount(childItems);
-            }
-
-            return resultCount;
-        }
-
         private void SetRootSqlTemplateDbType()
         {
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
@@ -318,14 +336,14 @@ namespace SqlScriptToolClient
         /// </summary>
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (CheckFields())
-            {
-                StaticConstructorStorage.SaveModel(CurrentModel);
-            }
-            else
-            {
-                MessageBox.Show("Поля не заполнены");
-            }
+            Save();
+        }
+
+        private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+            _isSaveAndCloseClicked = true;
+            Close();
         }
 
         /// <summary>
@@ -333,7 +351,7 @@ namespace SqlScriptToolClient
         /// </summary>
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void BtnAddChildNode_Click(object sender, RoutedEventArgs e)
@@ -492,6 +510,21 @@ namespace SqlScriptToolClient
         private void RbMsSql_Checked(object sender, RoutedEventArgs e)
         {
             SetRootSqlTemplateDbType();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_isSaveAndCloseClicked)
+            {
+                return;
+            }
+
+            var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
+            }
         }
 
         #endregion

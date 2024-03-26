@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="Редактор Моделей" Height="450" Width="700" WindowStartupLocation="CenterScreen">
+        Title="Редактор Моделей" Height="450" Width="700" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -66,8 +66,10 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="3" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnSaveAndClose" Click="BtnSaveAndClose_Click"   >Сохранить и закрыть</Button>
             <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
 
         </Grid>

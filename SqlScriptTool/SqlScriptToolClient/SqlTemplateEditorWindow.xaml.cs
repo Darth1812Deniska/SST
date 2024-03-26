@@ -24,7 +24,7 @@ public partial class SqlTemplateEditorWindow : Window
     private string? _sqlTemplateDescription;
     private DbType _sqlTemplateDbType;
     private string _sqlTemplateText;
-    private bool _isSaveAndCloseClicked;
+    private bool _isSaveAndCloseClicked = false;
 
     #endregion
 
