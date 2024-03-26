@@ -516,6 +516,7 @@ namespace SqlScriptToolClient
         {
             if (_isSaveAndCloseClicked)
             {
+                DialogResult = true;
                 return;
             }
 
@@ -525,6 +526,7 @@ namespace SqlScriptToolClient
             {
                 e.Cancel = true;
             }
+            DialogResult = true;
         }
 
         #endregion

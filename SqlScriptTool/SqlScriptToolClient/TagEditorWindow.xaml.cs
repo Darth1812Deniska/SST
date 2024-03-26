@@ -346,6 +346,7 @@ public partial class TagEditorWindow : Window
     {
         if (_isSaveAndCloseClicked)
         {
+            DialogResult = true;
             return;
         }
 
@@ -355,6 +356,7 @@ public partial class TagEditorWindow : Window
         {
             e.Cancel = true;
         }
+        DialogResult = true;
     }
 
     #endregion

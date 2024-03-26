@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SqlScriptToolClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="700" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="500" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -32,7 +32,10 @@
             </Grid.RowDefinitions>
             <Button x:Name="BtnCreateNewModel" Grid.Row="0" Margin="5,5,5,5" Padding="3" Click="BtnCreateNewModel_Click" Grid.ColumnSpan="2">Создать новую Модель</Button>
             <Separator Grid.Row="1" Margin="0,3,0,3" Grid.ColumnSpan="2" />
-            <StackPanel x:Name="SpModelsList" Grid.Row="2" Grid.ColumnSpan="2"></StackPanel>
+            <ScrollViewer Grid.Row="2">
+                <StackPanel x:Name="SpModelsList"  ></StackPanel>
+            </ScrollViewer>
+            
         </Grid>
         <Grid Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
@@ -42,7 +45,10 @@
             </Grid.RowDefinitions>
             <Button x:Name="BtnCreateNewSqlTemplate" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_Click">Создать новый SQL-шаблон</Button>
             <Separator Grid.Row="1" Margin="0,3" />
-            <StackPanel x:Name="SpTemplatesList" Grid.Row="2"></StackPanel>
+            
+            <ScrollViewer Grid.Row="2">
+                <StackPanel x:Name="SpTemplatesList" ></StackPanel>
+            </ScrollViewer>
         </Grid>
         <Grid Row="1" Grid.Column="2">
             <Grid.RowDefinitions>
@@ -52,10 +58,13 @@
             </Grid.RowDefinitions>
             <Button x:Name="BtnCreateNewTag" Margin="5" Padding="3" Click="BtnCreateNewTag_Click">Создать новый тэг</Button>
             <Separator Grid.Row="1" Margin="0,3" />
-            <StackPanel x:Name="SpTagsList" Grid.Row="2"></StackPanel>
+
+            <ScrollViewer Grid.Row="2">
+                <StackPanel x:Name="SpTagsList" ></StackPanel>
+            </ScrollViewer>
         </Grid>
         <Grid Grid.Row="1" Column="3">
-            <Button Margin="20" Click="Button_Click">Сгенерировать скрипт</Button>
+            <Button x:Name="BtnGenScript" Margin="20" Click="BtnGenScript_Click">Сгенерировать скрипт</Button>
         </Grid>
     </Grid>
 </Window>

@@ -281,6 +281,7 @@ public partial class SqlTemplateEditorWindow : Window
     {
         if (_isSaveAndCloseClicked)
         {
+            DialogResult = true;
             return;
         }
 
@@ -290,6 +291,7 @@ public partial class SqlTemplateEditorWindow : Window
         {
             e.Cancel = true;
         }
+        DialogResult = true;
     }
 
     #endregion

@@ -13,6 +13,8 @@ namespace SqlScriptToolClient;
 /// </summary>
 public partial class MainWindow : Window
 {
+    #region Constructor
+
     public MainWindow()
     {
         InitializeComponent();
@@ -20,6 +22,10 @@ public partial class MainWindow : Window
         InitTemplatesList();
         InitTagsList();
     }
+
+    #endregion
+
+    #region Private methods
 
     private void InitModelsList()
     {
@@ -33,11 +39,19 @@ public partial class MainWindow : Window
 
     private void InitTagsList()
     {
-        InitList(SpTagsList, StaticConstructorStorage.Tags);
+        InitList(SpTagsList, StaticConstructorStorage.TagTemplates);
+    }
+
+    private void InitAllLists()
+    {
+        InitModelsList();
+        InitTemplatesList();
+        InitTagsList();
     }
 
     private void InitList(StackPanel stackPanel, IEnumerable list)
     {
+        stackPanel.Children.Clear();
         foreach (var item in list)
         {
             if (item != null)
@@ -45,12 +59,17 @@ public partial class MainWindow : Window
                 Button btn = new Button()
                 {
                     Content = item,
+                    Margin = new Thickness(2)
                 };
                 btn.Click += Btn_Click;
                 stackPanel.Children.Add(btn);
             }
         }
     }
+
+    #endregion
+
+    #region Events
 
     private void Btn_Click(object sender, RoutedEventArgs e)
     {
@@ -65,24 +84,43 @@ public partial class MainWindow : Window
                     case "Model":
                         if (obj is Model model)
                         {
+                            Visibility = Visibility.Collapsed;
                             ModelEditorWindow modelEditor = new ModelEditorWindow(model);
-                            modelEditor.Show();
+                            var dialogRes = modelEditor.ShowDialog();
+                            if (dialogRes.HasValue && dialogRes.Value)
+                            {
+                                InitModelsList();
+                                Visibility = Visibility.Visible;
+                            }
+
                         }
 
                         break;
                     case "SqlTemplate":
                         if (obj is SqlTemplate sqlTemplate)
                         {
+                            Visibility = Visibility.Collapsed;
                             SqlTemplateEditorWindow templateEditor = new SqlTemplateEditorWindow(sqlTemplate);
-                            templateEditor.Show();
+                            var dialogRes = templateEditor.ShowDialog();
+                            if (dialogRes.HasValue && dialogRes.Value)
+                            {
+                                InitTemplatesList();
+                                Visibility = Visibility.Visible;
+                            }
                         }
 
                         break;
                     case "Tag":
                         if (obj is Tag tag)
                         {
+                            Visibility = Visibility.Collapsed;
                             TagEditorWindow tagEditor = new TagEditorWindow(tag);
-                            tagEditor.Show();
+                            var dialogRes = tagEditor.ShowDialog();
+                            if (dialogRes.HasValue && dialogRes.Value)
+                            {
+                                InitTagsList();
+                                Visibility = Visibility.Visible;
+                            }
                         }
 
                         break;
@@ -94,20 +132,38 @@ public partial class MainWindow : Window
 
     private void BtnCreateNewModel_Click(object sender, RoutedEventArgs e)
     {
+        Visibility = Visibility.Collapsed;
         ModelEditorWindow modelEditorWindow = new ModelEditorWindow();
-        modelEditorWindow.Show();
+        var dialogRes = modelEditorWindow.ShowDialog();
+        if (dialogRes.HasValue && dialogRes.Value)
+        {
+            InitAllLists();
+            Visibility = Visibility.Visible;
+        }
     }
 
     private void BtnCreateNewSqlTemplate_Click(object sender, RoutedEventArgs e)
     {
+        Visibility = Visibility.Collapsed;
         SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow();
-        sqlTemplateEditorWindow.Show();
+        var dialogRes = sqlTemplateEditorWindow.ShowDialog();
+        if (dialogRes.HasValue && dialogRes.Value)
+        {
+            InitAllLists();
+            Visibility = Visibility.Visible;
+        }
     }
 
     private void BtnCreateNewTag_Click(object sender, RoutedEventArgs e)
     {
+        Visibility = Visibility.Collapsed;
         TagEditorWindow tagEditorWindow = new TagEditorWindow();
-        tagEditorWindow.Show();
+        var dialogRes = tagEditorWindow.ShowDialog();
+        if (dialogRes.HasValue && dialogRes.Value)
+        {
+            InitAllLists();
+            Visibility = Visibility.Visible;
+        }
     }
 
     private void BtnSettings_Click(object sender, RoutedEventArgs e)
@@ -116,9 +172,11 @@ public partial class MainWindow : Window
         settingsWindow.Show();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private void BtnGenScript_Click(object sender, RoutedEventArgs e)
     {
         ScriptGenerationSelectingModelsWindow window = new ScriptGenerationSelectingModelsWindow();
         window.Show();
     }
+
+    #endregion
 }
