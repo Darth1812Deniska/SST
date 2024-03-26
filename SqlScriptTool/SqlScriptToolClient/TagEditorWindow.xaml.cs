@@ -221,10 +221,15 @@ public partial class TagEditorWindow : Window
         switch (FormState)
         {
             case TagEditorFormState.TemplateCreation:
+                Title = "Редактор шаблонов тэгов";
                 TagUuid = Guid.NewGuid();
                 TbUuid.Text = TagUuid.ToString();
                 break;
+            case TagEditorFormState.TemplateEditing:
+                Title = "Редактор шаблонов тэгов";
+                break;
             case TagEditorFormState.TagEditing:
+                Title = "Редактор тэгов";
                 if (SelectedTag != null)
                 {
                     TagUuid = SelectedTag.Uuid;
