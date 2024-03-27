@@ -324,6 +324,28 @@ public partial class TagEditorWindow : Window
         Close();
     }
 
+    private void BtnOpenCreate_Click(object sender, RoutedEventArgs e)
+    {
+        var selectedItem = CmbSqlTemplate.SelectionBoxItem;
+        if (selectedItem == null)
+        {
+            SqlTemplateEditorWindow window = new SqlTemplateEditorWindow();
+            window.ShowDialog();
+            return;
+        }
+
+        if (selectedItem is SqlTemplate sqlTemplate)
+        {
+            SqlTemplateEditorWindow window = new SqlTemplateEditorWindow(sqlTemplate);
+            window.ShowDialog();
+        }
+        else
+        {
+            SqlTemplateEditorWindow window = new SqlTemplateEditorWindow();
+            window.ShowDialog();
+        }
+    }
+
     private void cbMultiplePattern_Checked(object sender, RoutedEventArgs e)
     {
         if (CbMultiplePattern.IsChecked == true)
@@ -339,6 +361,19 @@ public partial class TagEditorWindow : Window
             RbUserParameter.IsEnabled = true;
             RbCalculatedValue.IsEnabled = true;
             RbConstant.IsEnabled = true;
+        }
+    }
+
+    private void CmbSqlTemplate_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        RbModelItemParent.IsChecked = true;
+        if (CmbSqlTemplate.SelectedItem is SqlTemplate sqlTemplate)
+        {
+            string newTagName = sqlTemplate.Name;
+            if (!string.IsNullOrEmpty(newTagName))
+            {
+                TbName.Text = newTagName.Trim();
+            }
         }
     }
 

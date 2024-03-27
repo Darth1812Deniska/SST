@@ -6,6 +6,7 @@ using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
+using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient
 {
@@ -321,12 +322,6 @@ namespace SqlScriptToolClient
             }
         }
 
-        private void UpdateModelItemTree()
-        {
-            TvModelTree.Items.Clear();
-            InitializeModelTree(SelectedModel);
-        }
-
         #endregion
 
         #region events
@@ -391,15 +386,31 @@ namespace SqlScriptToolClient
             var selItem = TvModelTree.SelectedItem;
             var selTreeViewItem = selItem as TreeViewItem;
 
-            if (selTreeViewItem?.Tag is not ModelItem selModelItem)
+            if (selTreeViewItem?.Tag is  ModelItem selModelItem)
             {
-                return;
-            }
+                // Открываем окно для выбранного шаблона
+                SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
+                sqlTemplateEditorWindow.ShowDialog();
+                // подтягиваем изменения
+                selModelItem.SqlTemplate = sqlTemplateEditorWindow.CurrentSqlTemplate;
 
-            SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
-            sqlTemplateEditorWindow.ShowDialog();
-            selModelItem.SqlTemplate=sqlTemplateEditorWindow.CurrentSqlTemplate;
-            //UpdateModelItemTree();
+                // Обновляем дочерние узлы
+                // Как?
+                // Удаляем узлы 
+                // Создаем новые
+
+                // Получаем из шаблона тэги с типом 
+                var childTemplates = selModelItem.SqlTemplate.Tags
+                    .Where(tag => tag.TagType == TagType.ModelItemParent).ToList();
+
+
+
+                // проходимся по ним
+                foreach (var template in childTemplates)
+                {
+                    // Для 
+                }
+            }
         }
 
         private void BtnDeleteNode_Click(object sender, RoutedEventArgs e)

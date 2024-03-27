@@ -241,10 +241,18 @@ public partial class SqlTemplateEditorWindow : Window
         TagEditorWindow tagEditor = new TagEditorWindow(selTag);
         tagEditor.ShowDialog();
 
+        // Обновляем список 
         LbNodeTags.ItemsSource = null;
         SqlTemplateTags.Remove(selTag);
         SqlTemplateTags.Add(tagEditor.CurrentTag);
+        
         LbNodeTags.ItemsSource = SqlTemplateTags;
+
+        // Обновляем название тэга в тексте
+        string oldTagName = selTag.Name;
+        string newTagName = tagEditor.CurrentTag.Name;
+
+        TbCodeEditor.Text = TbCodeEditor.Text.Replace(oldTagName, newTagName);
     }
 
     private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)
