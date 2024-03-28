@@ -396,19 +396,30 @@ namespace SqlScriptToolClient
 
                 // Обновляем дочерние узлы
                 // Как?
-                // Удаляем узлы 
-                // Создаем новые
+                // Удаляем дочерние узлы для выбранного узла
+                selTreeViewItem.Items.Clear(); // Удалятся ли все?
 
+                // Создаем новые
                 // Получаем из шаблона тэги с типом 
                 var childTemplates = selModelItem.SqlTemplate.Tags
                     .Where(tag => tag.TagType == TagType.ModelItemParent).ToList();
 
-
-
                 // проходимся по ним
                 foreach (var template in childTemplates)
                 {
-                    // Для 
+                    // Обновить ChildItem
+                    ModelItem modelItem = new ModelItem()
+                    {
+                        SqlTemplate = template.SqlTemplate
+                    };
+                    // Для каждого создаем узлы
+                    TreeViewItem treeViewItem = new TreeViewItem()
+                    {
+                        Header = template.Name,
+                        Tag = modelItem
+                    };
+                    selTreeViewItem.Items.Add(treeViewItem);
+
                 }
             }
         }
