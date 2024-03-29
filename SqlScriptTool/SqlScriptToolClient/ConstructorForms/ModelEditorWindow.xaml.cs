@@ -398,6 +398,8 @@ namespace SqlScriptToolClient
                 // Как?
                 // Удаляем дочерние узлы для выбранного узла
                 selTreeViewItem.Items.Clear(); // Удалятся ли все?
+                // Чистим ChildModelItem
+                selModelItem.ChildModelItems.Clear();
 
                 // Создаем новые
                 // Получаем из шаблона тэги с типом 
@@ -419,6 +421,8 @@ namespace SqlScriptToolClient
                         Tag = modelItem
                     };
                     selTreeViewItem.Items.Add(treeViewItem);
+                    // Добавляем в ChildModelItem
+                    selModelItem.ChildModelItems.Add(template.Name, modelItem);
 
                 }
             }
