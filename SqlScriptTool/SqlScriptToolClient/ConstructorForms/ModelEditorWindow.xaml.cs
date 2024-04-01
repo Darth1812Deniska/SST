@@ -23,16 +23,47 @@ namespace SqlScriptToolClient
 
         #region properties
 
-        private Model SelectedModel { get; set; }
+        /// <summary>
+        /// Выбранная модель для редактирования
+        /// </summary>
+        private Model SelectedModel { get;  }
+        /// <summary>
+        /// Статус открытой формы
+        /// </summary>
         private ModelEditorFormState FormState { get; }
+        /// <summary>
+        /// Название модели
+        /// </summary>
         private string ModelName => GetModelName();
+        /// <summary>
+        /// Отображаемое название модели
+        /// </summary>
         private string ModelDisplayLabel => GetModelDisplayLabel();
+        /// <summary>
+        /// краткое описание модели
+        /// </summary>
         private string ModelDescription => GetModelDescription();
+        /// <summary>
+        /// Уникальный идентификатор модели
+        /// </summary>
         private Guid ModelUuid { get; set; }
+        /// <summary>
+        /// Выбранный тип БД
+        /// </summary>
         private DbType ModelDbType => GetModelDbType();
+        /// <summary>
+        /// Коренной узел модели
+        /// </summary>
         private ModelItem ModelRootItem => GetModelRootItem();
+        /// <summary>
+        /// Текущая редактируемая модель
+        /// </summary>
         public Model CurrentModel => GetCurrentModel();
+        /// <summary>
+        /// Визуальный узел на дереве структуры модели
+        /// </summary>
         private TreeViewItem VisualRootModelItem => GetVisualRootModelItem();
+        // Количество всех узлов в модели
         private int AllNodesCount => GetAllNodesCount();
 
         #endregion
@@ -161,12 +192,6 @@ namespace SqlScriptToolClient
                 return false;
             }
 
-            if (string.IsNullOrEmpty(TbDescription.Text.Trim()))
-            {
-                MessageBox.Show("Не заполнено поле \"Описание модели\"");
-                return false;
-            }
-
             if (!(RbMsSql.IsChecked.GetValueOrDefault() || RbPostgreSql.IsChecked.GetValueOrDefault()))
             {
                 MessageBox.Show("Не выбран Тип СУБД");
@@ -269,16 +294,24 @@ namespace SqlScriptToolClient
             DrawModelNode(TvModelTree.Items, rootModelItem);
         }
 
-        private void Save()
+        private bool Save()
         {
             if (CheckFields())
             {
-                StaticConstructorStorage.SaveModel(CurrentModel);
+                try
+                {
+                    StaticConstructorStorage.SaveModel(CurrentModel);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Ошибка при сохранении", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                
+                return true;
             }
-            else
-            {
-                MessageBox.Show("Поля не заполнены");
-            }
+
+            return false;
         }
 
         private void SetModelDbType()
@@ -336,9 +369,11 @@ namespace SqlScriptToolClient
 
         private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
         {
-            Save();
-            _isSaveAndCloseClicked = true;
-            Close();
+            if (Save())
+            {
+                _isSaveAndCloseClicked = true;
+                Close();
+            }
         }
 
         /// <summary>
@@ -386,7 +421,7 @@ namespace SqlScriptToolClient
             var selItem = TvModelTree.SelectedItem;
             var selTreeViewItem = selItem as TreeViewItem;
 
-            if (selTreeViewItem?.Tag is  ModelItem selModelItem)
+            if (selTreeViewItem?.Tag is ModelItem selModelItem)
             {
                 // Открываем окно для выбранного шаблона
                 SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
@@ -423,7 +458,6 @@ namespace SqlScriptToolClient
                     selTreeViewItem.Items.Add(treeViewItem);
                     // Добавляем в ChildModelItem
                     selModelItem.ChildModelItems.Add(template.Name, modelItem);
-
                 }
             }
         }
@@ -552,6 +586,7 @@ namespace SqlScriptToolClient
             {
                 e.Cancel = true;
             }
+
             DialogResult = true;
         }
 

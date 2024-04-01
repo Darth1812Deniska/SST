@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
+using System.Xml.Linq;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
@@ -46,7 +48,6 @@ public partial class TagEditorWindow : Window
 
     private SqlTemplate? SqlTemplate => GetSqlTemplate();
     private bool IsMultiplePattern => GetIsMultiplePattern();
-
 
     #endregion
 
@@ -278,29 +279,81 @@ public partial class TagEditorWindow : Window
         }
     }
 
-    private void Save()
+    private bool CheckFields()
     {
-        switch (FormState)
+        if (string.IsNullOrEmpty(TbName.Text.Trim()))
         {
-            case TagEditorFormState.TemplateCreation:
-            case TagEditorFormState.TemplateEditing:
-                SaveTemplate();
-                break;
-            case
-                TagEditorFormState.TagEditing:
-                SaveTag();
-                break;
+            MessageBox.Show("Не заполнено поле \"Название\"");
+            return false;
         }
+
+        if (string.IsNullOrEmpty(TbDisplayLabel.Text.Trim()))
+        {
+            MessageBox.Show("Не заполнено поле \"Отображаемое наименование\"");
+            return false;
+        }
+
+        if (!(RbUserParameter.IsChecked.GetValueOrDefault() ||
+              RbModelItemParent.IsChecked.GetValueOrDefault() ||
+              RbCalculatedValue.IsChecked.GetValueOrDefault() ||
+              RbConstant.IsChecked.GetValueOrDefault()
+            ))
+        {
+            MessageBox.Show("Не выбран Тип СУБД");
+            return false;
+        }
+
+        return true;
     }
 
-    private void SaveTemplate()
+    private bool Save()
     {
-        StaticConstructorStorage.TagTemplates.AddOrReplace(CurrentTagTemplate);
+        if (CheckFields())
+        {
+            switch (FormState)
+            {
+                case TagEditorFormState.TemplateCreation:
+                case TagEditorFormState.TemplateEditing:
+                    return SaveTemplate();
+                    break;
+                case
+                    TagEditorFormState.TagEditing:
+                    return SaveTag();
+                    break;
+            }
+        }
+
+        return false;
     }
 
-    private void SaveTag()
+    private bool SaveTemplate()
     {
-        StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+        try
+        {
+            StaticConstructorStorage.TagTemplates.AddOrReplace(CurrentTagTemplate);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Ошибка: {e.Message}", "Ошибка при сохранении шаблона тэга", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return false;
+        }
+        return true;
+    }
+
+    private bool SaveTag()
+    {
+        try
+        {
+            StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Ошибка: {e.Message}", "Ошибка при сохранении  тэга", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return false;
+        }
+        return true;
     }
 
     #endregion
@@ -314,9 +367,11 @@ public partial class TagEditorWindow : Window
 
     private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
     {
-        Save();
-        _isSaveAndCloseClicked = true;
-        Close();
+        if (Save())
+        {
+            _isSaveAndCloseClicked = true;
+            Close();
+        }
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -391,6 +446,7 @@ public partial class TagEditorWindow : Window
         {
             e.Cancel = true;
         }
+
         DialogResult = true;
     }
 

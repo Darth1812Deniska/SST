@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Xml.Linq;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
@@ -204,9 +206,54 @@ public partial class SqlTemplateEditorWindow : Window
         LbNodeTags.ItemsSource = SqlTemplateTags;
     }
 
-    private void Save()
+    private bool CheckFields()
     {
-        StaticConstructorStorage.SaveSqlTemplate(CurrentSqlTemplate);
+        if (string.IsNullOrEmpty(TbName.Text.Trim()))
+        {
+            MessageBox.Show("Не заполнено поле \"Название\"");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(TbDisplayLabel.Text.Trim()))
+        {
+            MessageBox.Show("Не заполнено поле \"Отображаемое наименование\"");
+            return false;
+        }
+
+        if (!(RbMsSql.IsChecked.GetValueOrDefault() || RbPostgreSql.IsChecked.GetValueOrDefault()))
+        {
+            MessageBox.Show("Не выбран Тип СУБД");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(TbCodeEditor.Text.Trim()))
+        {
+            MessageBox.Show("Отсутствует код шаблона");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool Save()
+    {
+        if (CheckFields())
+        {
+            try
+            {
+                StaticConstructorStorage.SaveSqlTemplate(CurrentSqlTemplate);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Ошибка: {e.Message}", "Ошибка при сохранении sql-шаблона", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     #endregion
@@ -220,9 +267,11 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnSaveAndClose_Click(object sender, RoutedEventArgs e)
     {
-        Save();
-        _isSaveAndCloseClicked = true;
-        Close();
+        if (Save())
+        {
+            _isSaveAndCloseClicked = true;
+            Close();
+        }
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -245,7 +294,7 @@ public partial class SqlTemplateEditorWindow : Window
         LbNodeTags.ItemsSource = null;
         SqlTemplateTags.Remove(selTag);
         SqlTemplateTags.Add(tagEditor.CurrentTag);
-        
+
         LbNodeTags.ItemsSource = SqlTemplateTags;
 
         // Обновляем название тэга в тексте
@@ -299,6 +348,7 @@ public partial class SqlTemplateEditorWindow : Window
         {
             e.Cancel = true;
         }
+
         DialogResult = true;
     }
 

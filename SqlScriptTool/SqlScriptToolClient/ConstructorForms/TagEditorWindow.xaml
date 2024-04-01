@@ -37,7 +37,7 @@
             <Label Grid.Column="0" Grid.Row="3">Uuid</Label>
             <Label Grid.Column="0" Grid.Row="5">Тип тэга</Label>
             <Label Grid.Column="0" Grid.Row="6">Тип пользовательского параметра</Label>
-            <Label Grid.Column="0" Grid.Row="7" IsEnabled="False">Тип объекта LD</Label>
+            <Label Grid.Column="0" Grid.Row="7" IsEnabled="False" Visibility="Collapsed">Тип объекта LD</Label>
             <Label Grid.Column="0" Grid.Row="8">SQL шаблон</Label>
 
             <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2"></TextBox>
@@ -61,7 +61,7 @@
                 <RadioButton x:Name="RbConstant" Grid.Row="3" GroupName="TagTypeRbGroup">Константа</RadioButton>
             </Grid>
             <ComboBox x:Name="CmbDataType" Grid.Column="1" Grid.Row="6" Margin="2" />
-            <ComboBox x:Name="CmbLdObjectType" Grid.Column="1" Grid.Row="7" Margin="2" IsEnabled="False"></ComboBox>
+            <ComboBox x:Name="CmbLdObjectType" Grid.Column="1" Grid.Row="7" Margin="2" IsEnabled="False" Visibility="Collapsed"></ComboBox>
             <ComboBox x:Name="CmbSqlTemplate" Grid.Column="1" Grid.Row="8" Margin="2"
                       SelectionChanged="CmbSqlTemplate_SelectionChanged">
             </ComboBox>
