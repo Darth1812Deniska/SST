@@ -3,7 +3,7 @@ using SSTCommonClasses.Constants;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
 
-public class TemplateInfo
+public class SqlTemplateInfo
 {
     public Guid TemplateUuid { get; set; }
     public string TemplateName { get; set; }
@@ -13,11 +13,11 @@ public class TemplateInfo
     //public string TemplateSqlFileName { get; set; }
     //public string TemplateTagsFileName { get; set; }
 
-    public TemplateInfo()
+    public SqlTemplateInfo()
     {
     }
 
-    public TemplateInfo(Guid templateUuid, string templateName, AccessType templateAccessType,
+    public SqlTemplateInfo(Guid templateUuid, string templateName, AccessType templateAccessType,
         string templateFolderPath, string templateFileName/*, string templateSqlFileName, string templateTagsFileName*/)
     {
         TemplateUuid = templateUuid;
@@ -30,7 +30,7 @@ public class TemplateInfo
         
     }
 
-    public bool Equals(TemplateInfo? other)
+    public bool Equals(SqlTemplateInfo? other)
     {
         if (other == null)
             return false;
@@ -44,6 +44,6 @@ public class TemplateInfo
             return false;
         }
 
-        return obj is TemplateInfo model && Equals(model);
+        return obj is SqlTemplateInfo model && Equals(model);
     }
 }

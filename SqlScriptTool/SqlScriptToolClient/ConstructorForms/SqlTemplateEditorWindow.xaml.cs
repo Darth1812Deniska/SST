@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Xml.Linq;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
@@ -199,6 +197,8 @@ public partial class SqlTemplateEditorWindow : Window
 
                 break;
         }
+
+        LbTemplateTags.ItemsSource = StaticConstructorStorage.TagTemplates;
     }
 
     private void InitializeNodeTags()

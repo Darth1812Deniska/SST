@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
+using SSTCommonClasses.Constants;
 
 namespace SSTCommonClasses.Constructor;
 
@@ -15,4 +16,5 @@ public class ConstructorItem
     public string Name { get; set; }
     public string? Description { get; set; }
     public string? DisplayLabel { get; set; }
+    public AccessType AccessType { get; set; }
 }

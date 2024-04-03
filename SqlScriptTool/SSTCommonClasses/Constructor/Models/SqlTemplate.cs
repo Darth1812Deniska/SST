@@ -15,7 +15,6 @@ public class SqlTemplate : ConstructorItem
     private DbType _dbType;
     private int _version;
     private string _sqlText;
-    private AccessType _accessType;
 
     #region Properties
     
@@ -60,12 +59,6 @@ public class SqlTemplate : ConstructorItem
     {
         get => _sqlText;
         set => _sqlText = value;
-    }
-
-    public AccessType AccessType
-    {
-        get => _accessType;
-        set => _accessType = value;
     }
 
     public List<Tag> Tags

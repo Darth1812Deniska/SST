@@ -110,11 +110,11 @@ public partial class MainWindow : Window
                         }
 
                         break;
-                    case "Tag":
-                        if (obj is Tag tag)
+                    case "TagTemplate":
+                        if (obj is TagTemplate tagTemplate)
                         {
                             Visibility = Visibility.Collapsed;
-                            TagEditorWindow tagEditor = new TagEditorWindow(tag);
+                            TagEditorWindow tagEditor = new TagEditorWindow(tagTemplate);
                             var dialogRes = tagEditor.ShowDialog();
                             if (dialogRes.HasValue && dialogRes.Value)
                             {

@@ -1,6 +1,5 @@
 ﻿using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
-using SSTCommonClasses.Landocs;
 
 namespace SSTCommonClasses.Constructor.Tags;
 
@@ -11,10 +10,8 @@ public class Tag : ConstructorItem
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public TagTemplate? TagTemplate { get; set; }
-    public LdObjectType? LdObjectType { get; set; }
     //public ModelItem? ChildModelItem { get; set; }
     public SqlTemplate? SqlTemplate { get; set; }
-    public AccessType AccessType { get; set; }
     public bool IsMultiplePattern { get; set; }
 
     #endregion
@@ -33,7 +30,7 @@ public class Tag : ConstructorItem
     }
 
     public Tag(string name, string? displayLabel, string? description, TagType tagType, TagDataType? dataType,
-        LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
+         SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -41,13 +38,12 @@ public class Tag : ConstructorItem
         Description = description;
         TagType = tagType;
         DataType = dataType;
-        LdObjectType = ldObjectType;
         SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
     public Tag(Guid uuid, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
+        TagDataType? dataType, SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = uuid;
         Name = name;
@@ -55,13 +51,12 @@ public class Tag : ConstructorItem
         Description = description;
         TagType = tagType;
         DataType = dataType;
-        LdObjectType = ldObjectType;
         SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
     public Tag(TagTemplate tagTemplate, string name, string? displayLabel, string? description, TagType tagType,
-        TagDataType? dataType, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
+        TagDataType? dataType,  SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = name;
@@ -70,12 +65,11 @@ public class Tag : ConstructorItem
         TagType = tagType;
         DataType = dataType;
         TagTemplate = tagTemplate;
-        LdObjectType = ldObjectType;
         SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }
 
-    public Tag(TagTemplate tagTemplate, LdObjectType? ldObjectType, SqlTemplate? sqlTemplate, AccessType accessType)
+    public Tag(TagTemplate tagTemplate,  SqlTemplate? sqlTemplate, AccessType accessType)
     {
         Uuid = Guid.NewGuid();
         Name = tagTemplate.Name;
@@ -84,7 +78,6 @@ public class Tag : ConstructorItem
         TagType = tagTemplate.TagType;
         DataType = tagTemplate.DataType;
         TagTemplate = tagTemplate;
-        LdObjectType = ldObjectType;
         SqlTemplate = sqlTemplate;
         AccessType = accessType;
     }

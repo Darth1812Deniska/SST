@@ -4,5 +4,6 @@ public enum ConstructorObjectTypes
 {
     Model,
     SqlTemplate,
-    Tag
+    Tag, 
+    TagTemplate
 }

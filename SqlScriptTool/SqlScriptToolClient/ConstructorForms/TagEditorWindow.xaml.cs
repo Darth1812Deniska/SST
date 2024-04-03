@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Windows;
-using System.Xml.Linq;
 using SqlScriptToolClient.Constants;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
-using SSTCommonClasses.Landocs;
 
 namespace SqlScriptToolClient;
 
@@ -43,8 +40,6 @@ public partial class TagEditorWindow : Window
     private TagType TagType => GetTagType();
 
     private TagDataType? TagDataType => GetTagDataType();
-
-    private LdObjectType? LdObjectType => GetLdObjectType();
 
     private SqlTemplate? SqlTemplate => GetSqlTemplate();
     private bool IsMultiplePattern => GetIsMultiplePattern();
@@ -104,16 +99,6 @@ public partial class TagEditorWindow : Window
         return CmbDataType.SelectedItem as TagDataType?;
     }
 
-    private LdObjectType? GetLdObjectType()
-    {
-        if (CmbLdObjectType.SelectedItem == null)
-        {
-            return null;
-        }
-
-        return CmbLdObjectType.SelectedItem as LdObjectType;
-    }
-
     private SqlTemplate? GetSqlTemplate()
     {
         if (CmbSqlTemplate.SelectedItem == null)
@@ -154,7 +139,6 @@ public partial class TagEditorWindow : Window
             DataType = TagDataType,
             Description = TagDescription,
             DisplayLabel = TagDisplayLabel,
-            LdObjectType = LdObjectType,
             Name = TagName,
             SqlTemplate = SqlTemplate,
             TagType = TagType,
@@ -174,9 +158,9 @@ public partial class TagEditorWindow : Window
             Description = TagDescription,
             TagType = TagType,
             DataType = TagDataType,
-            LdObjectType = LdObjectType,
             SqlTemplate = SqlTemplate,
-            IsMultiplePattern = IsMultiplePattern
+            IsMultiplePattern = IsMultiplePattern,
+            AccessType = AccessType.Private
         };
         return result;
     }
@@ -228,6 +212,42 @@ public partial class TagEditorWindow : Window
                 break;
             case TagEditorFormState.TemplateEditing:
                 Title = "Редактор шаблонов тэгов";
+                if (SelectedTagTemplate != null)
+                {
+                    TagUuid = SelectedTagTemplate.Uuid;
+                    TbName.Text = SelectedTagTemplate.Name;
+                    TbDisplayLabel.Text = SelectedTagTemplate.DisplayLabel;
+                    TbDescription.Text = SelectedTagTemplate.Description;
+                    TbUuid.Text = TagUuid.ToString();
+                    CbMultiplePattern.IsChecked = SelectedTagTemplate.IsMultiplePattern;
+                    switch (SelectedTagTemplate.TagType)
+                    {
+                        case TagType.ModelItemParent:
+                            RbModelItemParent.IsChecked = true;
+                            break;
+                        case TagType.CalculatedValue:
+                            RbCalculatedValue.IsChecked = true;
+                            break;
+                        case TagType.Constant:
+                            RbConstant.IsChecked = true;
+                            break;
+                        case TagType.MultiplePattern:
+                            CbMultiplePattern.IsChecked = true;
+                            break;
+                        case TagType.UserParameter:
+                            RbUserParameter.IsChecked = true;
+                            break;
+                    }
+                    if (SelectedTagTemplate.DataType != null)
+                    {
+                        CmbDataType.SelectedItem = SelectedTagTemplate.DataType;
+                    }
+
+                    if (SelectedTagTemplate.SqlTemplate != null)
+                    {
+                        CmbSqlTemplate.SelectedItem = SelectedTagTemplate.SqlTemplate;
+                    }
+                }
                 break;
             case TagEditorFormState.TagEditing:
                 Title = "Редактор тэгов";
@@ -261,12 +281,6 @@ public partial class TagEditorWindow : Window
                     if (SelectedTag.DataType != null)
                     {
                         CmbDataType.SelectedItem = SelectedTag.DataType;
-                    }
-
-                    // пока еще не закружались Типы объектов
-                    if (SelectedTag.LdObjectType != null)
-                    {
-                        CmbLdObjectType.SelectedItem = SelectedTag.LdObjectType;
                     }
 
                     if (SelectedTag.SqlTemplate != null)
@@ -330,7 +344,7 @@ public partial class TagEditorWindow : Window
     {
         try
         {
-            StaticConstructorStorage.TagTemplates.AddOrReplace(CurrentTagTemplate);
+            StaticConstructorStorage.SaveTagTemplate(CurrentTagTemplate);
         }
         catch (Exception e)
         {

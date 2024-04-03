@@ -12,7 +12,6 @@ public class Model : ConstructorItem
     private DbType _dbType;
     private string _displayLabel;
     private string _creatorName;
-    private AccessType _accessType;
     private int _version;
 
     public string Name
@@ -45,11 +44,7 @@ public class Model : ConstructorItem
         set => _creatorName = value;
     }
 
-    public AccessType AccessType
-    {
-        get => _accessType;
-        set => _accessType = value;
-    }
+
 
     public int Version
     {
