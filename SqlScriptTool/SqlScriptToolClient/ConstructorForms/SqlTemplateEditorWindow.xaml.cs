@@ -256,6 +256,21 @@ public partial class SqlTemplateEditorWindow : Window
         return false;
     }
 
+    private void SetTagDescriptionText()
+    {
+        if (LbNodeTags.SelectedItem is Tag tag)
+        {
+            string result =
+                $"{tag.Name}{(string.IsNullOrEmpty(tag.DisplayLabel) ? string.Empty : $" ({tag.DisplayLabel})")}:\n" +
+                $"Тип тэга: {tag.TagType};\n" +
+                $"Тип данных пользовательского параметра: {tag.DataType};\n" +
+                $"{(tag.SqlTemplate == null ? String.Empty : $"SQL-шаблон: {tag.SqlTemplate}")}";
+
+
+            TbTagPreview.Text = result;
+        }
+    }
+
     #endregion
 
     #region Events
@@ -302,6 +317,11 @@ public partial class SqlTemplateEditorWindow : Window
         string newTagName = tagEditor.CurrentTag.Name;
 
         TbCodeEditor.Text = TbCodeEditor.Text.Replace(oldTagName, newTagName);
+    }
+
+    private void LbNodeTags_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        SetTagDescriptionText();
     }
 
     private void TbCodeEditor_TextChanged(object sender, TextChangedEventArgs e)

@@ -71,7 +71,7 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0">Текущие</Label>
-                    <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10,0,10,0"></ListBox>
+                    <ListBox x:Name="LbNodeTags" Grid.Row="1" Margin="10,0,10,0"  SelectionChanged="LbNodeTags_SelectionChanged"></ListBox>
                 </Grid>
 
 
