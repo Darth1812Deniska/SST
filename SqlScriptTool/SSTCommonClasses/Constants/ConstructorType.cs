@@ -1,6 +1,6 @@
 ﻿namespace SSTCommonClasses.Constants;
 
-public enum ConstructorObjectTypes
+public enum ConstructorType
 {
     Model,
     SqlTemplate,

@@ -162,7 +162,7 @@ public static class StaticConstructorStorage
     {
         _tagTemplateInfos = new List<TagTemplateInfo>();
         var templateStorages = StorageInfos
-            .Where(si => si.ConstructorObjectTypes == ConstructorObjectTypes.TagTemplate)
+            .Where(si => si.ConstructorObjectTypes == ConstructorType.TagTemplate)
             .ToList();
         foreach (var storageInfo in templateStorages)
         {
@@ -343,7 +343,7 @@ public static class StaticConstructorStorage
 
         var accessTypes = new[] { AccessType.Public, AccessType.Common, AccessType.Private };
         var constructorTypes = new[]
-            { ConstructorObjectTypes.Model, ConstructorObjectTypes.SqlTemplate, ConstructorObjectTypes.TagTemplate };
+            { ConstructorType.Model, ConstructorType.SqlTemplate, ConstructorType.TagTemplate };
 
         foreach (var type in accessTypes)
         {
@@ -396,7 +396,7 @@ public static class StaticConstructorStorage
     private static void LoadModelInfos()
     {
         _modelInfos = new List<ModelInfo>();
-        var modelsStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorObjectTypes.Model)
+        var modelsStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorType.Model)
             .ToList();
         foreach (var storageInfo in modelsStorages)
         {
@@ -415,7 +415,7 @@ public static class StaticConstructorStorage
     {
         _templateInfos = new List<SqlTemplateInfo>();
         var templateStorages = StorageInfos
-            .Where(si => si.ConstructorObjectTypes == ConstructorObjectTypes.SqlTemplate)
+            .Where(si => si.ConstructorObjectTypes == ConstructorType.SqlTemplate)
             .ToList();
         foreach (var storageInfo in templateStorages)
         {
@@ -438,7 +438,7 @@ public static class StaticConstructorStorage
         // находим папку для сохранения
         var storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
-            && si.ConstructorObjectTypes == ConstructorObjectTypes.Model);
+            && si.ConstructorObjectTypes == ConstructorType.Model);
         if (storageInfo != null)
         {
             string pathToSave = storageInfo.Path;
@@ -497,7 +497,7 @@ public static class StaticConstructorStorage
         // находим папку для сохранения
         var storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
-            && si.ConstructorObjectTypes == ConstructorObjectTypes.SqlTemplate);
+            && si.ConstructorObjectTypes == ConstructorType.SqlTemplate);
         if (storageInfo != null)
         {
             string pathToSave = storageInfo.Path;
@@ -562,7 +562,7 @@ public static class StaticConstructorStorage
         // находим папку для сохранения
         var storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
-            && si.ConstructorObjectTypes == ConstructorObjectTypes.TagTemplate);
+            && si.ConstructorObjectTypes == ConstructorType.TagTemplate);
         if (storageInfo != null)
         {
             string pathToSave = storageInfo.Path;
@@ -602,7 +602,7 @@ public static class StaticConstructorStorage
         {
             // Получить путь для сохранения
             var storageInfo = StorageInfos.FirstOrDefault(si =>
-                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorObjectTypes.Model);
+                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorType.Model);
             if (storageInfo == null)
             {
                 continue;
@@ -628,7 +628,7 @@ public static class StaticConstructorStorage
         {
             // Получить путь для сохранения
             var storageInfo = StorageInfos.FirstOrDefault(si =>
-                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorObjectTypes.SqlTemplate);
+                si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorType.SqlTemplate);
             if (storageInfo == null)
             {
                 continue;
@@ -653,7 +653,7 @@ public static class StaticConstructorStorage
             // Получить путь для сохранения
             var storageInfo = StorageInfos.FirstOrDefault(si =>
                 si.AccessType == accessType 
-                && si.ConstructorObjectTypes == ConstructorObjectTypes.TagTemplate);
+                && si.ConstructorObjectTypes == ConstructorType.TagTemplate);
             if (storageInfo == null)
             {
                 continue;

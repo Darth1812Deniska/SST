@@ -10,7 +10,6 @@ public class Tag : ConstructorItem
     public TagType TagType { get; set; }
     public TagDataType? DataType { get; set; }
     public TagTemplate? TagTemplate { get; set; }
-    //public ModelItem? ChildModelItem { get; set; }
     public SqlTemplate? SqlTemplate { get; set; }
     public bool IsMultiplePattern { get; set; }
 
