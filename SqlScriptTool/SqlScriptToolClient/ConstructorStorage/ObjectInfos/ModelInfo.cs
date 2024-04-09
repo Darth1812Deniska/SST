@@ -4,28 +4,35 @@ using SSTCommonClasses.Constants;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
 
+/// <summary>
+/// Класс для описания информации о хранении моделей в файловой системе
+/// </summary>
 public class ModelInfo
 {
-    public Guid ModelUuid { get; set; }
-    public string ModelName { get; set; }
-    public AccessType ModelAccessType { get; set; }
-    public string ModelPath { get; set; }
-    public string ModelFileName { get; set; }
+    /// <summary>
+    /// Уникальный идентификатор модели
+    /// </summary>
+    public Guid? ModelUuid { get; set; }
+    /// <summary>
+    /// Наименование модели
+    /// </summary>
+    public string? ModelName { get; set; }
+    /// <summary>
+    /// Тип доступа к модели
+    /// </summary>
+    public AccessType? ModelAccessType { get; set; }
+    /// <summary>
+    /// Путь к файлу с моделью
+    /// </summary>
+    public string? ModelPath { get; set; }
+    /// <summary>
+    /// Название файла модели
+    /// </summary>
+    public string? ModelFileName { get; set; }
     //public string ModelItemsFileName { get; set; }
 
     public ModelInfo()
     {
-    }
-
-    public ModelInfo(Guid modelGuid, string modelName, AccessType modelAccessType, string modelPath,
-        string modelFileName/*, string modelItemsFileName*/)
-    {
-        ModelUuid = modelGuid;
-        ModelName = modelName;
-        ModelAccessType = modelAccessType;
-        ModelPath = modelPath;
-        ModelFileName = modelFileName;
-        //ModelItemsFileName = modelItemsFileName;
     }
 
     public bool Equals(ModelInfo? other)

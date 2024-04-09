@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Windows;
 using System.Xml.Linq;
 using SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
 using SqlScriptToolClient.ConstructorStorage.ObjectInfos;
@@ -28,18 +29,19 @@ public static class StaticConstructorStorage
 
     #region fields
 
-    private static ModelsList _models = new ModelsList();
-    private static SqlTemplatesList _sqlTemplates = new SqlTemplatesList();
-    private static TagsList _tags = new TagsList();
-    private static TagTemplatesList _tagTemplates = new TagTemplatesList();
-    private static List<StorageInfo> _storageInfos = new List<StorageInfo>();
-    private static List<ModelInfo> _modelInfos = new List<ModelInfo>();
-    private static List<SqlTemplateInfo> _templateInfos = new List<SqlTemplateInfo>();
-    private static List<TagTemplateInfo> _tagTemplateInfos = new List<TagTemplateInfo>();
-    private static List<FileStorageModel> _fileStorageModels;
-    private static List<FileStorageModelItem> _fileStorageModelItems;
-    private static List<FileStorageSqlTemplate> _fileStorageSqlTemplates;
-    private static List<FileStorageTag> _fileStorageTags;
+    private static ModelsList _models = new();
+    private static SqlTemplatesList _sqlTemplates = new();
+    private static TagsList _tags = new();
+    private static TagTemplatesList _tagTemplates = new();
+    private static List<StorageInfo> _storageInfos = new();
+    private static List<ModelInfo> _modelInfos = new();
+    private static List<SqlTemplateInfo> _templateInfos = new();
+
+    private static List<TagTemplateInfo> _tagTemplateInfos = new();
+    //private static List<FileStorageModel> _fileStorageModels;
+    //private static List<FileStorageModelItem> _fileStorageModelItems;
+    //private static List<FileStorageSqlTemplate> _fileStorageSqlTemplates;
+    //private static List<FileStorageTag> _fileStorageTags;
 
     #endregion
 
@@ -73,69 +75,96 @@ public static class StaticConstructorStorage
     public static void LoadModels()
     {
         _models = new ModelsList();
-        foreach (var modelInfo in ModelInfos)
+        string errorText = string.Empty;
+        foreach (ModelInfo modelInfo in ModelInfos)
         {
             try
             {
-                string modelPath = modelInfo.ModelPath;
-                Directory.SetCurrentDirectory(modelPath);
-                string modelFileName = modelInfo.ModelFileName;
-                string json = File.ReadAllText(modelFileName);
-                Model? model = JsonSerializer.Deserialize<Model>(json);
-                if (model != null)
+                string modelPath = modelInfo.ModelPath ?? string.Empty;
+                if (!string.IsNullOrEmpty(modelPath) && Directory.Exists(modelPath))
                 {
-                    Models.AddOrReplace(model);
+                    Directory.SetCurrentDirectory(modelPath);
+                    string modelFileName = modelInfo.ModelFileName ?? string.Empty;
+                    if (!string.IsNullOrEmpty(modelFileName) && File.Exists(modelFileName))
+                    {
+                        string json = File.ReadAllText(modelFileName);
+                        Model? model = JsonSerializer.Deserialize<Model>(json);
+                        if (model != null)
+                        {
+                            Models.AddOrReplace(model);
+                        }
+                    }
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                errorText = string.Concat(errorText, "\n", e.Message);
+                continue;
             }
+        }
+
+        if (!string.IsNullOrEmpty(errorText))
+        {
+            MessageBox.Show(errorText, "Ошибка при загрузке моделей", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     public static void LoadSqlTemplates()
     {
         _sqlTemplates = new SqlTemplatesList();
-        foreach (var templateInfo in SqlTemplateInfos)
+        string errorText = string.Empty;
+        foreach (SqlTemplateInfo templateInfo in SqlTemplateInfos)
         {
-            string templateFolderPath = templateInfo.TemplateFolderPath;
-            if (Directory.Exists(templateFolderPath))
+            try
             {
-                Directory.SetCurrentDirectory(templateFolderPath);
-                string templateFileName = templateInfo.TemplateInfoFileName;
-                //string templateTagsFileName = templateInfo.TemplateTagsFileName;
-                string templateJson = File.ReadAllText(templateFileName);
-                //string tagsJson = File.ReadAllText(templateTagsFileName);
-                SqlTemplate? sqlTemplate = JsonSerializer.Deserialize<SqlTemplate>(templateJson);
-                if (sqlTemplate != null)
+                string templateFolderPath = templateInfo.TemplateFolderPath ?? string.Empty;
+                if (!string.IsNullOrEmpty(templateFolderPath) && Directory.Exists(templateFolderPath))
                 {
-                    SqlTemplates.AddOrReplace(sqlTemplate);
+                    Directory.SetCurrentDirectory(templateFolderPath);
+                    string templateFileName = templateInfo.TemplateInfoFileName ?? string.Empty;
+                    if (!string.IsNullOrEmpty(templateFileName) && File.Exists(templateFileName))
+                    {
+                        //string templateTagsFileName = templateInfo.TemplateTagsFileName;
+                        string templateJson = File.ReadAllText(templateFileName);
+                        //string tagsJson = File.ReadAllText(templateTagsFileName);
+                        SqlTemplate? sqlTemplate = JsonSerializer.Deserialize<SqlTemplate>(templateJson);
+                        if (sqlTemplate != null)
+                        {
+                            SqlTemplates.AddOrReplace(sqlTemplate);
+                        }
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                errorText = string.Concat(errorText, "\n", e.Message);
+                continue;
+            }
+        }
+        if (!string.IsNullOrEmpty(errorText))
+        {
+            MessageBox.Show(errorText, "Ошибка при загрузке шаблонов", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-
-    /*public static void LoadTags()
-    {
-        _tags = new TagsList();
-    }*/
 
     public static void LoadTagsTemplates()
     {
         _tagTemplates = new TagTemplatesList();
-        foreach (var tagTemplateInfo in TagTemplateInfos)
+        foreach (TagTemplateInfo tagTemplateInfo in TagTemplateInfos)
         {
-            string tagTemplatePath = tagTemplateInfo.TagTemplatePath;
-            if (Directory.Exists(tagTemplatePath))
+            string tagTemplatePath = tagTemplateInfo.TagTemplatePath ?? string.Empty;
+            if (!string.IsNullOrEmpty(tagTemplatePath) && Directory.Exists(tagTemplatePath))
             {
                 Directory.SetCurrentDirectory(tagTemplatePath);
-                string templateFileName = tagTemplateInfo.TagTemplateFileName;
-                string templateJson = File.ReadAllText(templateFileName);
-                TagTemplate? tagTemplate = JsonSerializer.Deserialize<TagTemplate>(templateJson);
-                if (tagTemplate != null)
+                string templateFileName = tagTemplateInfo.TagTemplateFileName ?? string.Empty;
+                if (!string.IsNullOrEmpty(templateFileName) && File.Exists(templateFileName))
                 {
-                    TagTemplates.AddOrReplace(tagTemplate);
+                    string templateJson = File.ReadAllText(templateFileName);
+                    TagTemplate? tagTemplate = JsonSerializer.Deserialize<TagTemplate>(templateJson);
+                    if (tagTemplate != null)
+                    {
+                        TagTemplates.AddOrReplace(tagTemplate);
+                    }
                 }
             }
         }
@@ -161,18 +190,18 @@ public static class StaticConstructorStorage
     public static void LoadTagTemplateInfos()
     {
         _tagTemplateInfos = new List<TagTemplateInfo>();
-        var templateStorages = StorageInfos
+        List<StorageInfo> templateStorages = StorageInfos
             .Where(si => si.ConstructorObjectTypes == ConstructorType.TagTemplate)
             .ToList();
-        foreach (var storageInfo in templateStorages)
+        foreach (StorageInfo storageInfo in templateStorages)
         {
             string path = storageInfo.Path;
             Directory.SetCurrentDirectory(path);
             if (File.Exists(TagTemplateInfosFileName))
             {
                 string json = File.ReadAllText(TagTemplateInfosFileName);
-                var listToAppend = JsonSerializer.Deserialize<List<TagTemplateInfo>>(json) ??
-                                   new List<TagTemplateInfo>();
+                List<TagTemplateInfo> listToAppend = JsonSerializer.Deserialize<List<TagTemplateInfo>>(json) ??
+                                                     new List<TagTemplateInfo>();
                 _tagTemplateInfos.AddRange(listToAppend);
             }
         }
@@ -294,7 +323,7 @@ public static class StaticConstructorStorage
 
     public static void SaveAllTagsTemplates()
     {
-        foreach (var tagTemplate in TagTemplates)
+        foreach (TagTemplate tagTemplate in TagTemplates)
         {
             SaveTagTemplateToFileStorage(tagTemplate);
         }
@@ -304,7 +333,6 @@ public static class StaticConstructorStorage
     {
         TagTemplates.AddOrReplace(tagTemplate);
         SaveTagTemplateToFileStorage(tagTemplate);
-
     }
 
     public static void SaveStorage()
@@ -341,11 +369,11 @@ public static class StaticConstructorStorage
         UserDataRootPath = Directory.GetCurrentDirectory();
 
 
-        var accessTypes = new[] { AccessType.Public, AccessType.Common, AccessType.Private };
-        var constructorTypes = new[]
+        AccessType[] accessTypes = new[] { AccessType.Public, AccessType.Common, AccessType.Private };
+        ConstructorType[] constructorTypes = new[]
             { ConstructorType.Model, ConstructorType.SqlTemplate, ConstructorType.TagTemplate };
 
-        foreach (var type in accessTypes)
+        foreach (AccessType type in accessTypes)
         {
             string typeFolderName = type.ToString();
             if (!Directory.Exists(typeFolderName))
@@ -354,7 +382,7 @@ public static class StaticConstructorStorage
             }
 
             Directory.SetCurrentDirectory(typeFolderName);
-            foreach (var constructorFolder in constructorTypes)
+            foreach (ConstructorType constructorFolder in constructorTypes)
             {
                 string constructorFolderName = constructorFolder.ToString();
                 if (!Directory.Exists(constructorFolderName))
@@ -368,7 +396,11 @@ public static class StaticConstructorStorage
             }
 
             // Возвращаемся на уровень выше
-            Directory.SetCurrentDirectory(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
+            var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
+            if (parentDirectory != null)
+            {
+                Directory.SetCurrentDirectory(parentDirectory.FullName);
+            }
         }
 
         SaveStorageInfo();
@@ -396,16 +428,17 @@ public static class StaticConstructorStorage
     private static void LoadModelInfos()
     {
         _modelInfos = new List<ModelInfo>();
-        var modelsStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorType.Model)
+        List<StorageInfo> modelsStorages = StorageInfos.Where(si => si.ConstructorObjectTypes == ConstructorType.Model)
             .ToList();
-        foreach (var storageInfo in modelsStorages)
+        foreach (StorageInfo storageInfo in modelsStorages)
         {
             string path = storageInfo.Path;
             Directory.SetCurrentDirectory(path);
             if (File.Exists(ModelInfosFileName))
             {
                 string json = File.ReadAllText(ModelInfosFileName);
-                var listToAppend = JsonSerializer.Deserialize<List<ModelInfo>>(json) ?? new List<ModelInfo>();
+                List<ModelInfo> listToAppend =
+                    JsonSerializer.Deserialize<List<ModelInfo>>(json) ?? new List<ModelInfo>();
                 _modelInfos.AddRange(listToAppend);
             }
         }
@@ -414,18 +447,18 @@ public static class StaticConstructorStorage
     private static void LoadSqlTemplateInfos()
     {
         _templateInfos = new List<SqlTemplateInfo>();
-        var templateStorages = StorageInfos
+        List<StorageInfo> templateStorages = StorageInfos
             .Where(si => si.ConstructorObjectTypes == ConstructorType.SqlTemplate)
             .ToList();
-        foreach (var storageInfo in templateStorages)
+        foreach (StorageInfo storageInfo in templateStorages)
         {
             string path = storageInfo.Path;
             Directory.SetCurrentDirectory(path);
             if (File.Exists(SqlTemplateInfosFileName))
             {
                 string json = File.ReadAllText(SqlTemplateInfosFileName);
-                var listToAppend = JsonSerializer.Deserialize<List<SqlTemplateInfo>>(json) ??
-                                   new List<SqlTemplateInfo>();
+                List<SqlTemplateInfo> listToAppend = JsonSerializer.Deserialize<List<SqlTemplateInfo>>(json) ??
+                                                     new List<SqlTemplateInfo>();
                 _templateInfos.AddRange(listToAppend);
             }
         }
@@ -434,9 +467,9 @@ public static class StaticConstructorStorage
     private static void SaveModelToFileStorage(Model model)
     {
         // определяем какого типа эта модель
-        var accessType = model.AccessType;
+        AccessType accessType = model.AccessType;
         // находим папку для сохранения
-        var storageInfo = StorageInfos.FirstOrDefault(si =>
+        StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
             && si.ConstructorObjectTypes == ConstructorType.Model);
         if (storageInfo != null)
@@ -471,8 +504,15 @@ public static class StaticConstructorStorage
             //string jsonModelItems = JsonSerializer.Serialize(fileStorageModelItems, options);
             File.WriteAllText(fileName, jsonModel);
             //File.WriteAllText(modelItemsFileName, jsonModelItems);
-            ModelInfo modelInfo = new ModelInfo(model.Uuid, model.Name, accessType, Directory.GetCurrentDirectory(),
-                fileName /*, modelItemsFileName*/);
+            ModelInfo modelInfo = new ModelInfo()
+            {
+                ModelAccessType = accessType,
+                ModelFileName = fileName,
+                ModelName = model.Name,
+                ModelPath = Directory.GetCurrentDirectory(),
+                ModelUuid = model.Uuid
+            };
+
             if (ModelInfos.Exists(x => x.Equals(modelInfo)))
             {
                 ModelInfos.Remove(modelInfo);
@@ -486,16 +526,16 @@ public static class StaticConstructorStorage
     private static void SaveSqlTemplateToFileStorage(SqlTemplate sqlTemplate)
     {
         // сохраняем тэги шаблона в хранилище объектов конструктора
-        var tags = sqlTemplate.Tags;
+        List<Tag> tags = sqlTemplate.Tags;
         /*foreach (var tag in tags)
         {
             Tags.AddOrReplace(tag);
         }*/
 
-        var accessType = sqlTemplate.AccessType;
+        AccessType accessType = sqlTemplate.AccessType;
 
         // находим папку для сохранения
-        var storageInfo = StorageInfos.FirstOrDefault(si =>
+        StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
             && si.ConstructorObjectTypes == ConstructorType.SqlTemplate);
         if (storageInfo != null)
@@ -557,10 +597,10 @@ public static class StaticConstructorStorage
 
     private static void SaveTagTemplateToFileStorage(TagTemplate tagTemplate)
     {
-        var accessType = tagTemplate.AccessType;
+        AccessType accessType = tagTemplate.AccessType;
 
         // находим папку для сохранения
-        var storageInfo = StorageInfos.FirstOrDefault(si =>
+        StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
             si.AccessType == accessType
             && si.ConstructorObjectTypes == ConstructorType.TagTemplate);
         if (storageInfo != null)
@@ -598,10 +638,10 @@ public static class StaticConstructorStorage
 
     private static void SaveModelInfos()
     {
-        foreach (var accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
+        foreach (AccessType accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
         {
             // Получить путь для сохранения
-            var storageInfo = StorageInfos.FirstOrDefault(si =>
+            StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
                 si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorType.Model);
             if (storageInfo == null)
             {
@@ -609,7 +649,7 @@ public static class StaticConstructorStorage
             }
 
             // Собираем информацию для сохранения
-            var infosToSave = ModelInfos.Where(x => x.ModelAccessType == accessType).ToList();
+            List<ModelInfo> infosToSave = ModelInfos.Where(x => x.ModelAccessType == accessType).ToList();
 
             string pathToSave = storageInfo.Path;
             JsonSerializerOptions options = new JsonSerializerOptions()
@@ -624,17 +664,18 @@ public static class StaticConstructorStorage
 
     private static void SaveTemplateInfos()
     {
-        foreach (var accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
+        foreach (AccessType accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
         {
             // Получить путь для сохранения
-            var storageInfo = StorageInfos.FirstOrDefault(si =>
+            StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
                 si.AccessType == accessType && si.ConstructorObjectTypes == ConstructorType.SqlTemplate);
             if (storageInfo == null)
             {
                 continue;
             }
 
-            var infosToSave = SqlTemplateInfos.Where(x => x.TemplateAccessType == accessType).ToList();
+            List<SqlTemplateInfo> infosToSave =
+                SqlTemplateInfos.Where(x => x.TemplateAccessType == accessType).ToList();
             string pathToSave = storageInfo.Path;
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
@@ -648,18 +689,18 @@ public static class StaticConstructorStorage
 
     private static void SaveTagTemplateInfos()
     {
-        foreach (var accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
+        foreach (AccessType accessType in Enum.GetValues(typeof(AccessType)).Cast<AccessType>())
         {
             // Получить путь для сохранения
-            var storageInfo = StorageInfos.FirstOrDefault(si =>
-                si.AccessType == accessType 
+            StorageInfo? storageInfo = StorageInfos.FirstOrDefault(si =>
+                si.AccessType == accessType
                 && si.ConstructorObjectTypes == ConstructorType.TagTemplate);
             if (storageInfo == null)
             {
                 continue;
             }
 
-            var infosToSave = TagTemplateInfos
+            List<TagTemplateInfo> infosToSave = TagTemplateInfos
                 .Where(x => x.TagTemplateAccessType == accessType).ToList();
             string pathToSave = storageInfo.Path;
             JsonSerializerOptions options = new JsonSerializerOptions()

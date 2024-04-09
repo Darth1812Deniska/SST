@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SSTCommonClasses.Constants;
+using SSTCommonClasses.Constructor.Tags;
 
 
 namespace SSTCommonClasses.Constructor.Models;
@@ -9,8 +10,8 @@ namespace SSTCommonClasses.Constructor.Models;
 public class ModelItem
 {
     //
-    private Dictionary<string, ModelItem> _childModelItems = null;
-    private SqlTemplate _sqlTemplate = null;
+    private Dictionary<string, ModelItem>? _childModelItems = null;
+    private SqlTemplate? _sqlTemplate = null;
     private Guid _uuid = Guid.Empty;
 
     #region properties
@@ -56,8 +57,8 @@ public class ModelItem
 
     public ModelItem AddChildModelItem(string nodeName, DbType dbType)
     {
-        var childModelItem = new ModelItem();
-        var newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
+        ModelItem childModelItem = new ModelItem();
+        Tag newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
         childModelItem.SetDbType(dbType);
         childModelItem.SqlTemplate.SetName(nodeName);
         ChildModelItems.Add(newChildTag.Name, childModelItem);
@@ -67,7 +68,7 @@ public class ModelItem
     public void SetDbType(DbType dbType)
     {
         SqlTemplate.SetDbType(dbType);
-        foreach (var childModelItem in ChildModelItems)
+        foreach (KeyValuePair<string, ModelItem> childModelItem in ChildModelItems)
         {
             childModelItem.Value.SetDbType(dbType);
         }
@@ -93,6 +94,11 @@ public class ModelItem
     public override string ToString()
     {
         return Uuid.ToString();
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
     #endregion

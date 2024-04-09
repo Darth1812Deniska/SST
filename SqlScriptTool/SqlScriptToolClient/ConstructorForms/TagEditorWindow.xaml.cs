@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using SqlScriptToolClient.Constants;
+using SqlScriptToolClient.ConstructorForms;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
@@ -329,11 +330,11 @@ public partial class TagEditorWindow : Window
                 case TagEditorFormState.TemplateCreation:
                 case TagEditorFormState.TemplateEditing:
                     return SaveTemplate();
-                    break;
+                    
                 case
                     TagEditorFormState.TagEditing:
                     return SaveTag();
-                    break;
+                    
             }
         }
 
@@ -395,7 +396,7 @@ public partial class TagEditorWindow : Window
 
     private void BtnOpenCreate_Click(object sender, RoutedEventArgs e)
     {
-        var selectedItem = CmbSqlTemplate.SelectionBoxItem;
+        object? selectedItem = CmbSqlTemplate.SelectionBoxItem;
         if (selectedItem == null)
         {
             SqlTemplateEditorWindow window = new SqlTemplateEditorWindow();
@@ -438,7 +439,7 @@ public partial class TagEditorWindow : Window
         RbModelItemParent.IsChecked = true;
         if (CmbSqlTemplate.SelectedItem is SqlTemplate sqlTemplate)
         {
-            string newTagName = sqlTemplate.Name;
+            string? newTagName = sqlTemplate.Name;
             if (!string.IsNullOrEmpty(newTagName))
             {
                 TbName.Text = newTagName.Trim();
@@ -454,7 +455,7 @@ public partial class TagEditorWindow : Window
             return;
         }
 
-        var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+        MessageBoxResult result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
         if (result == MessageBoxResult.Cancel)
         {

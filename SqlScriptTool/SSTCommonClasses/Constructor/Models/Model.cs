@@ -6,31 +6,10 @@ namespace SSTCommonClasses.Constructor.Models;
 [Serializable]
 public class Model : ConstructorItem
 {
-    private ModelItem _rootModelItem = null;
-    private string _name;
-    private string? _description;
+    private ModelItem? _rootModelItem = null;
     private DbType _dbType;
-    private string _displayLabel;
-    private string _creatorName;
+    private string? _creatorName;
     private int _version;
-
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
-    }
-
-    public string? Description
-    {
-        get => _description;
-        set => _description = value;
-    }
-
-    public string DisplayLabel
-    {
-        get => _displayLabel;
-        set => _displayLabel = value;
-    }
 
     public DbType DbType
     {
@@ -38,13 +17,11 @@ public class Model : ConstructorItem
         set => _dbType = value;
     }
 
-    public string CreatorName
+    public string? CreatorName
     {
         get => _creatorName;
         set => _creatorName = value;
     }
-
-
 
     public int Version
     {
@@ -108,5 +85,10 @@ public class Model : ConstructorItem
     public override string ToString()
     {
         return $"{Name} ({DisplayLabel})";
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Uuid);
     }
 }

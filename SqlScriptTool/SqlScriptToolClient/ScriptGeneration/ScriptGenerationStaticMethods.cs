@@ -12,7 +12,7 @@ public static class ScriptGenerationStaticMethods
         Regex rx = new Regex(@"<\w+>");
         result = rx.Replace(result, match =>
         {
-            if (replacementValues.TryGetValue(match.Value, out var expression))
+            if (replacementValues.TryGetValue(match.Value, out string? expression))
             {
                 return expression;
             }
@@ -24,24 +24,20 @@ public static class ScriptGenerationStaticMethods
 
     public static string GetTemplateByModel(Model model)
     {
-        var rootModelItem = model.RootModelItem;
+        ModelItem rootModelItem = model.RootModelItem;
         return GetModelItemSqlText(rootModelItem);
     }
 
     private static string GetModelItemSqlText(ModelItem modelItem)
     {
-        var sqlTemplate = modelItem.SqlTemplate;
-        if (sqlTemplate == null)
-        {
-            return string.Empty;
-        }
+        SqlTemplate sqlTemplate = modelItem.SqlTemplate;
 
         if (sqlTemplate.IsMultiplePattern)
         {
             return string.Empty;
         }
 
-        string templateText = modelItem.SqlTemplate.SqlText;
+        string? templateText = modelItem.SqlTemplate.SqlText;
 
         if (string.IsNullOrEmpty(templateText))
         {
@@ -50,7 +46,7 @@ public static class ScriptGenerationStaticMethods
 
         Dictionary<string, ModelItem> childModelItems = modelItem.ChildModelItems;
 
-        foreach (var childModelItem in childModelItems)
+        foreach (KeyValuePair<string, ModelItem> childModelItem in childModelItems)
         {
             string tagText = childModelItem.Key;
             string childSqlText = GetModelItemSqlText(childModelItem.Value);

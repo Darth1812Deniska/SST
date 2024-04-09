@@ -2,7 +2,7 @@
 using SSTCommonClasses.Constructor.Models;
 
 
-var model = new Model(); // дефолт
-var options = new JsonSerializerOptions { WriteIndented = true };
-var jsonString = JsonSerializer.Serialize(model, options);
+Model model = new Model(); // дефолт
+JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+string jsonString = JsonSerializer.Serialize(model, options);
 Console.WriteLine(jsonString);

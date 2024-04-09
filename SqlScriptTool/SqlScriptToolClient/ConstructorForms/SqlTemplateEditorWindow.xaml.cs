@@ -10,7 +10,7 @@ using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 
-namespace SqlScriptToolClient;
+namespace SqlScriptToolClient.ConstructorForms;
 
 /// <summary>
 /// Логика взаимодействия для SqlTemplateEditorWindow.xaml
@@ -19,12 +19,13 @@ public partial class SqlTemplateEditorWindow : Window
 {
     #region fields
 
-    private string _sqlTemplateName;
-    private string _sqlTemplateDisplayLabel;
+    private string? _sqlTemplateName;
+    private string? _sqlTemplateDisplayLabel;
     private string? _sqlTemplateDescription;
     private DbType _sqlTemplateDbType;
-    private string _sqlTemplateText;
+    private string? _sqlTemplateText;
     private bool _isSaveAndCloseClicked = false;
+    private List<Tag>? _sqlTemplateTags = null;
 
     #endregion
 
@@ -32,7 +33,7 @@ public partial class SqlTemplateEditorWindow : Window
 
     private TemplateEditorFormState FormState { get; }
 
-    public SqlTemplate InputSqlTemplate { get; set; }
+    public SqlTemplate? InputSqlTemplate { get; set; }
     public SqlTemplate CurrentSqlTemplate => GetCurrentSqlTemplate();
 
     private Guid SqlTemplateUuid { get; set; }
@@ -43,7 +44,7 @@ public partial class SqlTemplateEditorWindow : Window
         set => _sqlTemplateName = value;
     }
 
-    private string SqlTemplateDisplayLabel
+    private string? SqlTemplateDisplayLabel
     {
         get => GetSqlTemplateDisplayLabel();
         set => _sqlTemplateDisplayLabel = value;
@@ -61,13 +62,17 @@ public partial class SqlTemplateEditorWindow : Window
         set => _sqlTemplateDbType = value;
     }
 
-    private string SqlTemplateText
+    private string? SqlTemplateText
     {
         get => GetSqlTemplateText();
         set => _sqlTemplateText = value;
     }
 
-    private List<Tag> SqlTemplateTags { get; set; }
+    private List<Tag> SqlTemplateTags
+    {
+        get => _sqlTemplateTags??new List<Tag>();
+        set => _sqlTemplateTags = value;
+    }
 
     private bool SqlTemplateIsMultiplePattern =>
         ChbIsMultiplePattern.IsChecked != null && ChbIsMultiplePattern.IsChecked.Value;
@@ -111,7 +116,7 @@ public partial class SqlTemplateEditorWindow : Window
         return result;
     }
 
-    private string GetSqlTemplateText()
+    private string? GetSqlTemplateText()
     {
         return string.IsNullOrEmpty(TbCodeEditor.Text.Trim()) ? _sqlTemplateText : TbCodeEditor.Text.Trim();
     }
@@ -168,32 +173,35 @@ public partial class SqlTemplateEditorWindow : Window
                 SqlTemplateTags = new List<Tag>();
                 break;
             case TemplateEditorFormState.Editing:
-                SqlTemplateUuid = InputSqlTemplate.Uuid;
-                SqlTemplateName = InputSqlTemplate.Name;
-                SqlTemplateDisplayLabel = InputSqlTemplate.DisplayLabel;
-                SqlTemplateDescription = InputSqlTemplate.Description;
-                SqlTemplateDbType = InputSqlTemplate.DbType;
-                SqlTemplateText = InputSqlTemplate.SqlText;
-                SqlTemplateTags = InputSqlTemplate.Tags;
-
-                TbName.Text = SqlTemplateName;
-                TbDisplayLabel.Text = SqlTemplateDisplayLabel;
-                TbDescription.Text = SqlTemplateDescription;
-                TbCodeEditor.Text = SqlTemplateText;
-                TbUuid.Text = SqlTemplateUuid.ToString();
-                ChbIsMultiplePattern.IsChecked = InputSqlTemplate.IsMultiplePattern;
-
-                switch (SqlTemplateDbType)
+                if (InputSqlTemplate != null)
                 {
-                    case DbType.PostgreSql:
-                        RbPostgreSql.IsChecked = true;
-                        break;
-                    case DbType.MsSql:
-                        RbMsSql.IsChecked = true;
-                        break;
-                }
+                    SqlTemplateUuid = InputSqlTemplate.Uuid;
+                    SqlTemplateName = InputSqlTemplate.Name;
+                    SqlTemplateDisplayLabel = InputSqlTemplate.DisplayLabel;
+                    SqlTemplateDescription = InputSqlTemplate.Description;
+                    SqlTemplateDbType = InputSqlTemplate.DbType;
+                    SqlTemplateText = InputSqlTemplate.SqlText;
+                    SqlTemplateTags = InputSqlTemplate.Tags;
 
-                InitializeNodeTags();
+                    TbName.Text = SqlTemplateName;
+                    TbDisplayLabel.Text = SqlTemplateDisplayLabel;
+                    TbDescription.Text = SqlTemplateDescription;
+                    TbCodeEditor.Text = SqlTemplateText;
+                    TbUuid.Text = SqlTemplateUuid.ToString();
+                    ChbIsMultiplePattern.IsChecked = InputSqlTemplate.IsMultiplePattern;
+
+                    switch (SqlTemplateDbType)
+                    {
+                        case DbType.PostgreSql:
+                            RbPostgreSql.IsChecked = true;
+                            break;
+                        case DbType.MsSql:
+                            RbMsSql.IsChecked = true;
+                            break;
+                    }
+
+                    InitializeNodeTags();
+                }
 
                 break;
         }
@@ -264,7 +272,7 @@ public partial class SqlTemplateEditorWindow : Window
                 $"{tag.Name}{(string.IsNullOrEmpty(tag.DisplayLabel) ? string.Empty : $" ({tag.DisplayLabel})")}:\n" +
                 $"Тип тэга: {tag.TagType};\n" +
                 $"Тип данных пользовательского параметра: {tag.DataType};\n" +
-                $"{(tag.SqlTemplate == null ? String.Empty : $"SQL-шаблон: {tag.SqlTemplate}")}";
+                $"{(tag.SqlTemplate == null ? string.Empty : $"SQL-шаблон: {tag.SqlTemplate}")}";
 
 
             TbTagPreview.Text = result;
@@ -296,7 +304,7 @@ public partial class SqlTemplateEditorWindow : Window
 
     private void BtnTagEdit_Click(object sender, RoutedEventArgs e)
     {
-        var selTag = LbNodeTags.SelectedItem as Tag;
+        Tag? selTag = LbNodeTags.SelectedItem as Tag;
         if (selTag == null)
         {
             return;
@@ -313,8 +321,8 @@ public partial class SqlTemplateEditorWindow : Window
         LbNodeTags.ItemsSource = SqlTemplateTags;
 
         // Обновляем название тэга в тексте
-        string oldTagName = selTag.Name;
-        string newTagName = tagEditor.CurrentTag.Name;
+        string? oldTagName = selTag.Name;
+        string? newTagName = tagEditor.CurrentTag.Name;
 
         TbCodeEditor.Text = TbCodeEditor.Text.Replace(oldTagName, newTagName);
     }
@@ -331,20 +339,20 @@ public partial class SqlTemplateEditorWindow : Window
         {
             // Выбираем все тэги в тектсе
             Regex rx = new Regex(@"<\w+>");
-            var tagsInTextlist = rx.Matches(SqlTemplateText).Select(match => match.Value).Distinct().ToList();
+            List<string> tagsInTextlist = rx.Matches(SqlTemplateText).Select(match => match.Value).Distinct().ToList();
 
             //Убираем существующие тэги, если их нет в тексте
-            var tagsToRemove = SqlTemplateTags.Where(tag => !tagsInTextlist.Contains(tag.Name)).ToList();
-            foreach (var tag in tagsToRemove)
+            List<Tag> tagsToRemove = SqlTemplateTags.Where(tag => !tagsInTextlist.Contains(tag.Name)).ToList();
+            foreach (Tag tag in tagsToRemove)
             {
                 SqlTemplateTags.Remove(tag);
             }
 
             // Выбираем только те строки тэгов, которых еще нет в списке тэгов
-            var tagNames = SqlTemplateTags.Select(tag => tag.Name).ToList();
-            var newTagNames = tagsInTextlist.Where(tagName => !tagNames.Contains(tagName)).ToList();
+            List<string> tagNames = SqlTemplateTags.Select(tag => tag.Name).ToList();
+            List<string> newTagNames = tagsInTextlist.Where(tagName => !tagNames.Contains(tagName)).ToList();
 
-            foreach (string newTagName in newTagNames)
+            foreach (string? newTagName in newTagNames)
             {
                 Tag newTag = new Tag(newTagName);
                 SqlTemplateTags.Add(newTag);
@@ -362,7 +370,7 @@ public partial class SqlTemplateEditorWindow : Window
             return;
         }
 
-        var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+        MessageBoxResult result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
         if (result == MessageBoxResult.Cancel)
         {

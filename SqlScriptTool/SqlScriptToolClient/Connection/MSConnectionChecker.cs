@@ -8,7 +8,7 @@ namespace SqlScriptToolClient.Connection
         {
             bool state = false;
 
-            using (var connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {

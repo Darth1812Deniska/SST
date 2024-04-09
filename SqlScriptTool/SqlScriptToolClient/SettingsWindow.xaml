@@ -26,17 +26,17 @@
         <Separator Margin="2,8,-2,0" VerticalAlignment="Top" Height="6"  Grid.ColumnSpan="2" Background="#FFA0A0A0" Grid.Row="4"/>
         <Separator VerticalAlignment="Top" Height="6"  Grid.ColumnSpan="2" Background="#FFA0A0A0" Grid.Row="4" Margin="0,60,0,0"/>
             
-        <Button x:Name="btnChange" Content="Изменить" HorizontalAlignment="Left" Margin="36,24,0,0" VerticalAlignment="Top" Width="98" Height="27" Grid.Row="4" FontSize="14" Click="btnChange_Click"/>
-        <ComboBox x:Name="cbConnect" Grid.Column="1" Margin="0,24,196,0" Width="359" Height="27" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" FontSize="14"/>
-        <Button x:Name="btnTest" Grid.Column="1" Content="Тест подключения" Margin="0,24,10,0" Width="161" Height="27" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="4" FontSize="14"/>
-        <Button x:Name="btnCancel" Grid.Column="1" Content="Отменить" HorizontalAlignment="Right" Margin="0,86,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.626,-0.681" Height="27" Width="161" Grid.Row="4" FontSize="14" Click="btnCancel_Click"/>
-        <Button x:Name="btnOK" Grid.Column="1" Content="Сохранить" HorizontalAlignment="Right" Margin="0,86,196,0" VerticalAlignment="Top" Width="161" Height="27" Grid.Row="4" FontSize="14"/>
-        <TextBox x:Name="tbUserName" Margin="10,3,10,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" Height="27" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox x:Name="tbLogin" Margin="10,6,10,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" VerticalAlignment="Top" Height="27" Grid.Row="1" Grid.Column="1"/>
-        <TextBox x:Name="tbFolder" Margin="10,6,132,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" VerticalAlignment="Top" Height="27" Grid.Row="3" Grid.Column="1"/>
-        <Button x:Name="btnEdit" Content="Редактировать" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Click="btnEdit_Click"  Width="106" Height="27" Grid.Column="1" Grid.Row="3" FontSize="14"/>
-        <TextBox x:Name="pwdTextBox" Margin="10,0,285,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Height="27" Grid.Row="2" Grid.Column="1" Width="196" Visibility="Hidden" HorizontalAlignment="Left"/>
-        <PasswordBox x:Name="pwdPasswordBox" Margin="10,0,0,0" VerticalAlignment="Center" Height="27" HorizontalAlignment="Left" Width="196" Grid.Row="2" Grid.Column="1"/>
-        <CheckBox x:Name="checkBoxPwd" Content="Отобразить пароль" HorizontalAlignment="Left" Margin="216,0,0,0" VerticalAlignment="Center" Checked="CheckBox_Checked" Click="CheckBox_Click" Grid.Column="1" Grid.Row="2"/>
+        <Button x:Name="BtnChange" Content="Изменить" HorizontalAlignment="Left" Margin="36,24,0,0" VerticalAlignment="Top" Width="98" Height="27" Grid.Row="4" FontSize="14" Click="BtnChange_Click"/>
+        <ComboBox x:Name="CbConnect" Grid.Column="1" Margin="0,24,196,0" Width="359" Height="27" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" FontSize="14"/>
+        <Button x:Name="BtnTest" Grid.Column="1" Content="Тест подключения" Margin="0,24,10,0" Width="161" Height="27" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="4" FontSize="14"/>
+        <Button x:Name="BtnCancel" Grid.Column="1" Content="Отменить" HorizontalAlignment="Right" Margin="0,86,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.626,-0.681" Height="27" Width="161" Grid.Row="4" FontSize="14" Click="BtnCancel_Click"/>
+        <Button x:Name="BtnOk" Grid.Column="1" Content="Сохранить" HorizontalAlignment="Right" Margin="0,86,196,0" VerticalAlignment="Top" Width="161" Height="27" Grid.Row="4" FontSize="14"/>
+        <TextBox x:Name="TbUserName" Margin="10,3,10,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" Height="27" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox x:Name="TbLogin" Margin="10,6,10,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" VerticalAlignment="Top" Height="27" Grid.Row="1" Grid.Column="1"/>
+        <TextBox x:Name="TbFolder" Margin="10,6,132,0" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" VerticalAlignment="Top" Height="27" Grid.Row="3" Grid.Column="1"/>
+        <Button x:Name="BtnEdit" Content="Редактировать" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Click="BtnEdit_Click"  Width="106" Height="27" Grid.Column="1" Grid.Row="3" FontSize="14"/>
+        <TextBox x:Name="PwdTextBox" Margin="10,0,285,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Height="27" Grid.Row="2" Grid.Column="1" Width="196" Visibility="Hidden" HorizontalAlignment="Left"/>
+        <PasswordBox x:Name="PwdPasswordBox" Margin="10,0,0,0" VerticalAlignment="Center" Height="27" HorizontalAlignment="Left" Width="196" Grid.Row="2" Grid.Column="1"/>
+        <CheckBox x:Name="CheckBoxPwd" Content="Отобразить пароль" HorizontalAlignment="Left" Margin="216,0,0,0" VerticalAlignment="Center" Checked="CheckBox_Checked" Click="CheckBox_Click" Grid.Column="1" Grid.Row="2"/>
     </Grid>
 </Window>

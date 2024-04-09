@@ -2,7 +2,7 @@
 
 public enum DbType
 {
-    MsSql,
-    PostgreSql,
-    None
+    None = 0,
+    MsSql = 1,
+    PostgreSql = 2
 }

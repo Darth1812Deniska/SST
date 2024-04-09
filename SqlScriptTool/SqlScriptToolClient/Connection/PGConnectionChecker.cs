@@ -8,9 +8,9 @@ namespace SqlScriptToolClient.Connection
         {
             try
             {
-                using (var source = NpgsqlDataSource.Create(connectionString))
+                using (NpgsqlDataSource source = NpgsqlDataSource.Create(connectionString))
                 {
-                    var connection = source.OpenConnection();
+                    NpgsqlConnection connection = source.OpenConnection();
 
                     if (connection.State != System.Data.ConnectionState.Open)
                     {

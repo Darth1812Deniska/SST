@@ -25,32 +25,34 @@ namespace SqlScriptToolClient
 
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
-            var checkBox = sender as CheckBox;
-            if (checkBox.IsChecked.Value)
+            if (sender is CheckBox checkBox)
             {
-                pwdTextBox.Text = pwdPasswordBox.Password; // скопируем в TextBox из PasswordBox
-                pwdTextBox.Visibility = Visibility.Visible; // TextBox - отобразить
-                pwdPasswordBox.Visibility = Visibility.Hidden; // PasswordBox - скрыть
-            }
-            else
-            {
-                pwdPasswordBox.Password = pwdTextBox.Text; // скопируем в PasswordBox из TextBox 
-                pwdTextBox.Visibility = Visibility.Hidden; // TextBox - скрыть
-                pwdPasswordBox.Visibility = Visibility.Visible; // PasswordBox - отобразить
+                if (checkBox.IsChecked.HasValue && checkBox.IsChecked.Value)
+                {
+                    PwdTextBox.Text = PwdPasswordBox.Password; // скопируем в TextBox из PasswordBox
+                    PwdTextBox.Visibility = Visibility.Visible; // TextBox - отобразить
+                    PwdPasswordBox.Visibility = Visibility.Hidden; // PasswordBox - скрыть
+                }
+                else
+                {
+                    PwdPasswordBox.Password = PwdTextBox.Text; // скопируем в PasswordBox из TextBox 
+                    PwdTextBox.Visibility = Visibility.Hidden; // TextBox - скрыть
+                    PwdPasswordBox.Visibility = Visibility.Visible; // PasswordBox - отобразить
+                }
             }
         }
 
-        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnChange_Click(object sender, RoutedEventArgs e)
+        private void BtnChange_Click(object sender, RoutedEventArgs e)
         {
             ConnectionWindow connectionWindow = new ConnectionWindow();
             connectionWindow.Show();

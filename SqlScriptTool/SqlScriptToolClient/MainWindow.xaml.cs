@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
+using SqlScriptToolClient.ConstructorForms;
 
 namespace SqlScriptToolClient;
 
@@ -52,7 +53,7 @@ public partial class MainWindow : Window
     private void InitList(StackPanel stackPanel, IEnumerable list)
     {
         stackPanel.Children.Clear();
-        foreach (var item in list)
+        foreach (object? item in list)
         {
             if (item != null)
             {
@@ -75,7 +76,7 @@ public partial class MainWindow : Window
     {
         if (sender is Button senderButton)
         {
-            var obj = senderButton.Content;
+            object? obj = senderButton.Content;
             if (obj != null)
             {
                 Type type = obj.GetType();
@@ -86,7 +87,7 @@ public partial class MainWindow : Window
                         {
                             Visibility = Visibility.Collapsed;
                             ModelEditorWindow modelEditor = new ModelEditorWindow(model);
-                            var dialogRes = modelEditor.ShowDialog();
+                            bool? dialogRes = modelEditor.ShowDialog();
                             if (dialogRes.HasValue && dialogRes.Value)
                             {
                                 InitModelsList();
@@ -101,7 +102,7 @@ public partial class MainWindow : Window
                         {
                             Visibility = Visibility.Collapsed;
                             SqlTemplateEditorWindow templateEditor = new SqlTemplateEditorWindow(sqlTemplate);
-                            var dialogRes = templateEditor.ShowDialog();
+                            bool? dialogRes = templateEditor.ShowDialog();
                             if (dialogRes.HasValue && dialogRes.Value)
                             {
                                 InitTemplatesList();
@@ -115,7 +116,7 @@ public partial class MainWindow : Window
                         {
                             Visibility = Visibility.Collapsed;
                             TagEditorWindow tagEditor = new TagEditorWindow(tagTemplate);
-                            var dialogRes = tagEditor.ShowDialog();
+                            bool? dialogRes = tagEditor.ShowDialog();
                             if (dialogRes.HasValue && dialogRes.Value)
                             {
                                 InitTagsList();
@@ -134,7 +135,7 @@ public partial class MainWindow : Window
     {
         Visibility = Visibility.Collapsed;
         ModelEditorWindow modelEditorWindow = new ModelEditorWindow();
-        var dialogRes = modelEditorWindow.ShowDialog();
+        bool? dialogRes = modelEditorWindow.ShowDialog();
         if (dialogRes.HasValue && dialogRes.Value)
         {
             InitAllLists();
@@ -146,7 +147,7 @@ public partial class MainWindow : Window
     {
         Visibility = Visibility.Collapsed;
         SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow();
-        var dialogRes = sqlTemplateEditorWindow.ShowDialog();
+        bool? dialogRes = sqlTemplateEditorWindow.ShowDialog();
         if (dialogRes.HasValue && dialogRes.Value)
         {
             InitAllLists();
@@ -158,7 +159,7 @@ public partial class MainWindow : Window
     {
         Visibility = Visibility.Collapsed;
         TagEditorWindow tagEditorWindow = new TagEditorWindow();
-        var dialogRes = tagEditorWindow.ShowDialog();
+        bool? dialogRes = tagEditorWindow.ShowDialog();
         if (dialogRes.HasValue && dialogRes.Value)
         {
             InitAllLists();

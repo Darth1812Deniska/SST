@@ -26,7 +26,7 @@ public partial class ScriptGenerationParamsWindow : Window
     private List<ConstructorItem> UserParamItems => GetUserParamItems();
     private Dictionary<Guid, int> UserParamControls { get; }
     private Dictionary<string, string> UserParamValues => GetUserParamValues();
-    private string ModelSqlTemplateText => ScriptGenerationStaticMethods.GetTemplateByModel(SelectedModel);
+    private string? ModelSqlTemplateText => ScriptGenerationStaticMethods.GetTemplateByModel(SelectedModel);
 
     #endregion
 
@@ -54,14 +54,14 @@ public partial class ScriptGenerationParamsWindow : Window
     {
         Dictionary<string, string> result = new Dictionary<string, string>();
 
-        foreach (var userParam in UserParamControls)
+        foreach (KeyValuePair<Guid, int> userParam in UserParamControls)
         {
             if (GrParamsList.Children[userParam.Value] is Control control)
             {
-                var val = GetControlValue(control);
+                KeyValuePair<string, string>? val = GetControlValue(control);
                 if (val.HasValue)
                 {
-                    var keyValue = val.Value;
+                    KeyValuePair<string, string> keyValue = val.Value;
                     result.Add(keyValue.Key, keyValue.Value);
                 }
             }
@@ -77,7 +77,7 @@ public partial class ScriptGenerationParamsWindow : Window
     private void DrawUserParams()
     {
         int rowCount = 0;
-        foreach (var userParamItem in UserParamItems)
+        foreach (ConstructorItem userParamItem in UserParamItems)
         {
             Guid controlGuid = userParamItem.Uuid;
 
@@ -95,7 +95,7 @@ public partial class ScriptGenerationParamsWindow : Window
                 case "Tag":
                     if (userParamItem is Tag userParamTag)
                     {
-                        string displayLabel = string.IsNullOrEmpty(userParamTag.DisplayLabel)
+                        string? displayLabel = string.IsNullOrEmpty(userParamTag.DisplayLabel)
                             ? userParamTag.Name
                             : userParamTag.DisplayLabel;
                         Label label = new Label()
@@ -103,7 +103,7 @@ public partial class ScriptGenerationParamsWindow : Window
                             Content = displayLabel
                         };
 
-                        var control = FieldControlByDataType(userParamTag);
+                        Control? control = FieldControlByDataType(userParamTag);
                         if (control == null)
                         {
                             continue;
@@ -161,8 +161,8 @@ public partial class ScriptGenerationParamsWindow : Window
     private List<ConstructorItem> GetModelItemConItemsRec(ModelItem modelItem)
     {
         List<ConstructorItem> result = new List<ConstructorItem>();
-        var childModelItems = modelItem.ChildModelItems;
-        var modelItemSqlTemplate = modelItem.SqlTemplate;
+        Dictionary<string, ModelItem> childModelItems = modelItem.ChildModelItems;
+        SqlTemplate modelItemSqlTemplate = modelItem.SqlTemplate;
 
 // Проверка Шаблона на множественность
         if (modelItemSqlTemplate.IsMultiplePattern)
@@ -171,13 +171,13 @@ public partial class ScriptGenerationParamsWindow : Window
             return result;
         }
 
-        var iterUserParamTags = modelItemSqlTemplate.Tags
+        List<Tag> iterUserParamTags = modelItemSqlTemplate.Tags
             .Where(tag => tag.TagType == TagType.UserParameter)
             .ToList();
         result.AddRange(iterUserParamTags);
-        foreach (var childModelItemPair in childModelItems)
+        foreach (KeyValuePair<string, ModelItem> childModelItemPair in childModelItems)
         {
-            var childModelItem = childModelItemPair.Value;
+            ModelItem childModelItem = childModelItemPair.Value;
             result.AddRange(GetModelItemConItemsRec(childModelItem));
         }
 
@@ -207,7 +207,8 @@ public partial class ScriptGenerationParamsWindow : Window
     {
         try
         {
-            string finalScript = ScriptGenerationStaticMethods.ReplaceParameters(ModelSqlTemplateText, UserParamValues);
+            string finalScript =
+                ScriptGenerationStaticMethods.ReplaceParameters(ModelSqlTemplateText ?? string.Empty, UserParamValues);
             string fileToSaveName = $"{SelectedModel.Name}_{DateTime.Now.ToFileTime()}.sql";
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
@@ -216,7 +217,7 @@ public partial class ScriptGenerationParamsWindow : Window
                 AddExtension = true,
                 FileName = fileToSaveName
             };
-            var dialogRes = saveFileDialog.ShowDialog();
+            bool? dialogRes = saveFileDialog.ShowDialog();
             if (dialogRes.HasValue && dialogRes.Value)
             {
                 fileToSaveName = saveFileDialog.FileName;

@@ -54,7 +54,7 @@ namespace SqlScriptToolClient.CustomComponents
         // Список тэгов, по которым строим заголовок и подбираем контролы
         private List<Tag> Tags => SelectedSqlTemplate.Tags;
 
-        private string SqlText => SelectedSqlTemplate.SqlText;
+        private string? SqlText => SelectedSqlTemplate.SqlText;
 
         /// <summary>
         /// Список строк с индексами контролов в этих строках
@@ -88,9 +88,10 @@ namespace SqlScriptToolClient.CustomComponents
         private string GetMultiplePatternsText()
         {
             string result = string.Empty;
-            foreach (var patternsParamValue in MultiplePatternsParamValues)
+            foreach (Dictionary<string, string> patternsParamValue in MultiplePatternsParamValues)
             {
-                string patternText = ScriptGenerationStaticMethods.ReplaceParameters(SqlText, patternsParamValue);
+                string patternText =
+                    ScriptGenerationStaticMethods.ReplaceParameters(SqlText ?? string.Empty, patternsParamValue);
                 result = string.Concat(result, '\n', patternText);
             }
 
@@ -99,17 +100,17 @@ namespace SqlScriptToolClient.CustomComponents
 
         private List<Dictionary<string, string>> GetMultiplePatternsParamValues()
         {
-            var result = new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
             // Взять только те строки, в которых есть поля для заполнения
-            foreach (var rowGuid in RowGuids)
+            foreach (KeyValuePair<Guid, List<int>> rowGuid in RowGuids)
             {
                 Dictionary<string, string> row = new Dictionary<string, string>();
-                var controlsIndex = rowGuid.Value;
-                foreach (var index in controlsIndex)
+                List<int> controlsIndex = rowGuid.Value;
+                foreach (int index in controlsIndex)
                 {
                     Control? control = GrMain.Children[index] as Control;
 
-                    var controlValue = GetControlValue(control);
+                    KeyValuePair<string, string>? controlValue = GetControlValue(control);
                     if (controlValue.HasValue)
                     {
                         row.Add(controlValue.Value.Key, controlValue.Value.Value);
@@ -163,7 +164,7 @@ namespace SqlScriptToolClient.CustomComponents
         {
             int columnCount = 0;
 
-            foreach (var tag in Tags)
+            foreach (Tag tag in Tags)
             {
                 string displayLabel = tag.DisplayLabel ?? tag.Name;
                 Label label = new Label
@@ -204,10 +205,10 @@ namespace SqlScriptToolClient.CustomComponents
             };
             GrMain.RowDefinitions.Add(rd);
             int curRow = GrMain.RowDefinitions.Count - 1;
-            var controlList = new List<int>();
-            foreach (var tag in Tags)
+            List<int> controlList = new List<int>();
+            foreach (Tag tag in Tags)
             {
-                var newFieldControl = FieldControlByDataType(tag);
+                Control? newFieldControl = FieldControlByDataType(tag);
                 if (newFieldControl != null)
                 {
                     newFieldControl.Margin = new Thickness(2);

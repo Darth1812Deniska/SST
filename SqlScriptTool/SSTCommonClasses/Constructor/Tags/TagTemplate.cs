@@ -35,4 +35,9 @@ public class TagTemplate : ConstructorItem
     {
         return $"{Name} ({DisplayLabel})";
     }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Uuid);
+    }
 }

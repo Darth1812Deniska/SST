@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows;
 using Xceed.Wpf.Toolkit;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ public static class ScriptGenControlsStaticMethods
     public static Control? FieldControlByDataType(Tag tag)
     {
         Control? result = null;
-        var dataType = tag.DataType;
+        TagDataType? dataType = tag.DataType;
         switch (dataType)
         {
             case TagDataType.Char:
@@ -81,39 +82,65 @@ public static class ScriptGenControlsStaticMethods
                 return null;
             }
 
-            string controlValue;
+            string? controlValue = null;
             switch (dataType)
             {
                 case TagDataType.Char:
-                    controlValue = (control as CheckBox).IsChecked.Value ? "+" : "-";
+                    if (control is CheckBox checkBox)
+                    {
+                        var isChecked = checkBox.IsChecked;
+                        controlValue = isChecked.HasValue && isChecked.Value ? "+" : "-";
+                    }
+
+
                     break;
                 case TagDataType.Date:
-                    var datePicker = (control as DateTimePicker).Value;
-                    controlValue = datePicker.HasValue
-                        ? datePicker.Value.ToString("yyyyMMdd")
-                        : string.Empty;
+                    if (control is DateTimePicker datePickerControl)
+                    {
+                        DateTime? datePicker = datePickerControl.Value;
+                        controlValue = datePicker.HasValue
+                            ? datePicker.Value.ToString("yyyyMMdd")
+                            : string.Empty;
+                    }
+
                     break;
                 case TagDataType.DateTime:
-                    var dateTimePicker = (control as DateTimePicker).Value;
-                    controlValue = dateTimePicker.HasValue
-                        ? dateTimePicker.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                        : string.Empty;
+                    if (control is DateTimePicker dateTimePickerControl)
+                    {
+                        DateTime? dateTimePicker = dateTimePickerControl.Value;
+                        controlValue = dateTimePicker.HasValue
+                            ? dateTimePicker.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                            : string.Empty;
+                    }
+
                     break;
                 case TagDataType.Double:
-                    var doubleControl = (control as DoubleUpDown).Value;
-                    controlValue = doubleControl.HasValue
-                        ? doubleControl.Value.ToString("R")
-                        : "0";
+                    if (control is DoubleUpDown doubleUpDownControl)
+                    {
+                        double? doubleControl = doubleUpDownControl.Value;
+                        controlValue = doubleControl.HasValue
+                            ? doubleControl.Value.ToString("R")
+                            : "0";
+                    }
+
                     break;
                 case TagDataType.Int:
-                    var intControl = (control as IntegerUpDown).Value;
-                    controlValue = intControl.HasValue ? intControl.Value.ToString() : "0";
+                    if (control is IntegerUpDown integerUpDownControl)
+                    {
+                        int? intControl = integerUpDownControl.Value;
+                        controlValue = intControl.HasValue ? intControl.Value.ToString() : "0";
+                    }
+
                     break;
                 case TagDataType.Custom:
                     controlValue = "0";
                     break;
                 case TagDataType.String:
-                    controlValue = (control as TextBox).Text;
+                    if (control is TextBox textBoxControl)
+                    {
+                        controlValue = textBoxControl.Text;
+                    }
+
                     break;
                 default:
                     controlValue = string.Empty;

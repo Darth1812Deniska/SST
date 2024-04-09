@@ -6,36 +6,14 @@ namespace SSTCommonClasses.Constructor.Models;
 [Serializable]
 public class SqlTemplate : ConstructorItem
 {
-    private List<Tag> _tags = null;
-    
-    private string _name;
-    private string _displayLabel;
-    private string? _description;
+    private List<Tag>? _tags = null;
+
     private string? _creator;
     private DbType _dbType;
     private int _version;
-    private string _sqlText;
+    private string? _sqlText;
 
     #region Properties
-    
-
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
-    }
-
-    public string DisplayLabel
-    {
-        get => _displayLabel;
-        set => _displayLabel = value;
-    }
-
-    public string? Description
-    {
-        get => _description;
-        set => _description = value;
-    }
 
     public string? Creator
     {
@@ -55,7 +33,7 @@ public class SqlTemplate : ConstructorItem
         set => _version = value;
     }
 
-    public string SqlText
+    public string? SqlText
     {
         get => _sqlText;
         set => _sqlText = value;
@@ -75,36 +53,6 @@ public class SqlTemplate : ConstructorItem
 
     public SqlTemplate()
     {
-    }
-
-    public SqlTemplate(string name, string displayLabel, string description, string creator, DbType dbType,
-        AccessType accessType, int version, string sqlText)
-    {
-        Uuid = Guid.NewGuid();
-        Name = name;
-        DisplayLabel = displayLabel;
-        Description = description;
-        Creator = creator;
-        DbType = dbType;
-        Version = version;
-        SqlText = sqlText;
-        Tags = new List<Tag>();
-        AccessType = accessType;
-    }
-
-    public SqlTemplate(Guid uuid, string name, string displayLabel, string? description, string? creator, DbType dbType,
-        AccessType accessType, int version, string sqlText, List<Tag> tags)
-    {
-        Uuid = uuid;
-        Name = name;
-        DisplayLabel = displayLabel;
-        Description = description;
-        Creator = creator;
-        DbType = dbType;
-        Version = version;
-        SqlText = sqlText;
-        Tags = tags;
-        AccessType = accessType;
     }
 
     #endregion
@@ -141,7 +89,7 @@ public class SqlTemplate : ConstructorItem
 
     public Tag AddModelItemTag(string tagName, ModelItem modelItem)
     {
-        Tag modelItemTag = new Tag()
+        Tag modelItemTag = new Tag
         {
             Name = tagName,
             TagType = TagType.ModelItemParent,
@@ -154,7 +102,7 @@ public class SqlTemplate : ConstructorItem
         return modelItemTag;
     }
 
-    public void AddModelItemTagToScript(string tagName)
+    public void AddModelItemTagToScript(string? tagName)
     {
         SqlText = string.IsNullOrEmpty(SqlText)
             ? tagName
@@ -181,6 +129,11 @@ public class SqlTemplate : ConstructorItem
     public override string ToString()
     {
         return $"{Name} ({DisplayLabel})";
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Uuid);
     }
 
     #endregion

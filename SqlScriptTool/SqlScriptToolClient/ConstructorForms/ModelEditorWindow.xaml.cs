@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using SqlScriptToolClient.Constants;
+using SqlScriptToolClient.ConstructorForms;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
@@ -77,14 +79,14 @@ namespace SqlScriptToolClient
 
         private int GetAllNodesCount()
         {
-            var curItems = TvModelTree.Items;
+            ItemCollection curItems = TvModelTree.Items;
             return curItems.Count + GetNodesCount(curItems);
         }
 
         private Model GetCurrentModel()
         {
             Model result = new Model(ModelUuid, ModelName, ModelDescription, ModelDbType, ModelDisplayLabel,
-                String.Empty, AccessType.Private, 0, ModelRootItem);
+                string.Empty, AccessType.Private, 0, ModelRootItem);
 
             return result;
         }
@@ -162,7 +164,7 @@ namespace SqlScriptToolClient
             if (node.Tag is ModelItem nodeModelItem)
             {
                 string childModelItemName = GetNewNodeName();
-                var childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
+                ModelItem childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
 
                 TreeViewItem newChildTreeViewItem = new TreeViewItem()
                 {
@@ -215,8 +217,8 @@ namespace SqlScriptToolClient
             };
             treeViewItem.Tag = modelItem;
             items.Add(treeViewItem);
-            var childList = modelItem.ChildModelItems.Select(dict => dict.Value).ToList();
-            foreach (var item in childList)
+            List<ModelItem> childList = modelItem.ChildModelItems.Select(dict => dict.Value).ToList();
+            foreach (ModelItem item in childList)
             {
                 DrawModelNode(treeViewItem.Items, item);
             }
@@ -232,7 +234,7 @@ namespace SqlScriptToolClient
             int resultCount = 0;
             foreach (TreeViewItem item in items)
             {
-                var childItems = item.Items;
+                ItemCollection childItems = item.Items;
                 resultCount += childItems.Count;
                 resultCount += GetNodesCount(childItems);
             }
@@ -289,7 +291,7 @@ namespace SqlScriptToolClient
         /// <param name="model"></param>
         private void InitializeModelTree(Model model)
         {
-            var rootModelItem = model.RootModelItem;
+            ModelItem rootModelItem = model.RootModelItem;
 
             DrawModelNode(TvModelTree.Items, rootModelItem);
         }
@@ -393,7 +395,7 @@ namespace SqlScriptToolClient
             }
             else // Если узел не выбран - добавляем дочерний к корню
             {
-                var rootTreeViewItem = TvModelTree.Items[0] as TreeViewItem;
+                TreeViewItem? rootTreeViewItem = TvModelTree.Items[0] as TreeViewItem;
                 if (rootTreeViewItem != null)
                 {
                     AddNodeToTreeViewItem(rootTreeViewItem);
@@ -403,7 +405,7 @@ namespace SqlScriptToolClient
 
         private void BtnAddNode_Click(object sender, RoutedEventArgs e)
         {
-            var selItem = TvModelTree.SelectedItem;
+            object? selItem = TvModelTree.SelectedItem;
             if (selItem != null)
             {
                 if (selItem is TreeViewItem selTreeViewItem)
@@ -418,8 +420,8 @@ namespace SqlScriptToolClient
 
         private void BtnEditNode_Click(object sender, RoutedEventArgs e)
         {
-            var selItem = TvModelTree.SelectedItem;
-            var selTreeViewItem = selItem as TreeViewItem;
+            object? selItem = TvModelTree.SelectedItem;
+            TreeViewItem? selTreeViewItem = selItem as TreeViewItem;
 
             if (selTreeViewItem?.Tag is ModelItem selModelItem)
             {
@@ -438,13 +440,18 @@ namespace SqlScriptToolClient
 
                 // Создаем новые
                 // Получаем из шаблона тэги с типом 
-                var childTemplates = selModelItem.SqlTemplate.Tags
+                List<Tag> childTemplates = selModelItem.SqlTemplate.Tags
                     .Where(tag => tag.TagType == TagType.ModelItemParent).ToList();
 
                 // проходимся по ним
-                foreach (var template in childTemplates)
+                foreach (Tag template in childTemplates)
                 {
                     // Обновить ChildItem
+                    if (template.SqlTemplate == null)
+                    {
+                        continue;
+                    }
+
                     ModelItem modelItem = new ModelItem()
                     {
                         SqlTemplate = template.SqlTemplate
@@ -464,20 +471,20 @@ namespace SqlScriptToolClient
 
         private void BtnDeleteNode_Click(object sender, RoutedEventArgs e)
         {
-            var selItem = TvModelTree.SelectedItem;
+            object? selItem = TvModelTree.SelectedItem;
             if (selItem is not TreeViewItem selTreeViewItem)
             {
                 return;
             }
 
-            var parentItem = selTreeViewItem.Parent;
+            DependencyObject? parentItem = selTreeViewItem.Parent;
 
-            var parentTreeViewItem = parentItem as TreeViewItem;
+            TreeViewItem? parentTreeViewItem = parentItem as TreeViewItem;
 
             // Проверка на дочерние узлы
             if (selTreeViewItem.Items.Count > 0)
             {
-                var mbResult = MessageBox.Show(
+                MessageBoxResult mbResult = MessageBox.Show(
                     "У узла есть дочерние элементы. Прикрепить элементы к родительскому удаляемого?",
                     "Удаление узла",
                     MessageBoxButton.YesNoCancel,
@@ -489,9 +496,9 @@ namespace SqlScriptToolClient
 
                 if (mbResult == MessageBoxResult.Yes)
                 {
-                    foreach (var item in selTreeViewItem.Items)
+                    foreach (object? item in selTreeViewItem.Items)
                     {
-                        var treeViewItem = item as TreeViewItem;
+                        TreeViewItem? treeViewItem = item as TreeViewItem;
                         if (treeViewItem == null)
                         {
                             continue;
@@ -510,7 +517,7 @@ namespace SqlScriptToolClient
             }
             else
             {
-                var mbResult = MessageBox.Show(
+                MessageBoxResult mbResult = MessageBox.Show(
                     "Удалить выбранный узел?",
                     "Удаление узла",
                     MessageBoxButton.YesNo,
@@ -535,7 +542,7 @@ namespace SqlScriptToolClient
         private void TbName_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Наименование узла
-            string nodeName = string.IsNullOrEmpty(ModelName) ? "<ModelItem>" : $"<{ModelName}>";
+            string? nodeName = string.IsNullOrEmpty(ModelName) ? "<ModelItem>" : $"<{ModelName}>";
             // Без проверки на ввод текста
             // Находим коренной узел
             VisualRootModelItem.Header = nodeName;
@@ -580,7 +587,7 @@ namespace SqlScriptToolClient
                 return;
             }
 
-            var result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
+            MessageBoxResult result = MessageBox.Show("Закрыть окно? Несохраненные изменения будут отменены!", "Закрыть окно?",
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (result == MessageBoxResult.Cancel)
             {

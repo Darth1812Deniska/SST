@@ -14,9 +14,10 @@ namespace SqlScriptToolClient
         {
             InitializeComponent();
         }
+
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (port is null)
+            if (TbPort is null)
             {
                 return;
             }
@@ -24,25 +25,18 @@ namespace SqlScriptToolClient
             switch (((ComboBoxItem)((ComboBox)sender).SelectedItem).Content.ToString())
             {
                 case "PostgreSQL":
-                    {
-                        port.Text = "5432";
-                        port.IsReadOnly = true;
-                        break;
-                    }
+                {
+                    TbPort.Text = "5432";
+                    TbPort.IsReadOnly = true;
+                    break;
+                }
                 case "MSSQL":
-                    {
-                        port.IsReadOnly = false;
-                        port.Text = "3306";
-                        break;
-                    }
+                {
+                    TbPort.IsReadOnly = false;
+                    TbPort.Text = "3306";
+                    break;
+                }
             }
-        }
-
-        private void port_Initialized(object sender, EventArgs e)
-        {
-            //Микрокостыль, первое событие вызывается еще до того, как инициализируется поле port
-            //Можно конечно таску заставить ждать, но так будет быстрее
-            ComboBox_SelectionChanged(DBType, null);
         }
 
         private void CheckConnection()
@@ -50,31 +44,41 @@ namespace SqlScriptToolClient
             ConnectionChecker connectionChecker = new ConnectionChecker();
             string connectionString = string.Empty;
 
-            switch (((ComboBoxItem)DBType.SelectedItem).Content) 
+            switch (((ComboBoxItem)CmbDbType.SelectedItem).Content)
             {
                 case "PostgreSQL":
-                    {
-                        connectionString = $"Server={address.Text};User Id={login.Text};Password={password.Password};Port={port.Text};Database={dbName.Text};";
-                        connectionChecker = new Connection.PGConnectionChecker();
-                        break;
-                    }
+                {
+                    connectionString =
+                        $"Server={CmbAddress.Text};" +
+                        $"User Id={TbLogin.Text};" +
+                        $"Password={PbPassword.Password};" +
+                        $"Port={TbPort.Text};" +
+                        $"Database={TbDbName.Text};";
+                    connectionChecker = new PGConnectionChecker();
+                    break;
+                }
                 case "MSSQL":
-                    {
-                        connectionString = $"Persist Security Info=False;User ID={login};Password={password};Initial Catalog={dbName.Text};Server={address.Text},{port.Text};Encrypt=True;";
+                {
+                    connectionString =
+                        $"Persist Security Info=False;" +
+                        $"User ID={TbLogin};" +
+                        $"Password={PbPassword};" +
+                        $"Initial Catalog={TbDbName.Text};" +
+                        $"Server={CmbAddress.Text},{TbPort.Text};" +
+                        $"Encrypt=True;";
 
-                        connectionChecker = new Connection.MSConnectionChecker();
-                        break;
-                    }
+                    connectionChecker = new MSConnectionChecker();
+                    break;
+                }
             }
 
-            var result = connectionChecker.CheckConnection(connectionString);
+            bool result = connectionChecker.CheckConnection(connectionString);
 
-            MessageBox.Show($"Подключение к БД {(result ? "успешно" : "не было установлено, проверьте введенные данные")}");
-
-
+            MessageBox.Show(
+                $"Подключение к БД {(result ? "успешно" : "не было установлено, проверьте введенные данные")}");
         }
 
-        private void checkConnectionBtn_Click(object sender, RoutedEventArgs e)
+        private void CheckConnectionBtn_Click(object sender, RoutedEventArgs e)
         {
             CheckConnection();
         }

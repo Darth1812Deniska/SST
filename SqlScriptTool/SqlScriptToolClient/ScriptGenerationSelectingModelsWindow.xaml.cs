@@ -18,7 +18,7 @@ public partial class ScriptGenerationSelectingModelsWindow : Window
 
     private void ShowModelList()
     {
-        foreach (var model in StaticConstructorStorage.Models)
+        foreach (Model model in StaticConstructorStorage.Models)
         {
             Button btn = new Button()
             {
