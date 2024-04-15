@@ -1,0 +1,36 @@
+﻿<Window x:Class="SqlScriptToolClient.ScriptGenerationParamsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SqlScriptToolClient"
+        xmlns:customComponents="clr-namespace:SqlScriptToolClient.CustomComponents"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="ScriptGenerationParamsWindow" Height="500" Width="1000" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
+            <Grid x:Name="GrParamsList">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </ScrollViewer>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="BtnGenScript" Grid.Column="1" Margin="5" Padding="5" Click="BtnGenScript_Click">Сгенерировать</Button>
+            <Button x:Name="BtnClose" Grid.Column="2" Margin="5" Padding="5" Click="BtnClose_Click">Закрыть</Button>
+        </Grid>
+
+    </Grid>
+</Window>

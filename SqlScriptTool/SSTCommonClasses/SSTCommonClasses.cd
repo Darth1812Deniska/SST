@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SSTCommonClasses.Infrastructure.Project">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAIAQAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Project.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Infrastructure.Stand">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIAAAAAAAAIgQACAACAQACAAACAACAAAQJAAAAAA=</HashCode>
+      <FileName>Infrastructure\Stand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Infrastructure.User">
+    <Position X="4.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIAAAACAAAIAQAAAAAAQAAAAAAAACAAAQIAAAAAE=</HashCode>
+      <FileName>Infrastructure\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Landocs.LdObjectType">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAIAIAAAAAAggAAEgCBACAQAgAAAAgAAAAABAAACAAA=</HashCode>
+      <FileName>Landocs\LdObjectType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Models.Model">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAggAAUgAAAAAQQgAAAACAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models\Model.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Models.ModelItem">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAUgAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ModelItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Models.SqlTemplate">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAgAAAUgAAAAAQAgAAACGAAEAAAAAAAAAA=</HashCode>
+      <FileName>Models\SqlTemplate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Tags.TagTemplate">
+    <Position X="8" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAIgAAAUgIAAAAQAgAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Tags\TagTemplate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSTCommonClasses.Tags.Tag">
+    <Position X="6.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAKgAAAUgIAAAAQCgAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Tags\Tag.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SSTCommonClasses.Models.DbType">
+    <Position X="2.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAABAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models\DbType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SSTCommonClasses.Models.ModelAccessType">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\ModelAccessType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SSTCommonClasses.Tags.TagType">
+    <Position X="4.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Tags\TagType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
