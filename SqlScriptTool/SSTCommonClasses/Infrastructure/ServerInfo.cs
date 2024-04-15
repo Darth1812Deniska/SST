@@ -8,21 +8,21 @@ namespace SSTCommonClasses.Infrastructure;
 /// </summary>
 public class ServerInfo
 {
-    private Guid _uuid;
-    private string _login;
-    private string _password;
-    private string _host;
-    private string _name;
-    private Project _project;
+    private Guid? _uuid;
+    private string? _login;
+    private string? _password;
+    private string? _host;
+    private string? _name;
+    private Project? _project;
     private int? _port;
-    private DbType _dbType;
-    private string _displayLabel;
+    private DbType? _dbType;
+    private string? _displayLabel;
 
     /// <summary>
     /// Уникальный идентифкатор стенда в системе SST
     /// </summary>
     [Key]
-    public Guid Uuid
+    public Guid? Uuid
     {
         get => _uuid;
         set => _uuid = value;
@@ -31,7 +31,7 @@ public class ServerInfo
     /// <summary>
     /// Логин для подключения к БД стенда
     /// </summary>
-    public string Login
+    public string? Login
     {
         get => _login;
         set => _login = value;
@@ -40,7 +40,7 @@ public class ServerInfo
     /// <summary>
     /// Пароль для подключения к БД стенда
     /// </summary>
-    public string Password
+    public string? Password
     {
         get => _password;
         set => _password = value;
@@ -49,13 +49,13 @@ public class ServerInfo
     /// <summary>
     /// Адрес стенда
     /// </summary>
-    public string Host
+    public string? Host
     {
         get => _host;
         set => _host = value;
     }
 
-    public string Name
+    public string? Name
     {
         get => _name;
         set => _name = value;
@@ -73,13 +73,13 @@ public class ServerInfo
     /// <summary>
     /// Проект в рамках которого используется стенд
     /// </summary>
-    public Project Project
+    public Project? Project
     {
         get => _project;
         set => _project = value;
     }
 
-    public DbType DbType
+    public DbType? DbType
     {
         get => _dbType;
         set => _dbType = value;
@@ -87,7 +87,7 @@ public class ServerInfo
     /// <summary>
     /// Удобное название стенда
     /// </summary>
-    public string DisplayLabel
+    public string? DisplayLabel
     {
         get => _displayLabel;
         set => _displayLabel = value;

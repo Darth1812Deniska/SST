@@ -360,7 +360,7 @@ public partial class TagEditorWindow : Window
     {
         try
         {
-            StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
+            //StaticConstructorStorage.Tags.AddOrReplace(CurrentTag);
         }
         catch (Exception e)
         {

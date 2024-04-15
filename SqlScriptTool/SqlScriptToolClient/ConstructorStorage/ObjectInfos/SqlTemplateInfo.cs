@@ -3,28 +3,47 @@ using SSTCommonClasses.Constants;
 
 namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
 /// <summary>
-/// Класс для описания информации о хранении моделей в файловой системе
+/// Класс для описания информации о хранении SQL-шаблона в файловой системе
 /// </summary>
 public class SqlTemplateInfo
 {
     /// <summary>
-    /// УНикальный идентификатор SQL-шаблона
+    /// Уникальный идентификатор SQL-шаблона
     /// </summary>
-    public Guid? TemplateUuid { get; set; }
+    public Guid? TemplateUuid { get; }
     /// <summary>
-    /// 
+    /// Название сохраненного SQL-шаблона
     /// </summary>
     public string? TemplateName { get; set; }
+    /// <summary>
+    /// Тип доступа к шаблону
+    /// </summary>
     public AccessType? TemplateAccessType { get; set; }
+    /// <summary>
+    /// Путь сохранения sql-шаблона в файловой системе
+    /// </summary>
     public string? TemplateFolderPath { get; set; }
+    /// <summary>
+    /// Название файла, в котором хранится sql-шаблон
+    /// </summary>
     public string? TemplateInfoFileName { get; set; }
-    //public string TemplateSqlFileName { get; set; }
-    //public string TemplateTagsFileName { get; set; }
 
+
+    /// <summary>
+    /// Создание экземпляра с информацией о хранении SQL-шаблона в файловой системе
+    /// </summary>
     public SqlTemplateInfo()
     {
     }
 
+    /// <summary>
+    /// Создание экземпляра с информацией о хранении SQL-шаблона в файловой системе
+    /// </summary>
+    /// <param name="templateUuid">Уникальный идентификатор SQL-шаблона</param>
+    /// <param name="templateName">Название сохраненного SQL-шаблона</param>
+    /// <param name="templateAccessType">Тип доступа к шаблону</param>
+    /// <param name="templateFolderPath">Путь сохранения sql-шаблона в файловой системе</param>
+    /// <param name="templateFileName">Название файла, в котором хранится sql-шаблон</param>
     public SqlTemplateInfo(Guid templateUuid, string? templateName, AccessType templateAccessType,
         string templateFolderPath, string templateFileName/*, string templateSqlFileName, string templateTagsFileName*/)
     {

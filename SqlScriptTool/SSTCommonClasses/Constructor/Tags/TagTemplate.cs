@@ -2,14 +2,33 @@
 
 namespace SSTCommonClasses.Constructor.Tags;
 
+/// <summary>
+/// Класс описывающий шаблоны тэгов
+/// </summary>
 [Serializable]
 public class TagTemplate : ConstructorItem
 {
+    /// <summary>
+    /// Тип шаблона тэга
+    /// </summary>
     public TagType TagType { get; set; }
+    /// <summary>
+    /// Тип данных пользовательского параметра 
+    /// </summary>
     public TagDataType? DataType { get; set; }
+    /// <summary>
+    /// SQL-шаблон привязанный к шаблону тэга
+    /// </summary>
     public SqlTemplate? SqlTemplate { get; set; }
+
+    /// <summary>
+    /// Метка, указывающая, будет являться тэг, созданный на основе этого шаблона, родителем для множественного паттерна
+    /// </summary>
     public bool IsMultiplePattern { get; set; }
 
+    /// <summary>
+    /// Создание экземпляра шаблона тэга
+    /// </summary>
     public TagTemplate()
     {
     }

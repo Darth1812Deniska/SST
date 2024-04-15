@@ -10,6 +10,14 @@
 		<ApplicationIcon>pics\icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;NU1803</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>1701;1702;NU1803</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<None Remove="pics\icon_remove_button.png" />
 	</ItemGroup>

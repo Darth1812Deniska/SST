@@ -11,7 +11,7 @@ using Label = System.Windows.Controls.Label;
 namespace SqlScriptToolClient.CustomComponents
 {
     /// <summary>
-    /// Логика взаимодействия для MultiplePatternControl.xaml
+    /// Класс компонента, позволяющего добавлять в скрипт многократно повторяющийся шаблон
     /// </summary>
     public partial class MultiplePatternControl : UserControl
     {
@@ -24,6 +24,10 @@ namespace SqlScriptToolClient.CustomComponents
 
         #region Constructors
 
+        /// <summary>
+        /// Создание экземпляра компонента, позволяющего добавлять в скрипт многократно повторяющийся шаблон
+        /// </summary>
+        /// <param name="sqlTemplate">Шаблон на сонове, которого формируются поля для ввода параметров </param>
         public MultiplePatternControl(SqlTemplate sqlTemplate)
         {
             InitializeComponent();
@@ -54,6 +58,9 @@ namespace SqlScriptToolClient.CustomComponents
         // Список тэгов, по которым строим заголовок и подбираем контролы
         private List<Tag> Tags => SelectedSqlTemplate.Tags;
 
+        /// <summary>
+        /// Текст SQL-шаблон, который будет повторяться
+        /// </summary>
         private string? SqlText => SelectedSqlTemplate.SqlText;
 
         /// <summary>
@@ -69,7 +76,7 @@ namespace SqlScriptToolClient.CustomComponents
         #region Public properties
 
         /// <summary>
-        /// Список выбранных параметров
+        /// Список значений выбранных и заполненных параметров
         /// </summary>
         public List<Dictionary<string, string>> MultiplePatternsParamValues => GetMultiplePatternsParamValues();
 
@@ -78,13 +85,14 @@ namespace SqlScriptToolClient.CustomComponents
         /// </summary>
         public string MultiplePatternsText => GetMultiplePatternsText();
 
-        //public bool IsCompletelyFilled => GetIsCompletelyFilled();
-        //public List<string[]> BlankParameters => GetBlankParameters();
-
         #endregion
 
         #region Getters-setters
 
+        /// <summary>
+        /// Метод возвращающий собранный текст скрипта с подставленными параметрами
+        /// </summary>
+        /// <returns>Собранный текст скрипта с подставленными параметрами</returns>
         private string GetMultiplePatternsText()
         {
             string result = string.Empty;
@@ -98,6 +106,10 @@ namespace SqlScriptToolClient.CustomComponents
             return result;
         }
 
+        /// <summary>
+        /// Метод возвращающий список значений выбранных и заполненных параметров
+        /// </summary>
+        /// <returns>Список значений выбранных и заполненных параметров</returns>
         private List<Dictionary<string, string>> GetMultiplePatternsParamValues()
         {
             List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
@@ -123,43 +135,14 @@ namespace SqlScriptToolClient.CustomComponents
             return result;
         }
 
-        /*
-        private bool GetIsCompletelyFilled()
-        {
-            return false;
-        }
-
-        private List<string[]> GetBlankParameters()
-        {
-            return new List<string[]>();
-        }
-        */
-
         #endregion
 
 
         #region Private methods
 
-        private void AddDeleteButtonFowRow(Guid guid, int curColumn, int curRow)
-        {
-            Image btnImage = new Image();
-            btnImage.Source = DeleteButtonImage.Source;
-            Button btnDelRow = new Button()
-            {
-                Content = btnImage,
-                Width = 20,
-                Height = 20,
-                // Связываем кнопку со строкой гуидом
-                Tag = guid
-            };
-            btnDelRow.Click += BtnDelRow_Click;
-            GrMain.Children.Add(btnDelRow);
-            // Привязываем к последней колонке (для кнопок)
-            Grid.SetColumn(btnDelRow, curColumn);
-            // Привязываем к этой же строке
-            Grid.SetRow(btnDelRow, curRow);
-        }
-
+        /// <summary>
+        /// Добавление строки с заголовками
+        /// </summary>
         private void AddDisplayLabelsRow()
         {
             int columnCount = 0;
@@ -194,6 +177,9 @@ namespace SqlScriptToolClient.CustomComponents
             GrMain.ColumnDefinitions.Add(btnColumn);
         }
 
+        /// <summary>
+        /// Добавление новой строки с полями для ввода
+        /// </summary>
         private void AddNewFieldsRow()
         {
             int columnCount = 0;
@@ -229,11 +215,47 @@ namespace SqlScriptToolClient.CustomComponents
             AddDeleteButtonFowRow(columnGuid, columnCount, curRow);
         }
 
+        /// <summary>
+        /// Добавление кнопки удаления для строки
+        /// </summary>
+        /// <param name="guid">Уникальный идентификатор строки</param>
+        /// <param name="curColumn">Номер колонки для добавления</param>
+        /// <param name="curRow">Гомер строки для добавления</param>
+        private void AddDeleteButtonFowRow(Guid guid, int curColumn, int curRow)
+        {
+            Image btnImage = new Image();
+            btnImage.Source = DeleteButtonImage.Source;
+            Button btnDelRow = new Button()
+            {
+                Content = btnImage,
+                Width = 20,
+                Height = 20,
+                // Связываем кнопку со строкой гуидом
+                Tag = guid
+            };
+            btnDelRow.Click += BtnDelRow_Click;
+            GrMain.Children.Add(btnDelRow);
+            // Привязываем к последней колонке (для кнопок)
+            Grid.SetColumn(btnDelRow, curColumn);
+            // Привязываем к этой же строке
+            Grid.SetRow(btnDelRow, curRow);
+        }
+
+        /// <summary>
+        /// Создание поля для ввода по соответствующему тэгу
+        /// </summary>
+        /// <param name="tag">Тэг, по которому формируется поле для ввода</param>
+        /// <returns>Контрол поля для ввода значений</returns>
         private Control? FieldControlByDataType(Tag tag)
         {
             return ScriptGenControlsStaticMethods.FieldControlByDataType(tag);
         }
 
+        /// <summary>
+        /// Получение значения выбранного в поле
+        /// </summary>
+        /// <param name="control">Контрол из которого нужно получить значение</param>
+        /// <returns>Название параметра и значение параметра</returns>
         private KeyValuePair<string, string>? GetControlValue(Control? control)
         {
             return ScriptGenControlsStaticMethods.GetControlValue(control);

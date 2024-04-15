@@ -9,8 +9,16 @@ using SSTCommonClasses.Constructor.Tags;
 
 namespace SqlScriptToolClient.ScriptGeneration;
 
+/// <summary>
+/// Статический класс с методами для обработки пользовательских параметров
+/// </summary>
 public static class ScriptGenControlsStaticMethods
 {
+    /// <summary>
+    /// Создание поля для ввода по соответствующему тэгу
+    /// </summary>
+    /// <param name="tag">Тэг, по которому формируется поле для ввода</param>
+    /// <returns>Контрол поля для ввода значений</returns>
     public static Control? FieldControlByDataType(Tag tag)
     {
         Control? result = null;
@@ -65,6 +73,11 @@ public static class ScriptGenControlsStaticMethods
         return result;
     }
 
+    /// <summary>
+    /// Получение значения выбранного в поле
+    /// </summary>
+    /// <param name="control">Контрол из которого нужно получить значение</param>
+    /// <returns>Название параметра и значение параметра</returns>
     public static KeyValuePair<string, string>? GetControlValue(Control? control)
     {
         KeyValuePair<string, string>? result = null;

@@ -7,14 +7,14 @@ namespace SSTCommonClasses.Infrastructure;
 /// </summary>
 public class Project
 {
-    private Guid _uuid;
-    private string _name;
+    private Guid? _uuid;
+    private string? _name;
 
     /// <summary>
     /// Уникальный идентификатор проекта
     /// </summary>
     [Key]
-    public Guid Uuid
+    public Guid? Uuid
     {
         get => _uuid;
         set => _uuid = value;
@@ -23,7 +23,7 @@ public class Project
     /// <summary>
     /// Наименование проекта
     /// </summary>
-    public string Name
+    public string? Name
     {
         get => _name;
         set => _name = value;

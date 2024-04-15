@@ -6,6 +6,9 @@ using SSTCommonClasses.Constructor.Tags;
 
 namespace SSTCommonClasses.Constructor.Models;
 
+/// <summary>
+/// Класс описывающий узлы модели
+/// </summary>
 [Serializable]
 public class ModelItem
 {
@@ -16,6 +19,9 @@ public class ModelItem
 
     #region properties
 
+    /// <summary>
+    /// Уникальный идентификатор узла
+    /// </summary>
     [Key]
     public Guid Uuid
     {
@@ -23,12 +29,18 @@ public class ModelItem
         set => _uuid = value;
     }
 
+    /// <summary>
+    /// SQL-шаблон прикрепленный к узлу
+    /// </summary>
     public SqlTemplate SqlTemplate
     {
         get => _sqlTemplate ??= new SqlTemplate();
         set => _sqlTemplate = value;
     }
 
+    /// <summary>
+    /// Дочерние узлы
+    /// </summary>
     [NotMapped]
     public Dictionary<string, ModelItem> ChildModelItems
     {
@@ -40,10 +52,17 @@ public class ModelItem
 
     #region Construnctors
 
+    /// <summary>
+    /// Создание узла модели
+    /// </summary>
     public ModelItem()
     {
     }
 
+    /// <summary>
+    /// Создание узла модели с прикрепленным SQL-шаблоном
+    /// </summary>
+    /// <param name="sqlTemplate">Прикрепляемый SQL-шаблон</param>
     public ModelItem(SqlTemplate sqlTemplate)
     {
         Uuid = Guid.NewGuid();
@@ -55,9 +74,15 @@ public class ModelItem
 
     #region Public methods
 
+    /// <summary>
+    /// Добавление нового дочернего узла с заданным именем
+    /// </summary>
+    /// <param name="nodeName">Имя узла</param>
+    /// <param name="dbType">Тип СУБД</param>
+    /// <returns>Созданный дочерний узел</returns>
     public ModelItem AddChildModelItem(string nodeName, DbType dbType)
     {
-        ModelItem childModelItem = new ModelItem();
+        ModelItem childModelItem = new ();
         Tag newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
         childModelItem.SetDbType(dbType);
         childModelItem.SqlTemplate.SetName(nodeName);
@@ -65,6 +90,10 @@ public class ModelItem
         return childModelItem;
     }
 
+    /// <summary>
+    /// Установление типа СУБД для привязанных SQL-шаблонов
+    /// </summary>
+    /// <param name="dbType"></param>
     public void SetDbType(DbType dbType)
     {
         SqlTemplate.SetDbType(dbType);

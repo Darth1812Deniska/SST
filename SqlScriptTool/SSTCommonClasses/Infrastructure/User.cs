@@ -7,17 +7,17 @@ namespace SSTCommonClasses.Infrastructure;
 /// </summary>
 public class User
 {
-    private Guid _uuid;
-    private string _name;
-    private string _password;
+    private Guid? _uuid;
+    private string? _name;
+    private string? _password;
     private string? _email;
-    private string _login;
+    private string? _login;
 
     /// <summary>
     /// Уникальный идентифкатор пользователя
     /// </summary>
     [Key]
-    public Guid Uuid
+    public Guid? Uuid
     {
         get => _uuid;
         set => _uuid = value;
@@ -26,7 +26,7 @@ public class User
     /// <summary>
     /// Имя пользователя
     /// </summary>
-    public string Name
+    public string? Name
     {
         get => _name;
         set => _name = value;
@@ -35,7 +35,7 @@ public class User
     /// <summary>
     /// Логин пользователя для входа в систему SST
     /// </summary>
-    public string Login
+    public string? Login
     {
         get => _login;
         set => _login = value;
@@ -44,7 +44,7 @@ public class User
     /// <summary>
     /// Пароль пользователя для входа в систему SST
     /// </summary>
-    public string Password
+    public string? Password
     {
         get => _password;
         set => _password = value;
