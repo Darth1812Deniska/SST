@@ -30,6 +30,17 @@ public class Tag : ConstructorItem
     /// Метка, указывающая, является ли тэг родителем для множественного паттерна
     /// </summary>
     public bool? IsMultiplePattern { get; set; }
+    
+    /// <summary>
+    /// Порядковый номер тега в шаблне
+    /// </summary>
+    /// 
+    public int? Order { get; set; }
+    
+    /// <summary>
+    /// Значение по умолчанию для тега. Может отсутствовать 
+    /// </summary>
+    public object? DefaultValue { get; set; }
 
     #endregion
 
