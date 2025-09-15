@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SstExamples", "SstExamples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlScriptToolClient", "SqlScriptToolClient\SqlScriptToolClient.csproj", "{3FF30712-263C-4FA2-A916-CB7D4D33FADA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlScriptToolAvalonia", "SqlScriptToolAvalonia\SqlScriptToolAvalonia.csproj", "{2B625B86-1683-4FB7-A137-EABD7DBD4C0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3FF30712-263C-4FA2-A916-CB7D4D33FADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FF30712-263C-4FA2-A916-CB7D4D33FADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FF30712-263C-4FA2-A916-CB7D4D33FADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B625B86-1683-4FB7-A137-EABD7DBD4C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B625B86-1683-4FB7-A137-EABD7DBD4C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B625B86-1683-4FB7-A137-EABD7DBD4C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B625B86-1683-4FB7-A137-EABD7DBD4C0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
