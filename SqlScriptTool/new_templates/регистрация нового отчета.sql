@@ -10,29 +10,29 @@
 do
 $$
     DECLARE
-        tmpScriptName         text;
-        tmpScriptDescr        text;
-        tmpErrorMsg           text;
-        tmpErrorText          text;
-        tmpErrorContext       text;
-        tmpReportID           INT;
-        tmpReportName         text= '<ReportName>';
-        tmpReportTemplateName text= '<ReportName>';
-        tmpReportTypeName     text= 'Fast Report .Net';
-        tmpReportTypeID       INT;
-        tmpUID                UUID= '<ReportUID>'::uuid;
-        tmpReportPlaceName    text = '<ReportPlaceName>';
-		tmpReportExportModeName   text = '<ReportExportMode>';
-        tmpOpertTypeID        INT;
-        tmpReportPlaceID      int;
-		tmpReportExportID     int;
-        tmpOperID             INT;
-        tmpLogMsg             text;
-        tmpOrdNum             INT;
-        tmpOperTypeName       text;
-        tmpScriptAuthor       text = '<ScriptAuthor>';
-        tmpScriptDate         timestamp= current_date;
-        tmpNewReportVersion   int;
+        tmpScriptName           text;
+        tmpScriptDescr          text;
+        tmpErrorMsg             text;
+        tmpErrorText            text;
+        tmpErrorContext         text;
+        tmpReportID             INT;
+        tmpReportName           text= '<ReportName>';
+        tmpReportTemplateName   text= '<ReportName>';
+        tmpReportTypeName       text= 'Fast Report .Net';
+        tmpReportTypeID         INT;
+        tmpUID                  UUID= '<ReportUID>'::uuid;
+        tmpReportPlaceName      text = '<ReportPlaceName>';
+        tmpReportExportModeName text = '<ReportExportMode>';
+        tmpOpertTypeID          INT;
+        tmpReportPlaceID        int;
+        tmpReportExportID       int;
+        tmpOperID               INT;
+        tmpLogMsg               text;
+        tmpOrdNum               INT;
+        tmpOperTypeName         text;
+        tmpScriptAuthor         text = '<ScriptAuthor>';
+        tmpScriptDate           timestamp= current_date;
+        tmpNewReportVersion     int;
     BEGIN
         tmpScriptName := format('Разработка отчета "%s"', tmpReportName);
         tmpScriptDescr := format('Автор: %s; Дата: %s; "%s"', tmpScriptAuthor, tmpScriptDate, tmpScriptName);
@@ -71,31 +71,45 @@ $$
                 "TemplateUid"  = tmpUID
             WHERE "ID" = tmpReportID;
         END IF;
-		
-		select rem."ID"
+        
+        -- Добавление в ld3reportinfo
+        select rem."ID"
         into tmpReportExportID
         from dbo.ld3reportexportmode rem
         where trim(lower(rem."Name")) = trim(lower(tmpReportExportModeName));
-		
-		
-        -- Добавление в ld3reportinfo
+        
         if not exists (select null from dbo.ld3reportinfo l3r where l3r."TemplateID" = tmpReportID)
         then
             tmpNewReportVersion := ldf_newobject(null, 305, 1);
             INSERT INTO dbo.ld3reportinfo
             ("ID", "TemplateID", "VersionN", "CreateDateTime", "IsActive", "VersionAuthor", "ReportExportMode")
-            VALUES (tmpNewReportVersion, tmpReportID, 1, current_date, '+', 'SUPERVISOR', tmpReportExportID);
+            VALUES (tmpNewReportVersion,
+                    tmpReportID,
+                    1,
+                    current_date,
+                    '+',
+                    'SUPERVISOR',
+                    tmpReportExportID);
+        else
+            update dbo.ld3reportinfo ri
+            set "ReportExportMode" = tmpReportExportID
+            where ri."TemplateID" = tmpReportID;
         end if;
 
+        -- Добавление в ld3reportplacelink
+        select pr."ID"
+        into tmpReportPlaceID
+        from dbo.ld3reportplace pr
+        where trim(lower(pr."Name")) = trim(lower(tmpReportPlaceName));
+        
         if not exists(select null from dbo.ld3reportplacelink rpl where rpl."ReportID" = tmpReportID)
         then
-            select pr."ID"
-            into tmpReportPlaceID
-            from dbo.ld3reportplace pr
-            where trim(lower(pr."Name")) = trim(lower(tmpReportPlaceName));
-			
             insert into dbo.ld3reportplacelink ("ReportID", "ReportPlaceID")
             values (tmpReportID, tmpReportPlaceID);
+        else
+            update dbo.ld3reportplacelink l3r
+            set "ReportPlaceID" = tmpReportPlaceID
+            where l3r."ReportID" = tmpReportID;
         end if;
 
         --Привязка отчета к операциям
