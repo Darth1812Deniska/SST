@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 SqlScriptTool/.vscode/
 SqlScriptTool/.idea/
+SqlScriptTool/SqlScriptToolClient/.idea/
