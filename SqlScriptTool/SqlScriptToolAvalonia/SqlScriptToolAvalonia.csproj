@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.8" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.8" />
+        <PackageReference Include="Npgsql" Version="9.0.4" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+        <PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="pics\icon.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="assets\" />
+      <Folder Include="ConstructorWindows\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="assets\pics\icon_remove_button.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="GeneratorWindows\ModelGenerationListWindow.axaml.cs">
+        <DependentUpon>ModelGenerationListWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="AdditionalWindows\SettingsWindow.axaml.cs">
+        <DependentUpon>SettingsWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorForms\ModelEditorWindow.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>ModelEditorWindow.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="ConstructorForms\SqlTemplateEditorWindow.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>SqlTemplateEditorWindow.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="ConstructorForms\TagEditorWindow.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>TagEditorWindow.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="CustomComponents\MultiplePatternControl.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="CustomComponents\MultiplePatternControl.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>MultiplePatternControl.xaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SSTCommonClasses\SSTCommonClasses.csproj" />
+    </ItemGroup>
+</Project>
