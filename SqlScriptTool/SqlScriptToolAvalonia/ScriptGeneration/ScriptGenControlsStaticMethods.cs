@@ -56,7 +56,7 @@ public static class ScriptGenControlsStaticMethods
                     // Целочисленный ввод: без дробной части и с шагом 1
                     SmallChange = 1,
                     LargeChange = 10,
-                    FormatString = "0"
+                    SimpleNumberFormat = "0"
                 };
                 result = intUpDown;
                 break;

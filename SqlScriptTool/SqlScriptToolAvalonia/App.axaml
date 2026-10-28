@@ -1,14 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:styling="clr-namespace:FluentAvalonia.Styling;assembly=FluentAvalonia"
              x:Class="SqlScriptToolAvalonia.App"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <!-- Стили FluentAvalonia обязательны: без них NumberBox (и другие контролы
-             FluentAvalonia) не имеют ControlTheme и не отображаются в окне -->
-        <StyleInclude Source="avares://FluentAvalonia/Styling/FluentAvalonia.axaml"/>
-    </Application.Styles>
+             <Application.Styles>
+                 <!-- FluentAvaloniaTheme включает базовые стили Avalonia, стили DataGrid
+             и ControlTheme'ы контролов FluentAvalonia (в т.ч. NumberBox) -->
+                 <styling:FluentAvaloniaTheme />
+             </Application.Styles>
 </Application>
