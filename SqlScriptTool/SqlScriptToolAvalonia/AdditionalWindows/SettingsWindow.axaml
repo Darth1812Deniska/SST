@@ -2,8 +2,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="763" d:DesignHeight="349"
         x:Class="SqlScriptToolAvalonia.AdditionalWindows.SettingsWindow"
-        Title="SettingsWindow">
-  Welcome to Avalonia!
+        Title="Пользовательские настройки" Height="349" Width="763" WindowStartupLocation="CenterScreen" FontSize="14" MinWidth="763" MinHeight="349">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="39*"/>
+      <RowDefinition Height="42*"/>
+      <RowDefinition Height="39*"/>
+      <RowDefinition Height="43*"/>
+      <RowDefinition Height="143*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="155*"/>
+      <ColumnDefinition Width="476*"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock HorizontalAlignment="Left" Margin="10,7,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Height="18" Width="124" FontSize="14"/>
+    <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="22" Width="124" Grid.Row="1" FontSize="14"><Run Language="ru-ru" Text="Логин"/></TextBlock>
+    <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="19" Width="124" Grid.Row="2" FontSize="14"><Run Language="ru-ru" Text="Пароль"/></TextBlock>
+    <TextBlock Margin="10,0,16,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="22" Grid.Row="3" FontSize="14"><Run Language="ru-ru" Text="Директория доработок"/></TextBlock>
+
+    <Separator Margin="2,8,-2,0" VerticalAlignment="Top" Height="6" Grid.ColumnSpan="2" Background="#FFA0A0A0" Grid.Row="4"/>
+    <Separator VerticalAlignment="Top" Height="6" Grid.ColumnSpan="2" Background="#FFA0A0A0" Grid.Row="4" Margin="0,60,0,0"/>
+
+    <Button x:Name="BtnChange" Content="Изменить" HorizontalAlignment="Left" Margin="36,24,0,0" VerticalAlignment="Top" Width="98" Height="27" Grid.Row="4" FontSize="14" Click="BtnChange_Click"/>
+    <ComboBox x:Name="CbConnect" Grid.Column="1" Margin="0,24,196,0" Width="359" Height="27" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" FontSize="14"/>
+    <Button x:Name="BtnTest" Grid.Column="1" Content="Тест подключения" Margin="0,24,10,0" Width="161" Height="27" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="4" FontSize="14" Click="BtnTest_Click"/>
+    <Button x:Name="BtnCancel" Grid.Column="1" Content="Отменить" HorizontalAlignment="Right" Margin="0,86,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.626,-0.681" Height="27" Width="161" Grid.Row="4" FontSize="14" Click="BtnCancel_Click"/>
+    <Button x:Name="BtnOk" Grid.Column="1" Content="Сохранить" HorizontalAlignment="Right" Margin="0,86,196,0" VerticalAlignment="Top" Width="161" Height="27" Grid.Row="4" FontSize="14" Click="BtnOk_Click"/>
+    <TextBox x:Name="TbUserName" Margin="10,3,10,0" TextWrapping="Wrap" Height="27" VerticalAlignment="Top" Grid.Column="1"/>
+    <TextBox x:Name="TbLogin" Margin="10,6,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="27" Grid.Row="1" Grid.Column="1"/>
+    <TextBox x:Name="TbFolder" Margin="10,6,132,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="27" Grid.Row="3" Grid.Column="1"/>
+    <Button x:Name="BtnEdit" Content="Редактировать" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Click="BtnEdit_Click" Width="106" Height="27" Grid.Column="1" Grid.Row="3" FontSize="14"/>
+    <TextBox x:Name="PwdTextBox" Margin="10,0,285,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="27" Grid.Row="2" Grid.Column="1" Width="196" Visibility="Hidden" HorizontalAlignment="Left"/>
+    <PasswordBox x:Name="PwdBoxInput" Margin="10,0,0,0" VerticalAlignment="Center" Height="27" HorizontalAlignment="Left" Width="196" Grid.Row="2" Grid.Column="1"/>
+    <CheckBox x:Name="CheckBoxPwd" Content="Отобразить пароль" HorizontalAlignment="Left" Margin="216,0,0,0" VerticalAlignment="Center" Click="CheckBox_Click" Grid.Column="1" Grid.Row="2"/>
+  </Grid>
 </Window>
