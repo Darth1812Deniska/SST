@@ -3,12 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using SqlScriptToolAvalonia.ConstructorForms;
+using SqlScriptToolAvalonia.AdditionalWindows;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
 
-namespace SqlScriptToolAvalonia.AdditionalWindows;
+namespace SqlScriptToolAvalonia.ConstructorWindows;
 
 /// <summary>
 /// Окно конструктора: кнопки создания новых объектов (моделей, sql-шаблонов, тэгов)

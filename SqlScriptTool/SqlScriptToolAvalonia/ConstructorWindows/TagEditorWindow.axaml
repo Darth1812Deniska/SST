@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="350"
-        x:Class="SqlScriptToolAvalonia.ConstructorForms.TagEditorWindow"
+        x:Class="SqlScriptToolAvalonia.ConstructorWindows.TagEditorWindow"
         Title="Редактор тэгов" Height="350" Width="750" WindowStartupLocation="CenterScreen"
         MinWidth="750" MinHeight="350">
     <Grid RowDefinitions="*,Auto">

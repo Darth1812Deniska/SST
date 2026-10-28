@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using SqlScriptToolAvalonia.AdditionalWindows;
-using SqlScriptToolAvalonia.ConstructorForms;
 using SqlScriptToolAvalonia.GeneratorWindows;
+using SqlScriptToolAvalonia.ConstructorWindows;
 
 namespace SqlScriptToolAvalonia;
 

@@ -31,7 +31,6 @@
 
     <ItemGroup>
       <Folder Include="assets\" />
-      <Folder Include="ConstructorWindows\" />
       <Folder Include="CustomComponents\" />
     </ItemGroup>
 
@@ -51,18 +50,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="ConstructorForms\ModelEditorWindow.axaml.cs">
-        <DependentUpon>ModelEditorWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="ConstructorForms\SqlTemplateEditorWindow.axaml.cs">
-        <DependentUpon>SqlTemplateEditorWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="ConstructorForms\TagEditorWindow.axaml.cs">
-        <DependentUpon>TagEditorWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="CustomComponents\MultiplePatternControl.axaml.cs">
         <DependentUpon>MultiplePatternControl.axaml</DependentUpon>
         <SubType>Code</SubType>
@@ -75,12 +62,24 @@
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="AdditionalWindows\ConstructorWindow.axaml.cs">
-        <DependentUpon>ConstructorWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="GeneratorWindows\ScriptGenerationParamsWindow.axaml.cs">
         <DependentUpon>GeneratorWindows.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="ConstructorWindows\ModelEditorWindow.axaml.cs">
+        <DependentUpon>ModelEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorWindows\SqlTemplateEditorWindow.axaml.cs">
+        <DependentUpon>SqlTemplateEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorWindows\TagEditorWindow.axaml.cs">
+        <DependentUpon>TagEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorWindows\ConstructorWindow.axaml.cs">
+        <DependentUpon>ConstructorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
 

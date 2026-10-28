@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
-        x:Class="SqlScriptToolAvalonia.ConstructorForms.ModelEditorWindow"
+        x:Class="SqlScriptToolAvalonia.ConstructorWindows.ModelEditorWindow"
         Title="Редактор Моделей" Height="450" Width="700" WindowStartupLocation="CenterScreen">
     <Grid RowDefinitions="Auto,*,Auto">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,*"
