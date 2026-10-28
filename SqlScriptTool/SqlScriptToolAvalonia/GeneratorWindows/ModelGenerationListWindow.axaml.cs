@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constructor.Models;
 
@@ -62,5 +63,10 @@ public partial class ModelGenerationListWindow : Window
         buttonColumn.CellTemplate = columnTemplate;
 
         DgModels.Columns.Add(buttonColumn);
+    }
+
+    private void RbDbType_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }
