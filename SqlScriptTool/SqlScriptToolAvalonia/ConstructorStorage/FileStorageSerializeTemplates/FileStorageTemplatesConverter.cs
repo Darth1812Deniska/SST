@@ -1,4 +1,4 @@
-﻿namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
+﻿namespace SqlScriptToolAvalonia.ConstructorStorage.FileStorageSerializeTemplates;
 
 public static class FileStorageTemplatesConverter
 {

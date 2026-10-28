@@ -1,7 +1,7 @@
-﻿using SSTCommonClasses.Constructor.Tags;
-using System;
+﻿using System;
+using SSTCommonClasses.Constructor.Tags;
 
-namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
+namespace SqlScriptToolAvalonia.ConstructorStorage.FileStorageSerializeTemplates;
 
 [Serializable]
 public class FileStorageTagTemplate

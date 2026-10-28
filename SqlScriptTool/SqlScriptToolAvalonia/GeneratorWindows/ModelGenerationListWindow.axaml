@@ -5,14 +5,20 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SqlScriptToolAvalonia.GeneratorWindows.ModelGenerationListWindow"
         Title="ModelGenerationListWindow">
-    <Grid RowDefinitions="*, *">
-        <RadioButton Grid.Row="0">
-        </RadioButton>
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0" Margin="20,0" Orientation="Horizontal">
+            <RadioButton GroupName="DbType" Content="Все" Name="RbAllDbType" IsChecked="True" Tag="All"
+                         IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
+            <RadioButton GroupName="DbType" Content="Postgres" Name="RbPgDbType" Tag="Pg"
+                         IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
+            <RadioButton GroupName="DbType" Content="MsSQL" Name="RbMsSqlDbType" Tag="Ms"
+                         IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
+        </StackPanel>
         <DataGrid Grid.Row="1" Margin="20"
                   IsReadOnly="True"
                   GridLinesVisibility="All"
                   HeadersVisibility="All"
                   BorderThickness="1" BorderBrush="Gray"
-                  Name="DgModels"/>
+                  Name="DgModels" />
     </Grid>
 </Window>

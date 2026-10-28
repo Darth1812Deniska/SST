@@ -23,8 +23,8 @@
                 </StackPanel>
 
             </Button>
-            <Button Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center" Padding="15" Margin="5">
+            <Button Grid.Row="1" Name="BtnConstructor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center" Padding="15" Margin="5" Click="BtnConstructor_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <Image Height="30" Source="assets/pics/icons_construct.png" />
                     <TextBlock>Конструктор моделей</TextBlock>

@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+        x:Class="SqlScriptToolAvalonia.ConstructorWindows.ModelEditorWindow"
+        Title="Редактор Моделей" Height="450" Width="700" WindowStartupLocation="CenterScreen">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,*"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+            <Label Grid.Column="0" Grid.Row="0">Название</Label>
+            <Label Grid.Column="0" Grid.Row="1">Отображаемое наименование</Label>
+            <Label Grid.Column="0" Grid.Row="2">Описание модели</Label>
+            <Label Grid.Column="0" Grid.Row="3">Uid</Label>
+            <Label Grid.Column="0" Grid.Row="4">Тип СУБД</Label>
+
+            <TextBox x:Name="TbName" Grid.Column="1" Grid.Row="0" Margin="2"
+                     TextChanged="TbName_TextChanged"></TextBox>
+            <TextBox x:Name="TbDisplayLabel" Grid.Column="1" Grid.Row="1" Margin="2"
+                     TextChanged="TbDisplayLabel_TextChanged"></TextBox>
+            <TextBox x:Name="TbDescription" Grid.Column="1" Grid.Row="2" Margin="2"
+                     TextChanged="TbDescription_TextChanged"></TextBox>
+            <TextBox x:Name="TbUuid" Grid.Column="1" Grid.Row="3" Margin="2" IsReadOnly="True"></TextBox>
+            <Grid Grid.Column="1" Grid.Row="4" RowDefinitions="Auto,Auto">
+                <RadioButton x:Name="RbPostgreSql" Grid.Row="0" GroupName="DbmsType" Content="PostgreSQL"
+                             Checked="RbPostgreSql_Checked"/>
+                <RadioButton x:Name="RbMsSql" Grid.Row="1" GroupName="DbmsType" Content="MS SQL"
+                             Checked="RbMsSql_Checked"/>
+            </Grid>
+
+        </Grid>
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+            <TreeView x:Name="TvModelTree" Grid.Column="0" Margin="5,0" SelectionChanged="TvModelTree_SelectedItemChanged">
+
+            </TreeView>
+            <StackPanel Grid.Column="1" Margin="5,0">
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnAddChildNode" Click="BtnAddChildNode_Click">
+                    Добавить дочерний узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnAddNode" Click="BtnAddNode_Click">Добавить узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnEditNode" Click="BtnEditNode_Click">Изменить узел</Button>
+                <Button Padding="5" Margin="0,0,0,5" x:Name="BtnDeleteNode" Click="BtnDeleteNode_Click">
+                    Удалить узел</Button>
+            </StackPanel>
+
+        </Grid>
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto,Auto">
+            <Button Grid.Column="3" Padding="10,5" Margin="5" x:Name="BtnCancel" Click="BtnCancel_Click">Отменить</Button>
+            <Button Grid.Column="2" Padding="10,5" Margin="5" x:Name="BtnSaveAndClose" Click="BtnSaveAndClose_Click">
+                Сохранить и закрыть</Button>
+            <Button Grid.Column="1" Padding="10,5" Margin="5" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
+
+        </Grid>
+    </Grid>
+</Window>
