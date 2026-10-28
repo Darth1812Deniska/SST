@@ -7,5 +7,8 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <!-- Стили FluentAvalonia обязательны: без них NumberBox (и другие контролы
+             FluentAvalonia) не имеют ControlTheme и не отображаются в окне -->
+        <StyleInclude Source="avares://FluentAvalonia/Styling/FluentAvalonia.axaml"/>
     </Application.Styles>
 </Application>

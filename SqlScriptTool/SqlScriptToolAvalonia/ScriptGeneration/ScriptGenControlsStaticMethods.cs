@@ -41,11 +41,23 @@ public static class ScriptGenControlsStaticMethods
                 result = dateTimePicker;
                 break;
             case TagDataType.Double:
-                NumberBox doubleUpDown = new NumberBox();
+                NumberBox doubleUpDown = new NumberBox()
+                {
+                    Width = 150,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left
+                };
                 result = doubleUpDown;
                 break;
             case TagDataType.Int:
-                NumberBox intUpDown = new NumberBox();
+                NumberBox intUpDown = new NumberBox()
+                {
+                    Width = 150,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    // Целочисленный ввод: без дробной части и с шагом 1
+                    SmallChange = 1,
+                    LargeChange = 10,
+                    FormatString = "0"
+                };
                 result = intUpDown;
                 break;
             case TagDataType.Custom:
@@ -134,7 +146,10 @@ public static class ScriptGenControlsStaticMethods
                     if (control is NumberBox integerUpDownControl)
                     {
                         double? intControl = integerUpDownControl.Value;
-                        controlValue = intControl.HasValue ? intControl.Value.ToString() : "0";
+                        // Значение округляется до целого, как в исходном IntegerUpDown
+                        controlValue = intControl.HasValue
+                            ? Math.Round(intControl.Value).ToString()
+                            : "0";
                     }
 
                     break;
