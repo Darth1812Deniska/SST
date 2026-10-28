@@ -20,13 +20,13 @@ public partial class SettingsWindow : Window
         {
             if (checkBox.IsChecked.HasValue && checkBox.IsChecked.Value)
             {
-                PwdTextBox.Text = PwdBoxInput.Password; // скопируем в TextBox из PasswordBox
+                PwdTextBox.Text = PwdBoxInput.Text; // скопируем в TextBox из PasswordBox
                 PwdTextBox.IsVisible = true; // TextBox - отобразить
                 PwdBoxInput.IsVisible = false; // PasswordBox - скрыть
             }
             else
             {
-                PwdBoxInput.Password = PwdTextBox.Text; // скопируем в PasswordBox из TextBox
+                PwdBoxInput.Text = PwdTextBox.Text; // скопируем в PasswordBox из TextBox
                 PwdTextBox.IsVisible = false; // TextBox - скрыть
                 PwdBoxInput.IsVisible = true; // PasswordBox - отобразить
             }

@@ -81,6 +81,9 @@
         <DependentUpon>ConstructorWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="AdditionalWindows\ConnectionWindow.axaml.cs">
+        <DependentUpon>ConnectionWindow.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

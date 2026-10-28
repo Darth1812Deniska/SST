@@ -52,7 +52,7 @@ public partial class ConnectionWindow : Window
                 connectionString =
                     $"Server={CmbAddress.Text};" +
                     $"User Id={TbLogin.Text};" +
-                    $"Password={PbPassInput.Password};" +
+                    $"Password={PbPassInput.Text};" +
                     $"Port={TbPort.Text};" +
                     $"Database={TbDbName.Text};";
                 connectionChecker = new PGConnectionChecker();
@@ -63,7 +63,7 @@ public partial class ConnectionWindow : Window
                 connectionString =
                     "Persist Security Info=False;" +
                     $"User ID={TbLogin.Text};" +
-                    $"Password={PbPassInput.Password};" +
+                    $"Password={PbPassInput.Text};" +
                     $"Initial Catalog={TbDbName.Text};" +
                     $"Server={CmbAddress.Text},{TbPort.Text};" +
                     "Encrypt=True;";
