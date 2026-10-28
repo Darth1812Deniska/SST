@@ -5,15 +5,13 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using MsBox.Avalonia.Enums;
 using SqlScriptToolAvalonia.Constants;
-using SqlScriptToolAvalonia.ConstructorForms;
-using SqlScriptToolAvalonia.ConstructorStorage;
 using SqlScriptToolAvalonia.Helpers;
 using SqlScriptToolClient.ConstructorStorage;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
 
-namespace SqlScriptToolAvalonia.ConstructorForms;
+namespace SqlScriptToolAvalonia.ConstructorWindows;
 
 /// <summary>
 /// Логика взаимодействия для ModelEditorWindow.axaml

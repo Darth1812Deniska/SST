@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="SqlScriptToolAvalonia.ConstructorWindows.ConstructorWindow"
+        Title="Конструктор моделей"
+        Height="500" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+            <Menu>
+                <MenuItem Name="MiSettings" Header="Настройки" Click="MiSettings_OnClick"/>
+            </Menu>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button Name="BtnCreateNewModel" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewModel_OnClick">Создать новую Модель</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+            <ScrollViewer Grid.Row="2">
+                <StackPanel Name="SpModelsList"></StackPanel>
+            </ScrollViewer>
+
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button Name="BtnCreateNewSqlTemplate" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewSqlTemplate_OnClick">Создать новый SQL-шаблон</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+
+            <ScrollViewer Grid.Row="2">
+                <StackPanel Name="SpTemplatesList"></StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button Name="BtnCreateNewTag" Grid.Row="0" Margin="5" Padding="3" Click="BtnCreateNewTag_OnClick">Создать новый тэг</Button>
+            <Separator Grid.Row="1" Margin="0,3" />
+
+            <ScrollViewer Grid.Row="2">
+                <StackPanel Name="SpTagsList"></StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
