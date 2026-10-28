@@ -3,16 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 
 using SqlScriptToolAvalonia.CustomComponents;
+using SqlScriptToolAvalonia.Helpers;
 using SqlScriptToolAvalonia.ScriptGeneration;
 
 using SSTCommonClasses.Constructor;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
+
+using Label = Avalonia.Controls.Label;
 
 
 namespace SqlScriptToolAvalonia.GeneratorWindows;
@@ -101,9 +106,9 @@ public partial class ScriptGenerationParamsWindow : Window
                         string? displayLabel = string.IsNullOrEmpty(userParamTag.DisplayLabel)
                             ? userParamTag.Name
                             : userParamTag.DisplayLabel;
-                        Label label = new Label();
+                        Label label = new Label()
                         {
-                            Content = displayLabel;
+                            Content = displayLabel
                         };
 
                         Control? control = FieldControlByDataType(userParamTag);
@@ -120,8 +125,9 @@ public partial class ScriptGenerationParamsWindow : Window
                         Grid.SetRow(label, rowCount);
 
                         // Добавляем поле для значений
-                        //int controlIndex = GrParamsList.Children.Add(control);
-                        //UserParamControls.Add(controlGuid, controlIndex);
+                        int controlIndex = GrParamsList.Children.Count;
+                        GrParamsList.Children.Add(control);
+                        UserParamControls.Add(controlGuid, controlIndex);
                         Grid.SetColumn(control, 1);
                         Grid.SetRow(control, rowCount);
                     }
@@ -139,13 +145,14 @@ public partial class ScriptGenerationParamsWindow : Window
                         // Добавляем к нему тэг
                         multiplePatternControl.Tag = multipleParam;
                         // Добавляем на грид
-                        //int controlIndex = GrParamsList.Children.Add(multiplePatternControl);
+                        int controlIndex = GrParamsList.Children.Count;
+                        GrParamsList.Children.Add(multiplePatternControl);
                         // Привязываем к сетке
                         Grid.SetColumn(multiplePatternControl, 0);
                         Grid.SetRow(multiplePatternControl, rowCount);
                         Grid.SetColumnSpan(multiplePatternControl, 3);
                         // сохраняем индекс контрола
-                        //UserParamControls.Add(controlGuid, controlIndex);
+                        UserParamControls.Add(controlGuid, controlIndex);
                     }
                     else
                     {
@@ -206,31 +213,64 @@ public partial class ScriptGenerationParamsWindow : Window
         Close();
     }
 
-    private void BtnGenScript_Click(object sender, RoutedEventArgs e)
+    private async void BtnGenScript_Click(object sender, RoutedEventArgs e)
     {
-        /*try
+        try
         {
             string finalScript =
                 ScriptGenerationStaticMethods.ReplaceParameters(ModelSqlTemplateText ?? string.Empty, UserParamValues);
             string fileToSaveName = $"{SelectedModel.Name}_{DateTime.Now.ToFileTime()}.sql";
-            SaveFileDialog saveFileDialog = new SaveFileDialog()
-            {
-                DefaultExt = ".sql",
-                Filter = "sql files (*.sql)|*.sql",
-                AddExtension = true,
-                FileName = fileToSaveName
-            };
-            bool? dialogRes = saveFileDialog.ShowDialog();
-            if (dialogRes.HasValue && dialogRes.Value)
-            {
-                fileToSaveName = saveFileDialog.FileName;
-                File.WriteAllText(fileToSaveName, finalScript);
-            }
+            await SaveScriptToFile(fileToSaveName, finalScript);
         }
         catch (Exception exception)
         {
-            MessageBox.Show(exception.Message);
-        }*/
+            AvaloniaMessageBox.ShowError(exception.Message);
+        }
+    }
+
+    #endregion
+
+    #region File save
+
+    /// <summary>
+    /// Сохранение сформированного скрипта в файл через модальное диалоговое окно
+    /// выбора файла сохранения (Avalonia StorageProvider API)
+    /// </summary>
+    /// <param name="suggestedFileName">Предлагаемое имя файла</param>
+    /// <param name="scriptText">Текст сохраняемого скрипта</param>
+    private async Task SaveScriptToFile(string suggestedFileName, string scriptText)
+    {
+        IStorageProvider? storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
+        if (storageProvider == null || !storageProvider.CanSave)
+        {
+            AvaloniaMessageBox.ShowError("Сохранение файла не поддерживается текущей платформой.");
+            return;
+        }
+
+        IStorageFile? savedFile = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Сохранить SQL-скрипт",
+            SuggestedFileName = Path.GetFileNameWithoutExtension(suggestedFileName),
+            DefaultExtension = "sql",
+            FileTypeChoices = new List<FilePickerFileType>
+            {
+                new("sql files (*.sql)")
+                {
+                    Patterns = new[] { "*.sql" },
+                    MimeTypes = new[] { "application/sql", "text/plain" }
+                }
+            }
+        });
+
+        if (savedFile == null)
+        {
+            // Пользователь отменил сохранение
+            return;
+        }
+
+        string filePath = savedFile.Path.LocalPath;
+        await using StreamWriter streamWriter = new(filePath);
+        await streamWriter.WriteAsync(scriptText);
     }
 
     #endregion

@@ -9,9 +9,9 @@
         <StackPanel Grid.Row="0" Margin="20,0" Orientation="Horizontal">
             <RadioButton GroupName="DbType" Content="Все" Name="RbAllDbType" IsChecked="True" Tag="All"
                          IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
-            <RadioButton GroupName="DbType" Content="Postgres" Name="RbPgDbType" Tag="Ms"
+            <RadioButton GroupName="DbType" Content="Postgres" Name="RbPgDbType" Tag="Pg"
                          IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
-            <RadioButton GroupName="DbType" Content="MsSQL" Name="RbMsSqlDbType" Tag="Pg"
+            <RadioButton GroupName="DbType" Content="MsSQL" Name="RbMsSqlDbType" Tag="Ms"
                          IsCheckedChanged="RbDbType_OnIsCheckedChanged" />
         </StackPanel>
         <DataGrid Grid.Row="1" Margin="20"
