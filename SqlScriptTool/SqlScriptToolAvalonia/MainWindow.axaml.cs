@@ -15,9 +15,9 @@ public partial class MainWindow : Window
 
     private void BtnConstructor_OnClick(object? sender, RoutedEventArgs e)
     {
-        // Открытие редактора моделей (создание новой модели)
-        var modelEditorWindow = new ModelEditorWindow();
-        modelEditorWindow.Show();
+        // Открытие окна конструктора (списки объектов и кнопки создания новых объектов)
+        var constructorWindow = new ConstructorWindow();
+        constructorWindow.Show();
     }
 
     private void BtnGenScript_OnClick(object? sender, RoutedEventArgs e)

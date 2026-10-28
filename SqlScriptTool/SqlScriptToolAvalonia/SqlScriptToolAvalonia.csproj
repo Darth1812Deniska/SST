@@ -75,6 +75,10 @@
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="AdditionalWindows\ConstructorWindow.axaml.cs">
+        <DependentUpon>ConstructorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
       <Compile Update="GeneratorWindows\ScriptGenerationParamsWindow.axaml.cs">
         <DependentUpon>GeneratorWindows.axaml</DependentUpon>
       </Compile>
