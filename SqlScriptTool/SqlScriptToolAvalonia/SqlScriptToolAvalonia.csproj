@@ -44,6 +44,29 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AvaloniaXaml Remove="ConstructorForms\ModelEditorWindow.xaml" />
+      <AvaloniaXaml Remove="ConstructorForms\SqlTemplateEditorWindow.xaml" />
+      <AvaloniaXaml Remove="ConstructorForms\TagEditorWindow.xaml" />
+      <AvaloniaXaml Remove="CustomComponents\MultiplePatternControl.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ConstructorForms\ModelEditorWindow.axaml.cs">
+        <DependentUpon>ModelEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorForms\SqlTemplateEditorWindow.axaml.cs">
+        <DependentUpon>SqlTemplateEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ConstructorForms\TagEditorWindow.axaml.cs">
+        <DependentUpon>TagEditorWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="CustomComponents\MultiplePatternControl.axaml.cs">
+        <DependentUpon>MultiplePatternControl.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
       <Compile Update="GeneratorWindows\ModelGenerationListWindow.axaml.cs">
         <DependentUpon>ModelGenerationListWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
@@ -52,31 +75,8 @@
         <DependentUpon>SettingsWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="ConstructorForms\ModelEditorWindow.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>ModelEditorWindow.xaml</DependentUpon>
-      </Compile>
-      <Compile Update="ConstructorForms\SqlTemplateEditorWindow.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>SqlTemplateEditorWindow.xaml</DependentUpon>
-      </Compile>
-      <Compile Update="ConstructorForms\TagEditorWindow.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>TagEditorWindow.xaml</DependentUpon>
-      </Compile>
-      <Compile Update="CustomComponents\MultiplePatternControl.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>MultiplePatternControl.xaml</DependentUpon>
-      </Compile>
       <Compile Update="GeneratorWindows\ScriptGenerationParamsWindow.axaml.cs">
         <DependentUpon>GeneratorWindows.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="CustomComponents\MultiplePatternControl.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="CustomComponents\MultiplePatternControl.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>MultiplePatternControl.xaml</DependentUpon>
       </Compile>
     </ItemGroup>
 

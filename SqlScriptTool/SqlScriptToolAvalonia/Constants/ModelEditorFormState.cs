@@ -1,4 +1,4 @@
-﻿namespace SqlScriptToolClient.Constants;
+﻿namespace SqlScriptToolAvalonia.Constants;
 
 /// <summary>
 /// Статусы отображения формы редактора моделей

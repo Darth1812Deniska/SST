@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+             x:Class="SqlScriptToolAvalonia.CustomComponents.MultiplePatternControl">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Grid.Row="0">
+            <Label x:Name="LblPaternName">Заголовок</Label>
+        </Grid>
+        <Grid x:Name="GrMain" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="RdDisplayLabels" Height="Auto"/>
+            </Grid.RowDefinitions>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Button x:Name="BtnAddRow" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Padding="10,5" Margin="10" Click="BtnAddRow_Click">Добавить</Button>
+        </Grid>
+    </Grid>
+</UserControl>
