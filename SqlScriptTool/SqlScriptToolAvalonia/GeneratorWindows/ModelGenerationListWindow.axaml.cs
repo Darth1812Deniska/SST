@@ -55,7 +55,8 @@ public partial class ModelGenerationListWindow : Window
                 Content = "Выбрать",
                 Tag = model
             };
-            
+            button.Click += BtnSelectModel_OnClick;
+
             var container = new StackPanel { Children = { button } };
             return container;
         });
@@ -68,5 +69,15 @@ public partial class ModelGenerationListWindow : Window
     private void RbDbType_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         throw new NotImplementedException();
+    }
+
+    private async void BtnSelectModel_OnClick(object? sender, RoutedEventArgs e)
+    {
+        // Модель находится в Tag кнопки, расположенной в той же строке грида
+        if (sender is Button { Tag: Model model })
+        {
+            var scriptGenParamsWindow = new ScriptGenerationParamsWindow(model);
+            await scriptGenParamsWindow.ShowDialog(this);
+        }
     }
 }
