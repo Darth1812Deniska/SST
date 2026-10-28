@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using SqlScriptToolAvalonia.ScriptGeneration;
@@ -195,9 +196,9 @@ public partial class MultiplePatternControl : UserControl
             {
                 newFieldControl.Margin = new Thickness(2);
                 newFieldControl.MinWidth = 100;
-                int position = GrMain.Children.Add(newFieldControl);
+                GrMain.Children.Add(newFieldControl);
                 // Собираем индексы контролов в гриде
-                controlList.Add(position);
+                
                 Grid.SetColumn(newFieldControl, columnCount);
                 Grid.SetRow(newFieldControl, curRow);
             }

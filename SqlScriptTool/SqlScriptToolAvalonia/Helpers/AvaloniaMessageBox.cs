@@ -16,7 +16,7 @@ public static class AvaloniaMessageBox
     /// </summary>
     public static void Show(string message, string title = "")
     {
-        MessageBoxManager.GetMessageBoxStandard(title, message, ButtonEnum.Ok).ShowWindowDialogAsync();
+        MessageBoxManager.GetMessageBoxStandard(title, message, ButtonEnum.Ok).ShowAsync();
     }
 
     /// <summary>
@@ -44,6 +44,6 @@ public static class AvaloniaMessageBox
     /// </summary>
     public static void ShowError(string message, string title = "Ошибка")
     {
-        MessageBoxManager.GetMessageBoxStandard(title, message, ButtonEnum.Ok, Icon.Error).ShowWindowDialogAsync();
+        MessageBoxManager.GetMessageBoxStandard(title, message, ButtonEnum.Ok, Icon.Error).ShowAsync();
     }
 }

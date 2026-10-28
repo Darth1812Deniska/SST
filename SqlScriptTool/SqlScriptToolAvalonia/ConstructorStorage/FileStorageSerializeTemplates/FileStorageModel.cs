@@ -1,7 +1,7 @@
 ﻿using System;
 using SSTCommonClasses.Constants;
 
-namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
+namespace SqlScriptToolAvalonia.ConstructorStorage.FileStorageSerializeTemplates;
 
 [Serializable]
 public class FileStorageModel

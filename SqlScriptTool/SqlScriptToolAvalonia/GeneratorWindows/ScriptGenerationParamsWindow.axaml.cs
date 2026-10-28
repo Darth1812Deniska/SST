@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Win32;
+
+using Avalonia;
+using Avalonia.Interactivity;
+
+using SqlScriptToolAvalonia.CustomComponents;
 using SqlScriptToolAvalonia.ScriptGeneration;
-using SqlScriptToolClient.CustomComponents;
-using SqlScriptToolClient.ScriptGeneration;
+
 using SSTCommonClasses.Constructor;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
-using Label = System.Windows.Controls.Label;
+
 
 namespace SqlScriptToolAvalonia.GeneratorWindows;
 
@@ -100,9 +101,9 @@ public partial class ScriptGenerationParamsWindow : Window
                         string? displayLabel = string.IsNullOrEmpty(userParamTag.DisplayLabel)
                             ? userParamTag.Name
                             : userParamTag.DisplayLabel;
-                        Label label = new Label()
+                        Label label = new Label();
                         {
-                            Content = displayLabel
+                            Content = displayLabel;
                         };
 
                         Control? control = FieldControlByDataType(userParamTag);
@@ -119,8 +120,8 @@ public partial class ScriptGenerationParamsWindow : Window
                         Grid.SetRow(label, rowCount);
 
                         // Добавляем поле для значений
-                        int controlIndex = GrParamsList.Children.Add(control);
-                        UserParamControls.Add(controlGuid, controlIndex);
+                        //int controlIndex = GrParamsList.Children.Add(control);
+                        //UserParamControls.Add(controlGuid, controlIndex);
                         Grid.SetColumn(control, 1);
                         Grid.SetRow(control, rowCount);
                     }
@@ -138,13 +139,13 @@ public partial class ScriptGenerationParamsWindow : Window
                         // Добавляем к нему тэг
                         multiplePatternControl.Tag = multipleParam;
                         // Добавляем на грид
-                        int controlIndex = GrParamsList.Children.Add(multiplePatternControl);
+                        //int controlIndex = GrParamsList.Children.Add(multiplePatternControl);
                         // Привязываем к сетке
                         Grid.SetColumn(multiplePatternControl, 0);
                         Grid.SetRow(multiplePatternControl, rowCount);
                         Grid.SetColumnSpan(multiplePatternControl, 3);
                         // сохраняем индекс контрола
-                        UserParamControls.Add(controlGuid, controlIndex);
+                        //UserParamControls.Add(controlGuid, controlIndex);
                     }
                     else
                     {
@@ -207,7 +208,7 @@ public partial class ScriptGenerationParamsWindow : Window
 
     private void BtnGenScript_Click(object sender, RoutedEventArgs e)
     {
-        try
+        /*try
         {
             string finalScript =
                 ScriptGenerationStaticMethods.ReplaceParameters(ModelSqlTemplateText ?? string.Empty, UserParamValues);
@@ -229,7 +230,7 @@ public partial class ScriptGenerationParamsWindow : Window
         catch (Exception exception)
         {
             MessageBox.Show(exception.Message);
-        }
+        }*/
     }
 
     #endregion

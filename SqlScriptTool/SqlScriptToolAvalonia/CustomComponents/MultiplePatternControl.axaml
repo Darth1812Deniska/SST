@@ -10,7 +10,7 @@
         </Grid>
         <Grid x:Name="GrMain" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition x:Name="RdDisplayLabels" Height="Auto"/>
+                <RowDefinition  Height="Auto"/>
             </Grid.RowDefinitions>
         </Grid>
         <Grid Grid.Row="2">
