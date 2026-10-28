@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
+namespace SqlScriptToolAvalonia.ConstructorStorage.FileStorageSerializeTemplates;
 
 [Serializable]
 public class FileStorageModelItem

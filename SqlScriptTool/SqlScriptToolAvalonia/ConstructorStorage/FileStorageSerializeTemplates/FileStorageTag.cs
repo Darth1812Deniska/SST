@@ -2,7 +2,7 @@
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Tags;
 
-namespace SqlScriptToolClient.ConstructorStorage.FileStorageSerializeTemplates;
+namespace SqlScriptToolAvalonia.ConstructorStorage.FileStorageSerializeTemplates;
 
 public class FileStorageTag
 {
