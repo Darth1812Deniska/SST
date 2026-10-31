@@ -96,7 +96,8 @@ public partial class MultiplePatternControl : UserControl
         foreach (Dictionary<string, string> patternsParamValue in MultiplePatternsParamValues)
         {
             string patternText =
-                ScriptGeneration.ScriptGenerationStaticMethods.ReplaceParameters(SqlText ?? string.Empty,
+                ScriptGenerationStaticMethods
+                    .ReplaceParameters(SqlText ?? string.Empty,
                     patternsParamValue);
             result = string.Concat(result, '\n', patternText);
         }
