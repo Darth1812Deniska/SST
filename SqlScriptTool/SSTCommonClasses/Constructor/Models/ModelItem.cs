@@ -34,6 +34,7 @@ public class ModelItem
     /// SQL-шаблон прикрепленный к узлу.
     /// Равен null, если шаблон еще не присоединен либо ссылка на сохраненный шаблон
     /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
+    /// Для безопасного обращения без проверки на null используйте <see cref="EffectiveSqlTemplate"/>.
     /// Присвоение null снимает шаблон с узла.
     /// </summary>
     public SqlTemplate? SqlTemplate
@@ -43,6 +44,28 @@ public class ModelItem
         {
             _sqlTemplate = value;
             _savedSqlTemplateUuid = null;
+        }
+    }
+
+    /// <summary>
+    /// SQL-шаблон узла с ленивой инициализацией: если шаблон ещё не присоединён,
+    /// он создаётся автоматически при первом обращении. Это позволяет редактировать
+    /// атрибуты корневого шаблона сразу после открытия окна создания модели
+    /// (например, переименование модели по вводу текста в поле «Название»).
+    /// Исключение — неразрешенная ссылка на сохраненный шаблон после загрузки DTO
+    /// из файловой системы: пока ссылка не разрешена вторым этапом выгрузки,
+    /// возвращается null, чтобы новый пустой шаблон не затёр сохраненную связь.
+    /// </summary>
+    public SqlTemplate EffectiveSqlTemplate
+    {
+        get
+        {
+            if (_sqlTemplate == null && !HasSavedSqlTemplateReference)
+            {
+                _sqlTemplate = new SqlTemplate();
+            }
+
+            return _sqlTemplate!;
         }
     }
 
@@ -131,7 +154,7 @@ public class ModelItem
     /// <param name="dbType"></param>
     public void SetDbType(DbType dbType)
     {
-        SqlTemplate?.SetDbType(dbType);
+        EffectiveSqlTemplate.SetDbType(dbType);
         foreach (KeyValuePair<string, ModelItem> childModelItem in ChildModelItems)
         {
             childModelItem.Value.SetDbType(dbType);

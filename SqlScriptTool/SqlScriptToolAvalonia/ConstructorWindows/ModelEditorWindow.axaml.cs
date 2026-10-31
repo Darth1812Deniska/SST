@@ -113,8 +113,16 @@ public partial class ModelEditorWindow : Window
 
     private ModelItem GetModelRootItem()
     {
-        ModelItem result = VisualRootModelItem.Tag as ModelItem ?? new ModelItem();
-        return result;
+        // Для окна создания модели корневой узел инициализируется в InitializeModelTree();
+        // если он ещё не готов, используем корневой узел выбранной модели — его ленивый
+        // getter SqlTemplate создаст шаблон при первом обращении к атрибутам.
+        if (TvModelTree.Items.Count > 0 && TvModelTree.Items[0] is TreeViewItem rootTreeViewItem
+            && rootTreeViewItem.Tag is ModelItem rootItem)
+        {
+            return rootItem;
+        }
+
+        return SelectedModel.RootModelItem;
     }
 
     private TreeViewItem GetVisualRootModelItem()
@@ -213,7 +221,7 @@ public partial class ModelEditorWindow : Window
 
         TreeViewItem treeViewItem = new TreeViewItem()
         {
-            Header = modelItem.SqlTemplate.Name,
+            Header = modelItem.EffectiveSqlTemplate.Name,
             IsExpanded = true
         };
         treeViewItem.Tag = modelItem;
@@ -277,8 +285,9 @@ public partial class ModelEditorWindow : Window
     /// </summary>
     private void InitializeModelTree()
     {
-        // Создать коренной узел
-        ModelItem rootModelItem = new ModelItem();
+        // Создать коренной узел (используется тот же ModelItem, что и у выбранной модели,
+        // чтобы лениво созданный sql-шаблон корневого узла не терялся при сохранении)
+        ModelItem rootModelItem = SelectedModel.RootModelItem;
         // Добавить визуальный коренной узел
         TreeViewItem rootNodeItem = new TreeViewItem()
         {
@@ -357,7 +366,7 @@ public partial class ModelEditorWindow : Window
     {
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
-            rootModelItem.SqlTemplate.SetDbType(ModelDbType);
+            rootModelItem.EffectiveSqlTemplate.SetDbType(ModelDbType);
         }
     }
 
@@ -545,10 +554,13 @@ public partial class ModelEditorWindow : Window
         // Без проверки на ввод текста
         // Находим коренной узел
         VisualRootModelItem.Header = nodeName;
-        // Переименовываем название тэга - шаблона
+        // Переименовываем название тэга - шаблона.
+        // Используем EffectiveSqlTemplate: при создании новой модели корневой узел
+        // ещё не имеет sql-шаблона — ленивый getter создаёт его при первом обращении,
+        // поэтому NullReferenceException больше не возникает.
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
-            rootModelItem.SqlTemplate.SetName(nodeName);
+            rootModelItem.EffectiveSqlTemplate.SetName(nodeName);
         }
     }
 
@@ -556,7 +568,7 @@ public partial class ModelEditorWindow : Window
     {
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
-            rootModelItem.SqlTemplate.SetDisplayLabel(ModelDisplayLabel);
+            rootModelItem.EffectiveSqlTemplate.SetDisplayLabel(ModelDisplayLabel);
         }
     }
 
@@ -564,7 +576,7 @@ public partial class ModelEditorWindow : Window
     {
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
-            rootModelItem.SqlTemplate.SetDescription(ModelDescription);
+            rootModelItem.EffectiveSqlTemplate.SetDescription(ModelDescription);
         }
     }
 

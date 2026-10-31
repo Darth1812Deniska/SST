@@ -112,8 +112,16 @@ namespace SqlScriptToolClient
 
         private ModelItem GetModelRootItem()
         {
-            ModelItem result = VisualRootModelItem.Tag as ModelItem ?? new ModelItem();
-            return result;
+            // Для окна создания модели корневой узел инициализируется в InitializeModelTree();
+            // если он ещё не готов, используем корневой узел выбранной модели — его ленивый
+            // getter SqlTemplate создаст шаблон при первом обращении к атрибутам.
+            if (TvModelTree.Items.Count > 0 && TvModelTree.Items[0] is TreeViewItem rootTreeViewItem
+                && rootTreeViewItem.Tag is ModelItem rootItem)
+            {
+                return rootItem;
+            }
+
+            return SelectedModel.RootModelItem;
         }
 
         private TreeViewItem GetVisualRootModelItem()
@@ -212,7 +220,7 @@ namespace SqlScriptToolClient
 
             TreeViewItem treeViewItem = new TreeViewItem()
             {
-                Header = modelItem.SqlTemplate.Name,
+                Header = modelItem.EffectiveSqlTemplate.Name,
                 IsExpanded = true
             };
             treeViewItem.Tag = modelItem;
@@ -273,8 +281,9 @@ namespace SqlScriptToolClient
         /// </summary>
         private void InitializeModelTree()
         {
-            // Создать коренной узел
-            ModelItem rootModelItem = new ModelItem();
+            // Создать коренной узел (используется тот же ModelItem, что и у выбранной модели,
+            // чтобы лениво созданный sql-шаблон корневого узла не терялся при сохранении)
+            ModelItem rootModelItem = SelectedModel.RootModelItem;
             // Добавить визуальный коренной узел
             TreeViewItem rootNodeItem = new TreeViewItem()
             {
@@ -353,7 +362,7 @@ namespace SqlScriptToolClient
         {
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
             {
-                rootModelItem.SqlTemplate.SetDbType(ModelDbType);
+                rootModelItem.EffectiveSqlTemplate.SetDbType(ModelDbType);
             }
         }
 
@@ -549,7 +558,7 @@ namespace SqlScriptToolClient
             // Переименовываем название тэга - шаблона
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
             {
-                rootModelItem.SqlTemplate.SetName(nodeName);
+                rootModelItem.EffectiveSqlTemplate.SetName(nodeName);
             }
         }
 
@@ -557,7 +566,7 @@ namespace SqlScriptToolClient
         {
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
             {
-                rootModelItem.SqlTemplate.SetDisplayLabel(ModelDisplayLabel);
+                rootModelItem.EffectiveSqlTemplate.SetDisplayLabel(ModelDisplayLabel);
             }
         }
 
@@ -565,7 +574,7 @@ namespace SqlScriptToolClient
         {
             if (VisualRootModelItem.Tag is ModelItem rootModelItem)
             {
-                rootModelItem.SqlTemplate.SetDescription(ModelDescription);
+                rootModelItem.EffectiveSqlTemplate.SetDescription(ModelDescription);
             }
         }
 
