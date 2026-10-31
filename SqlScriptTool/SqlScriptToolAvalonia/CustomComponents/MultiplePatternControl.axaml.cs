@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
+using SSTCommonClasses.ScriptGeneration;
 using SqlScriptToolAvalonia.ScriptGeneration;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
@@ -95,7 +96,8 @@ public partial class MultiplePatternControl : UserControl
         foreach (Dictionary<string, string> patternsParamValue in MultiplePatternsParamValues)
         {
             string patternText =
-                ScriptGeneration.ScriptGenerationStaticMethods.ReplaceParameters(SqlText ?? string.Empty,
+                ScriptGenerationStaticMethods
+                    .ReplaceParameters(SqlText ?? string.Empty,
                     patternsParamValue);
             result = string.Concat(result, '\n', patternText);
         }

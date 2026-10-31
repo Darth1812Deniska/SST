@@ -3,21 +3,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Windows;
-using Avalonia.Controls;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using SqlScriptToolClient.ConstructorStorage.ObjectInfos;
-using SqlScriptToolClient.ConstructorStorage.ObjectLists;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
+using SSTCommonClasses.ConstructorStorage.ObjectInfos;
+using SSTCommonClasses.ConstructorStorage.ObjectLists;
 
 
-namespace SqlScriptToolClient.ConstructorStorage;
+namespace SSTCommonClasses.ConstructorStorage;
 
 public static class StaticConstructorStorage
 {
+    #region events
+
+    /// <summary>
+    /// Событие возникновения ошибок при загрузке элементов конструктора.
+    /// Позволяет не зависеть от UI-библиотек в бизнес-логике: подписчик (UI) сам решает,
+    /// как показать пользователю накопленный текст ошибок.
+    /// </summary>
+    public static event Action<string>? LoadErrorsOccurred;
+
+    private static void ReportLoadErrors(string errorText, string caption)
+    {
+        if (!string.IsNullOrEmpty(errorText))
+        {
+            LoadErrorsOccurred?.Invoke(caption + ": " + errorText);
+        }
+    }
+
+    #endregion
+
     #region Constants
 
     /// <summary>
@@ -91,6 +106,12 @@ public static class StaticConstructorStorage
     private static string? UserDataRootPath { get; set; }
 
     /// <summary>
+    /// Корневая папка данных. По умолчанию находится рядом с исполняемым файлом приложения,
+    /// поэтому работа с путями не зависит от текущей директории процесса (Path.Combine вместо Directory.SetCurrentDirectory).
+    /// </summary>
+    private static string DefaultUserDataRootPath => Path.Combine(AppContext.BaseDirectory, UserDataFolderName);
+
+    /// <summary>
     /// Данные о расположении файлов с информацией о моделях
     /// </summary>
     private static List<ModelInfo> ModelInfos => _modelInfos;
@@ -139,11 +160,11 @@ public static class StaticConstructorStorage
                 string modelPath = modelInfo.ModelPath ?? string.Empty;
                 if (!string.IsNullOrEmpty(modelPath) && Directory.Exists(modelPath))
                 {
-                    Directory.SetCurrentDirectory(modelPath);
                     string modelFileName = modelInfo.ModelFileName ?? string.Empty;
-                    if (!string.IsNullOrEmpty(modelFileName) && File.Exists(modelFileName))
+                    string fullModelFilePath = Path.Combine(modelPath, modelFileName);
+                    if (!string.IsNullOrEmpty(modelFileName) && File.Exists(fullModelFilePath))
                     {
-                        string json = File.ReadAllText(modelFileName);
+                        string json = File.ReadAllText(fullModelFilePath);
                         Model? model = JsonSerializer.Deserialize<Model>(json);
                         if (model != null)
                         {
@@ -159,13 +180,7 @@ public static class StaticConstructorStorage
             }
         }
 
-        if (!string.IsNullOrEmpty(errorText))
-        {
-            /*MessageBox.Show(errorText, "Ошибка при загрузке моделей", MessageBoxButton.OK, MessageBoxImage.Error);*/
-            MessageBoxManager.GetMessageBoxStandard("Ошибка!",
-                "Ошибка при загрузке моделей", ButtonEnum.Ok, Icon.Error,
-                WindowStartupLocation.CenterOwner).ShowAsync();
-        }
+        ReportLoadErrors(errorText, "Ошибка при загрузке моделей");
     }
 
     /// <summary>
@@ -182,11 +197,11 @@ public static class StaticConstructorStorage
                 string templateFolderPath = templateInfo.TemplateFolderPath ?? string.Empty;
                 if (!string.IsNullOrEmpty(templateFolderPath) && Directory.Exists(templateFolderPath))
                 {
-                    Directory.SetCurrentDirectory(templateFolderPath);
                     string templateFileName = templateInfo.TemplateInfoFileName ?? string.Empty;
-                    if (!string.IsNullOrEmpty(templateFileName) && File.Exists(templateFileName))
+                    string fullTemplateFilePath = Path.Combine(templateFolderPath, templateFileName);
+                    if (!string.IsNullOrEmpty(templateFileName) && File.Exists(fullTemplateFilePath))
                     {
-                        string templateJson = File.ReadAllText(templateFileName);
+                        string templateJson = File.ReadAllText(fullTemplateFilePath);
                         SqlTemplate? sqlTemplate = JsonSerializer.Deserialize<SqlTemplate>(templateJson);
                         if (sqlTemplate != null)
                         {
@@ -202,13 +217,7 @@ public static class StaticConstructorStorage
             }
         }
 
-        if (!string.IsNullOrEmpty(errorText))
-        {
-            /*MessageBox.Show(errorText, "Ошибка при загрузке шаблонов", MessageBoxButton.OK, MessageBoxImage.Error);*/
-            MessageBoxManager.GetMessageBoxStandard("Ошибка!",
-                "Ошибка при загрузке шаблонов", ButtonEnum.Ok, Icon.Error,
-                WindowStartupLocation.CenterOwner).ShowAsync();
-        }
+        ReportLoadErrors(errorText, "Ошибка при загрузке шаблонов");
     }
 
     /// <summary>
@@ -225,11 +234,11 @@ public static class StaticConstructorStorage
                 string tagTemplatePath = tagTemplateInfo.TagTemplatePath ?? string.Empty;
                 if (!string.IsNullOrEmpty(tagTemplatePath) && Directory.Exists(tagTemplatePath))
                 {
-                    Directory.SetCurrentDirectory(tagTemplatePath);
                     string templateFileName = tagTemplateInfo.TagTemplateFileName ?? string.Empty;
-                    if (!string.IsNullOrEmpty(templateFileName) && File.Exists(templateFileName))
+                    string fullTagTemplateFilePath = Path.Combine(tagTemplatePath, templateFileName);
+                    if (!string.IsNullOrEmpty(templateFileName) && File.Exists(fullTagTemplateFilePath))
                     {
-                        string templateJson = File.ReadAllText(templateFileName);
+                        string templateJson = File.ReadAllText(fullTagTemplateFilePath);
                         TagTemplate? tagTemplate = JsonSerializer.Deserialize<TagTemplate>(templateJson);
                         if (tagTemplate != null)
                         {
@@ -245,14 +254,7 @@ public static class StaticConstructorStorage
             }
         }
 
-        if (!string.IsNullOrEmpty(errorText))
-        {
-            /*MessageBox.Show(errorText, "Ошибка при загрузке шаблонов тэгов", MessageBoxButton.OK,
-                MessageBoxImage.Error);*/
-            MessageBoxManager.GetMessageBoxStandard("Ошибка!",
-                "Ошибка при загрузке шаблонов тэгов", ButtonEnum.Ok, Icon.Error,
-                WindowStartupLocation.CenterOwner).ShowAsync();
-        }
+        ReportLoadErrors(errorText, "Ошибка при загрузке шаблонов тэгов");
     }
 
     /// <summary>
@@ -341,12 +343,8 @@ public static class StaticConstructorStorage
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
         string json = JsonSerializer.Serialize(_storageInfos, options);
-        if (!string.IsNullOrEmpty(UserDataRootPath))
-        {
-            Directory.SetCurrentDirectory(UserDataRootPath);
-        }
-
-        File.WriteAllText(StorageInfosFileName, json);
+        string rootPath = UserDataRootPath ?? DefaultUserDataRootPath;
+        File.WriteAllText(Path.Combine(rootPath, StorageInfosFileName), json);
     }
 
     /// <summary>
@@ -354,16 +352,14 @@ public static class StaticConstructorStorage
     /// </summary>
     public static void InitializeStorage()
     {
-        // Коренная папка - UserData
-        string userDataFolderName = UserDataFolderName;
-        if (!Directory.Exists(userDataFolderName))
+        // Коренная папка - UserData (рядом с исполняемым файлом, без изменения текущей директории процесса)
+        string userDataRoot = DefaultUserDataRootPath;
+        if (!Directory.Exists(userDataRoot))
         {
-            Directory.CreateDirectory(userDataFolderName);
+            Directory.CreateDirectory(userDataRoot);
         }
 
-        Directory.SetCurrentDirectory(userDataFolderName);
-        UserDataRootPath = Directory.GetCurrentDirectory();
-
+        UserDataRootPath = userDataRoot;
 
         AccessType[] accessTypes = new[] { AccessType.Public, AccessType.Common, AccessType.Private };
         ConstructorType[] constructorTypes = new[]
@@ -372,30 +368,23 @@ public static class StaticConstructorStorage
         foreach (AccessType type in accessTypes)
         {
             string typeFolderName = type.ToString();
-            if (!Directory.Exists(typeFolderName))
+            string typeFolderPath = Path.Combine(userDataRoot, typeFolderName);
+            if (!Directory.Exists(typeFolderPath))
             {
-                Directory.CreateDirectory(typeFolderName);
+                Directory.CreateDirectory(typeFolderPath);
             }
 
-            Directory.SetCurrentDirectory(typeFolderName);
             foreach (ConstructorType constructorFolder in constructorTypes)
             {
                 string constructorFolderName = constructorFolder.ToString();
-                if (!Directory.Exists(constructorFolderName))
+                string constructorFolderPath = Path.Combine(typeFolderPath, constructorFolderName);
+                if (!Directory.Exists(constructorFolderPath))
                 {
-                    Directory.CreateDirectory(constructorFolderName);
+                    Directory.CreateDirectory(constructorFolderPath);
                 }
 
-                DirectoryInfo directoryInfo = new DirectoryInfo(constructorFolderName);
-                StorageInfo storageInfo = new StorageInfo(type, constructorFolder, directoryInfo.FullName);
+                StorageInfo storageInfo = new StorageInfo(type, constructorFolder, constructorFolderPath);
                 StorageInfos.Add(storageInfo);
-            }
-
-            // Возвращаемся на уровень выше
-            var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
-            if (parentDirectory != null)
-            {
-                Directory.SetCurrentDirectory(parentDirectory.FullName);
             }
         }
 
@@ -411,15 +400,11 @@ public static class StaticConstructorStorage
     /// </summary>
     private static void LoadStorageInfos()
     {
-        if (string.IsNullOrEmpty(UserDataRootPath))
+        string rootPath = UserDataRootPath ?? DefaultUserDataRootPath;
+        string storageInfosFilePath = Path.Combine(rootPath, StorageInfosFileName);
+        if (File.Exists(storageInfosFilePath))
         {
-            return;
-        }
-
-        Directory.SetCurrentDirectory(UserDataRootPath);
-        if (File.Exists(StorageInfosFileName))
-        {
-            string json = File.ReadAllText(StorageInfosFileName);
+            string json = File.ReadAllText(storageInfosFilePath);
             _storageInfos = JsonSerializer.Deserialize<List<StorageInfo>>(json) ?? new List<StorageInfo>();
         }
     }
@@ -434,11 +419,10 @@ public static class StaticConstructorStorage
             .ToList();
         foreach (StorageInfo storageInfo in modelsStorages)
         {
-            string path = storageInfo.Path;
-            Directory.SetCurrentDirectory(path);
-            if (File.Exists(ModelInfosFileName))
+            string modelInfosFilePath = Path.Combine(storageInfo.Path, ModelInfosFileName);
+            if (File.Exists(modelInfosFilePath))
             {
-                string json = File.ReadAllText(ModelInfosFileName);
+                string json = File.ReadAllText(modelInfosFilePath);
                 List<ModelInfo> listToAppend =
                     JsonSerializer.Deserialize<List<ModelInfo>>(json) ?? new List<ModelInfo>();
                 _modelInfos.AddRange(listToAppend);
@@ -457,11 +441,10 @@ public static class StaticConstructorStorage
             .ToList();
         foreach (StorageInfo storageInfo in templateStorages)
         {
-            string path = storageInfo.Path;
-            Directory.SetCurrentDirectory(path);
-            if (File.Exists(SqlTemplateInfosFileName))
+            string templateInfosFilePath = Path.Combine(storageInfo.Path, SqlTemplateInfosFileName);
+            if (File.Exists(templateInfosFilePath))
             {
-                string json = File.ReadAllText(SqlTemplateInfosFileName);
+                string json = File.ReadAllText(templateInfosFilePath);
                 List<SqlTemplateInfo> listToAppend = JsonSerializer.Deserialize<List<SqlTemplateInfo>>(json) ??
                                                      new List<SqlTemplateInfo>();
                 _templateInfos.AddRange(listToAppend);
@@ -480,11 +463,10 @@ public static class StaticConstructorStorage
             .ToList();
         foreach (StorageInfo storageInfo in templateStorages)
         {
-            string path = storageInfo.Path;
-            Directory.SetCurrentDirectory(path);
-            if (File.Exists(TagTemplateInfosFileName))
+            string tagTemplateInfosFilePath = Path.Combine(storageInfo.Path, TagTemplateInfosFileName);
+            if (File.Exists(tagTemplateInfosFilePath))
             {
-                string json = File.ReadAllText(TagTemplateInfosFileName);
+                string json = File.ReadAllText(tagTemplateInfosFilePath);
                 List<TagTemplateInfo> listToAppend = JsonSerializer.Deserialize<List<TagTemplateInfo>>(json) ??
                                                      new List<TagTemplateInfo>();
                 _tagTemplateInfos.AddRange(listToAppend);
@@ -512,17 +494,16 @@ public static class StaticConstructorStorage
                 return;
             }
 
-            // Переходим в папку для моделей
-            Directory.SetCurrentDirectory(pathToSave);
-            // Переходим в папку модели
+            // Папка для сохранения модели
             string folderName = $"Model_{model.Uuid}";
-            if (!Directory.Exists(folderName))
+            string modelFolderPath = Path.Combine(pathToSave, folderName);
+            if (!Directory.Exists(modelFolderPath))
             {
-                Directory.CreateDirectory(folderName);
+                Directory.CreateDirectory(modelFolderPath);
             }
 
-            Directory.SetCurrentDirectory(folderName);
-            string fileName = $"Model_{model.Uuid}.json";
+            string fileName = $"{folderName}.json";
+            string fullModelFilePath = Path.Combine(modelFolderPath, fileName);
 
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
@@ -531,14 +512,14 @@ public static class StaticConstructorStorage
 
             string jsonModel = JsonSerializer.Serialize(model, options);
 
-            File.WriteAllText(fileName, jsonModel);
+            File.WriteAllText(fullModelFilePath, jsonModel);
 
             ModelInfo modelInfo = new ModelInfo()
             {
                 ModelAccessType = accessType,
                 ModelFileName = fileName,
                 ModelName = model.Name,
-                ModelPath = Directory.GetCurrentDirectory(),
+                ModelPath = modelFolderPath,
                 ModelUuid = model.Uuid
             };
 
@@ -572,21 +553,19 @@ public static class StaticConstructorStorage
                 return;
             }
 
-            // Переходим в папку для шаблонов
-            Directory.SetCurrentDirectory(pathToSave);
-
             // Находим имя Шаблона без недопустимых симполов
             string sqlTemplateName = RemoveInvalidChars(sqlTemplate.Name);
 
-            // Переходим в папку шаблона
+            // Папка шаблона
             string folderName = sqlTemplateName;
-            if (!Directory.Exists(folderName))
+            string templateFolderPath = Path.Combine(pathToSave, folderName);
+            if (!Directory.Exists(templateFolderPath))
             {
-                Directory.CreateDirectory(folderName);
+                Directory.CreateDirectory(templateFolderPath);
             }
 
-            Directory.SetCurrentDirectory(folderName);
             string templateInfoFileName = $"{sqlTemplateName}.json";
+            string fullTemplateFilePath = Path.Combine(templateFolderPath, templateInfoFileName);
 
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
@@ -594,10 +573,10 @@ public static class StaticConstructorStorage
             };
 
             string jsonTemplate = JsonSerializer.Serialize(sqlTemplate, options);
-            File.WriteAllText(templateInfoFileName, jsonTemplate);
+            File.WriteAllText(fullTemplateFilePath, jsonTemplate);
 
             SqlTemplateInfo templateInfo = new SqlTemplateInfo(sqlTemplate.Uuid, sqlTemplate.Name, accessType,
-                Directory.GetCurrentDirectory(), templateInfoFileName);
+                templateFolderPath, templateInfoFileName);
             if (SqlTemplateInfos.Exists(x => x.Equals(templateInfo)))
             {
                 SqlTemplateInfos.Remove(templateInfo);
@@ -628,18 +607,16 @@ public static class StaticConstructorStorage
                 return;
             }
 
-            // Переходим в папку для шаблонов тегов
-            Directory.SetCurrentDirectory(pathToSave);
-
             // Находим имя Шаблона без недопустимых симполов
             string tagTemplateName = RemoveInvalidChars(tagTemplate.Name);
             string templateInfoFileName = $"{tagTemplateName}.json";
+            string fullTagTemplateFilePath = Path.Combine(pathToSave, templateInfoFileName);
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
                 WriteIndented = true
             };
             string jsonTemplate = JsonSerializer.Serialize(tagTemplate, options);
-            File.WriteAllText(templateInfoFileName, jsonTemplate);
+            File.WriteAllText(fullTagTemplateFilePath, jsonTemplate);
             TagTemplateInfo tagTemplateInfo = new TagTemplateInfo(
                 tagTemplate.Uuid, tagTemplate.Name, accessType, pathToSave, templateInfoFileName);
 
@@ -677,8 +654,7 @@ public static class StaticConstructorStorage
                 WriteIndented = true
             };
             string json = JsonSerializer.Serialize(infosToSave, options);
-            Directory.SetCurrentDirectory(pathToSave);
-            File.WriteAllText(ModelInfosFileName, json);
+            File.WriteAllText(Path.Combine(pathToSave, ModelInfosFileName), json);
         }
     }
 
@@ -705,8 +681,7 @@ public static class StaticConstructorStorage
                 WriteIndented = true
             };
             string json = JsonSerializer.Serialize(infosToSave, options);
-            Directory.SetCurrentDirectory(pathToSave);
-            File.WriteAllText(SqlTemplateInfosFileName, json);
+            File.WriteAllText(Path.Combine(pathToSave, SqlTemplateInfosFileName), json);
         }
     }
 
@@ -734,8 +709,7 @@ public static class StaticConstructorStorage
                 WriteIndented = true
             };
             string json = JsonSerializer.Serialize(infosToSave, options);
-            Directory.SetCurrentDirectory(pathToSave);
-            File.WriteAllText(TagTemplateInfosFileName, json);
+            File.WriteAllText(Path.Combine(pathToSave, TagTemplateInfosFileName), json);
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿using SSTCommonClasses.Constants;
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
+namespace SSTCommonClasses.ConstructorStorage.ObjectInfos;
 
 /// <summary>
 /// Класс для хранения информации о директориях клиентской части в файловой системе

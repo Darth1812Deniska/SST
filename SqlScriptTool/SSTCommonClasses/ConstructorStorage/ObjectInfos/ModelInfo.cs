@@ -2,7 +2,7 @@
 using SSTCommonClasses.Constants;
 
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
+namespace SSTCommonClasses.ConstructorStorage.ObjectInfos;
 
 /// <summary>
 /// Класс для описания информации о хранении моделей в файловой системе

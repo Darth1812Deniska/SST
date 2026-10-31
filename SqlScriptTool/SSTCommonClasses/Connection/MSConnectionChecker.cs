@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace SqlScriptToolClient.Connection
+namespace SSTCommonClasses.Connection
 {
     public class MSConnectionChecker : ConnectionChecker
     {

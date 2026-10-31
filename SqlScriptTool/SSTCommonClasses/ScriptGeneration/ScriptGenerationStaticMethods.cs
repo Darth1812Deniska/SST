@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using SSTCommonClasses.Constructor.Models;
 
-namespace SqlScriptToolAvalonia.ScriptGeneration;
+namespace SSTCommonClasses.ScriptGeneration;
 
 /// <summary>
 /// Статический класс предоставляющий методы по обработке шаблонов скриптов
