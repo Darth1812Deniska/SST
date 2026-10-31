@@ -139,12 +139,20 @@ public class ModelItem
     /// <returns>Созданный дочерний узел</returns>
     public ModelItem AddChildModelItem(string nodeName, DbType dbType)
     {
+        // Имя ключа словаря должно совпадать с именем тэга в тексте шаблона:
+        // если имя уже обрамлено угловыми скобками (<...>), используем его как есть,
+        // иначе — оборачиваем, чтобы ключ ChildModelItems, имя тэга и имя sql-шаблона
+        // дочернего узла были идентичны (иначе тэг не распознается в тексте шаблона)
+        string tagNodeName = nodeName.StartsWith('<') && nodeName.EndsWith('>')
+            ? nodeName
+            : $"<{nodeName}>";
+
         // Новый дочерний узел сразу создается с собственным sql-шаблоном
         ModelItem childModelItem = new(new SqlTemplate());
-        Tag newChildTag = SqlTemplate!.AddModelItemTag(nodeName, childModelItem);
+        Tag newChildTag = EffectiveSqlTemplate.AddModelItemTag(tagNodeName, childModelItem);
         childModelItem.SetDbType(dbType);
-        childModelItem.SqlTemplate!.SetName(nodeName);
-        ChildModelItems.Add(newChildTag.Name, childModelItem);
+        childModelItem.EffectiveSqlTemplate.SetName(newChildTag.Name);
+        ChildModelItems[newChildTag.Name] = childModelItem;
         return childModelItem;
     }
 

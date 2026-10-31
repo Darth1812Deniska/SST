@@ -172,7 +172,9 @@ public partial class ModelEditorWindow : Window
     {
         if (node.Tag is ModelItem nodeModelItem)
         {
-            string childModelItemName = GetNewNodeName();
+            // Имя нового узла совпадает с именем sql-шаблона, который будет к нему
+            // прикреплён: <ИмяМодели_ModelItem_N>. Для корневой модели — "<Модель>".
+            string childModelItemName = GetNewNodeName(nodeModelItem);
             ModelItem childModelItem = nodeModelItem.AddChildModelItem(childModelItemName, ModelDbType);
 
             TreeViewItem newChildTreeViewItem = new TreeViewItem()
@@ -182,6 +184,8 @@ public partial class ModelEditorWindow : Window
                 Tag = childModelItem
             };
             node.Items.Add(newChildTreeViewItem);
+            // Новый дочерний узел должен сразу оказаться в поле зрения
+            node.IsExpanded = true;
         }
     }
 
@@ -233,9 +237,27 @@ public partial class ModelEditorWindow : Window
         }
     }
 
-    private string GetNewNodeName()
+    private string GetNewNodeName(ModelItem parentNode)
     {
-        return $"<ModelItem_{AllNodesCount}>";
+        // Имя нового узла совпадает с именем его sql-шаблона.
+        // Для корневой модели: "<ИмяМодели_ModelItem_N>"; если имя модели не введено — "<ModelItem_N>".
+        // Для дочерних узлов, созданных через кнопку «Добавить дочерний узел»:
+        // родительский узел называется так же, как его шаблон, поэтому имя дочернего узла
+        // формируется по шаблону "<ИмяРодителя_ModelItem_N>" (унаследованное имя).
+        string parentName = parentNode.EffectiveSqlTemplate.Name;
+        if (string.IsNullOrEmpty(parentName))
+        {
+            return $"<ModelItem_{AllNodesCount}>";
+        }
+
+        if (parentName.StartsWith('<') && parentName.EndsWith('>'))
+        {
+            // Имя вида "<...>" — добавляем счётчик внутрь скобок: "<..._ModelItem_N>"
+            string inner = parentName[1..^1];
+            return $"<{inner}_ModelItem_{AllNodesCount}>";
+        }
+
+        return $"<{parentName}_ModelItem_{AllNodesCount}>";
     }
 
     private int GetNodesCount(ItemCollection items)
@@ -431,6 +453,217 @@ public partial class ModelEditorWindow : Window
         }
     }
 
+    /// <summary>
+    /// Построение имени дочернего узла на основе имени родительского узла/шаблона.
+    /// Имя дочернего узла наследуется от родителя: "<ИмяРодителя_ModelItem_N>".
+    /// </summary>
+    private string BuildChildName(string parentName, int childNumber)
+    {
+        if (string.IsNullOrEmpty(parentName))
+        {
+            return $"<ModelItem_{childNumber}>";
+        }
+
+        if (parentName.StartsWith('<') && parentName.EndsWith('>'))
+        {
+            return $"<{parentName[1..^1]}_ModelItem_{childNumber}>";
+        }
+
+        return $"<{parentName}_ModelItem_{childNumber}>";
+    }
+
+    /// <summary>
+    /// Рекурсивное обновление заголовков узлов дерева и ключей ChildModelItems
+    /// при изменении имени шаблона узла. Дочерний узел всегда называется так же,
+    /// как sql-шаблон, который его содержит; имя потомков наследуется от имени родителя.
+    /// Если новое имя совпадает с текущим — ничего не выполняется.
+    /// </summary>
+    /// <param name="treeViewItem">Визуальный узел дерева</param>
+    /// <param name="modelItem">Узел модели, привязанный к визуальному узлу</param>
+    /// <param name="newTemplateName">Новое имя sql-шаблона данного узла</param>
+    private void UpdateNodeNamesRecursively(TreeViewItem treeViewItem, ModelItem modelItem, string newTemplateName)
+    {
+        if (string.IsNullOrWhiteSpace(newTemplateName))
+        {
+            return;
+        }
+
+        // Текущее имя узла (заголовок дерева) не изменилось — ничего не делаем
+        string currentHeader = treeViewItem.Header?.ToString() ?? string.Empty;
+        if (currentHeader == newTemplateName)
+        {
+            return;
+        }
+
+        // Обновляем визуальный заголовок узла и имя его sql-шаблона
+        treeViewItem.Header = newTemplateName;
+        modelItem.EffectiveSqlTemplate.SetName(newTemplateName);
+
+        // Пересобираем словарь дочерних узлов под новыми ключами и рекурсивно
+        // обновляем имена потомков (наследуются от имени родителя)
+        List<KeyValuePair<string, ModelItem>> oldChildren = modelItem.ChildModelItems.ToList();
+        modelItem.ChildModelItems.Clear();
+
+        int childIndex = 0;
+        foreach (KeyValuePair<string, ModelItem> child in oldChildren)
+        {
+            childIndex++;
+            string childNewName = BuildChildName(newTemplateName, childIndex);
+
+            ModelItem childModelItem = child.Value;
+            childModelItem.EffectiveSqlTemplate.SetName(childNewName);
+            modelItem.ChildModelItems[childNewName] = childModelItem;
+
+            // Ищем соответствующий визуальный дочерний узел: сначала по объекту Tag,
+            // затем по старому имени (если дерево было построено из сохранённой модели)
+            TreeViewItem? childTreeViewItem = treeViewItem.Items
+                .OfType<TreeViewItem>()
+                .FirstOrDefault(item => ReferenceEquals(item.Tag, childModelItem))
+                            ?? treeViewItem.Items
+                                .OfType<TreeViewItem>()
+                                .FirstOrDefault(item => item.Header?.ToString() == child.Key);
+
+            if (childTreeViewItem != null)
+            {
+                UpdateNodeNamesRecursively(childTreeViewItem, childModelItem, childNewName);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Синхронизация структуры дерева под выбранным узлом с тэгами типа
+    /// <see cref="TagType.ModelItemParent"/> из его sql-шаблона. Вызывается после
+    /// закрытия SqlTemplateEditorWindow. Дочерние узлы, уже созданные пользователем
+    /// ранее, сохраняются (не теряются), новые тэги получают унаследованные имена.
+    /// </summary>
+    private void SyncChildrenWithTemplateTags(TreeViewItem selTreeViewItem, ModelItem selModelItem)
+    {
+        List<Tag> modelItemTags = selModelItem.SqlTemplate?.Tags
+            .Where(tag => tag.TagType == TagType.ModelItemParent).ToList()
+            ?? new List<Tag>();
+
+        // Существующие дочерние визуальные узлы и их модельные узлы
+        List<TreeViewItem> existingChildViewItems = selTreeViewItem.Items.OfType<TreeViewItem>().ToList();
+        List<ModelItem> existingChildModelItems = existingChildViewItems
+            .Where(item => item.Tag is ModelItem)
+            .Select(item => (ModelItem)item.Tag!)
+            .ToList();
+
+        // Тэги, которым уже соответствует существующий дочерний узел (по шаблону или имени)
+        List<Tag> matchedTags = new List<Tag>();
+        List<(TreeViewItem ViewItem, ModelItem ModelItem)> retainedChildren =
+            new List<(TreeViewItem, ModelItem)>();
+
+        foreach (ModelItem childModelItem in existingChildModelItems)
+        {
+            Tag? matchingTag = modelItemTags.FirstOrDefault(tag =>
+                (tag.SqlTemplate != null && ReferenceEquals(tag.SqlTemplate, childModelItem.SqlTemplate))
+                || tag.Name == childModelItem.EffectiveSqlTemplate.Name);
+
+            if (matchingTag == null)
+            {
+                continue;
+            }
+
+            matchedTags.Add(matchingTag);
+            TreeViewItem? viewItem = existingChildViewItems
+                .FirstOrDefault(item => ReferenceEquals(item.Tag, childModelItem));
+            if (viewItem != null)
+            {
+                retainedChildren.Add((viewItem, childModelItem));
+            }
+        }
+
+        // Новые тэги ModelItemParent, добавленные при редактировании шаблона
+        List<Tag> newTags = modelItemTags.Where(tag => !matchedTags.Contains(tag)).ToList();
+
+        // Если структура не изменилась — только обновляем заголовки (имя шаблона могло измениться)
+        if (newTags.Count == 0 && retainedChildren.Count == existingChildModelItems.Count)
+        {
+            for (int i = 0; i < retainedChildren.Count; i++)
+            {
+                (TreeViewItem viewItem, ModelItem childModelItem) = retainedChildren[i];
+                string childName = childModelItem.EffectiveSqlTemplate.Name;
+                if (!string.IsNullOrEmpty(childName))
+                {
+                    viewItem.Header = childName;
+                }
+            }
+
+            return;
+        }
+
+        // Полная пересборка дочерних узлов выбранного узла
+        selTreeViewItem.Items.Clear();
+        selModelItem.ChildModelItems.Clear();
+
+        // Сохраняем уже существующие дочерние узлы (с их потомками)
+        foreach ((TreeViewItem viewItem, ModelItem childModelItem) in retainedChildren)
+        {
+            string childName = childModelItem.EffectiveSqlTemplate.Name;
+            if (string.IsNullOrEmpty(childName))
+            {
+                childName = BuildChildName(selModelItem.EffectiveSqlTemplate.Name,
+                    selModelItem.ChildModelItems.Count + 1);
+                childModelItem.EffectiveSqlTemplate.SetName(childName);
+            }
+
+            selModelItem.ChildModelItems[childName] = childModelItem;
+            selTreeViewItem.Items.Add(viewItem);
+        }
+
+        // Добавляем дочерние узлы для новых тэгов ModelItemParent
+        foreach (Tag template in newTags)
+        {
+            // Имя нового дочернего узла наследуется от имени родительского шаблона
+            string childName = string.IsNullOrEmpty(template.Name)
+                ? BuildChildName(selModelItem.EffectiveSqlTemplate.Name,
+                    selModelItem.ChildModelItems.Count + 1)
+                : template.Name;
+
+            ModelItem modelItem;
+            if (template.SqlTemplate != null)
+            {
+                // Тэг уже связан с sql-шаблоном (например, выбран через редактор тэгов)
+                modelItem = new ModelItem
+                {
+                    SqlTemplate = template.SqlTemplate
+                };
+                // Узел называется так же, как шаблон, его содержащий
+                if (string.IsNullOrEmpty(modelItem.SqlTemplate!.Name))
+                {
+                    modelItem.SqlTemplate.SetName(childName);
+                }
+                else
+                {
+                    childName = modelItem.SqlTemplate.Name;
+                }
+
+                if (!selModelItem.ChildModelItems.ContainsKey(childName))
+                {
+                    selModelItem.ChildModelItems[childName] = modelItem;
+                }
+            }
+            else
+            {
+                // Создаём новый дочерний узел через модельный метод — он сам создаст
+                // sql-шаблон, добавит тэг в текст шаблона и зарегистрирует в ChildModelItems
+                modelItem = selModelItem.AddChildModelItem(childName, ModelDbType);
+            }
+
+            TreeViewItem treeViewItem = new TreeViewItem()
+            {
+                Header = modelItem.EffectiveSqlTemplate.Name,
+                IsExpanded = true,
+                Tag = modelItem
+            };
+
+            selTreeViewItem.Items.Add(treeViewItem);
+        }
+
+        selTreeViewItem.IsExpanded = true;
+    }
+
     private async void BtnEditNode_Click(object? sender, RoutedEventArgs e)
     {
         object? selItem = TvModelTree.SelectedItem;
@@ -439,45 +672,31 @@ public partial class ModelEditorWindow : Window
         if (selTreeViewItem?.Tag is ModelItem selModelItem)
         {
             // Открываем окно для выбранного шаблона
-            SqlTemplateEditorWindow sqlTemplateEditorWindow = new SqlTemplateEditorWindow(selModelItem.SqlTemplate);
+            SqlTemplateEditorWindow sqlTemplateEditorWindow =
+                new SqlTemplateEditorWindow(selModelItem.EffectiveSqlTemplate);
             await sqlTemplateEditorWindow.ShowDialog(this);
             // подтягиваем изменения
             selModelItem.SqlTemplate = sqlTemplateEditorWindow.CurrentSqlTemplate;
 
-            // Обновляем дочерние узлы
-            // Удаляем дочерние узлы для выбранного узла
-            selTreeViewItem.Items.Clear();
-            // Чистим ChildModelItem
-            selModelItem.ChildModelItems.Clear();
+            string updatedTemplateName = sqlTemplateEditorWindow.CurrentSqlTemplate.Name;
 
-            // Создаем новые
-            // Получаем из шаблона тэги с типом
-            List<Tag> childTemplates = selModelItem.SqlTemplate.Tags
-                .Where(tag => tag.TagType == TagType.ModelItemParent).ToList();
-
-            // проходимся по ним
-            foreach (Tag template in childTemplates)
+            // Обновляем заголовок выбранного узла: узел называется так же,
+            // как sql-шаблон, который он содержит
+            bool rootItemSelected = ReferenceEquals(selTreeViewItem, VisualRootModelItem);
+            if (!string.IsNullOrWhiteSpace(updatedTemplateName) && rootItemSelected)
             {
-                // Обновить ChildItem
-                if (template.SqlTemplate == null)
-                {
-                    continue;
-                }
-
-                ModelItem modelItem = new ModelItem()
-                {
-                    SqlTemplate = template.SqlTemplate
-                };
-                // Для каждого создаем узлы
-                TreeViewItem treeViewItem = new TreeViewItem()
-                {
-                    Header = template.Name,
-                    Tag = modelItem
-                };
-                selTreeViewItem.Items.Add(treeViewItem);
-                // Добавляем в ChildModelItem
-                selModelItem.ChildModelItems.Add(template.Name, modelItem);
+                // Изменён корневой узел: обновляем имя модели и рекурсивно
+                // переименовываем все дочерние узлы (без потери потомков)
+                TbName.Text = updatedTemplateName.Trim('<', '>');
+                UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
             }
+            else if (!string.IsNullOrWhiteSpace(updatedTemplateName))
+            {
+                selTreeViewItem.Header = updatedTemplateName;
+            }
+
+            // Синхронизируем дочерние узлы с тэгами ModelItemParent из обновлённого шаблона
+            SyncChildrenWithTemplateTags(selTreeViewItem, selModelItem);
         }
     }
 
@@ -561,6 +780,11 @@ public partial class ModelEditorWindow : Window
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
             rootModelItem.EffectiveSqlTemplate.SetName(nodeName);
+
+            // Рекурсивно обновляем имена дочерних узлов, унаследованные от имени
+            // корневого шаблона (узел называется так же, как шаблон его содержащий).
+            // Если имя не изменилось — метод ничего не делает.
+            UpdateNodeNamesRecursively(VisualRootModelItem, rootModelItem, nodeName);
         }
     }
 
