@@ -6,6 +6,7 @@ using System.Text.Json;
 using SSTCommonClasses.Constants;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;
+using SSTCommonClasses.ConstructorStorage.FileStorageDto;
 using SSTCommonClasses.ConstructorStorage.ObjectInfos;
 using SSTCommonClasses.ConstructorStorage.ObjectLists;
 
@@ -147,7 +148,9 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Загрузка моделей из файловой системы
+    /// Загрузка моделей из файловой системы.
+    /// Модели загружаются после sql-шаблонов и шаблонов тэгов, поэтому ссылки на
+    /// связанные объекты (SqlTemplateUuid) разрешаются по уже загруженному хранилищу.
     /// </summary>
     public static void LoadModels()
     {
@@ -165,9 +168,10 @@ public static class StaticConstructorStorage
                     if (!string.IsNullOrEmpty(modelFileName) && File.Exists(fullModelFilePath))
                     {
                         string json = File.ReadAllText(fullModelFilePath);
-                        Model? model = JsonSerializer.Deserialize<Model>(json);
-                        if (model != null)
+                        ModelFileDto? modelDto = JsonSerializer.Deserialize<ModelFileDto>(json);
+                        if (modelDto != null)
                         {
+                            Model model = modelDto.FromDto(ResolveConstructorObject);
                             Models.AddOrReplace(model);
                         }
                     }
@@ -184,7 +188,9 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Загрузка sql-шаблонов из файловой системы
+    /// Загрузка sql-шаблонов из файловой системы.
+    /// Атрибуты шаблона читаются из файла .json, текст скрипта — из файла .sql,
+    /// расположенного в той же папке, что и файл атрибутов.
     /// </summary>
     public static void LoadSqlTemplates()
     {
@@ -202,9 +208,14 @@ public static class StaticConstructorStorage
                     if (!string.IsNullOrEmpty(templateFileName) && File.Exists(fullTemplateFilePath))
                     {
                         string templateJson = File.ReadAllText(fullTemplateFilePath);
-                        SqlTemplate? sqlTemplate = JsonSerializer.Deserialize<SqlTemplate>(templateJson);
-                        if (sqlTemplate != null)
+                        SqlTemplateFileDto? templateDto = JsonSerializer.Deserialize<SqlTemplateFileDto>(templateJson);
+                        if (templateDto != null)
                         {
+                            // Читаем текст sql-шаблона из файла .sql в той же папке, что и файл атрибутов
+                            string sqlText = ReadSqlTemplateText(templateFolderPath,
+                                templateInfo.TemplateSqlFileName, templateDto.Name);
+
+                            SqlTemplate sqlTemplate = templateDto.FromDto(ResolveConstructorObject, sqlText);
                             SqlTemplates.AddOrReplace(sqlTemplate);
                         }
                     }
@@ -239,9 +250,10 @@ public static class StaticConstructorStorage
                     if (!string.IsNullOrEmpty(templateFileName) && File.Exists(fullTagTemplateFilePath))
                     {
                         string templateJson = File.ReadAllText(fullTagTemplateFilePath);
-                        TagTemplate? tagTemplate = JsonSerializer.Deserialize<TagTemplate>(templateJson);
-                        if (tagTemplate != null)
+                        TagTemplateFileDto? tagTemplateDto = JsonSerializer.Deserialize<TagTemplateFileDto>(templateJson);
+                        if (tagTemplateDto != null)
                         {
+                            TagTemplate tagTemplate = tagTemplateDto.FromDto(ResolveConstructorObject);
                             TagTemplates.AddOrReplace(tagTemplate);
                         }
                     }
@@ -475,7 +487,10 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Сохранение модели в хранилище
+    /// Сохранение модели в хранилище.
+    /// В файл .json сериализуются только атрибуты модели (DTO), при этом узлы дерева
+    /// содержат ссылки на sql-шаблоны по уникальному идентификатору, а не объекты целиком.
+    /// Каждый sql-шаблон, на который ссылается модель, дополнительно сохраняется в файловую систему.
     /// </summary>
     /// <param name="model">Сохраняемая модель</param>
     private static void SaveModelToFileStorage(Model model)
@@ -494,6 +509,13 @@ public static class StaticConstructorStorage
                 return;
             }
 
+            // Сначала сохраняем все sql-шаблоны, на которые ссылается модель,
+            // чтобы в файле модели остались только ссылки по уникальным идентификаторам
+            foreach (SqlTemplate referencedTemplate in EnumerateModelSqlTemplates(model))
+            {
+                SaveSqlTemplateToFileStorage(referencedTemplate);
+            }
+
             // Папка для сохранения модели
             string folderName = $"Model_{model.Uuid}";
             string modelFolderPath = Path.Combine(pathToSave, folderName);
@@ -510,7 +532,8 @@ public static class StaticConstructorStorage
                 WriteIndented = true
             };
 
-            string jsonModel = JsonSerializer.Serialize(model, options);
+            ModelFileDto modelDto = model.ToDto();
+            string jsonModel = JsonSerializer.Serialize(modelDto, options);
 
             File.WriteAllText(fullModelFilePath, jsonModel);
 
@@ -534,7 +557,10 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Сохранение sql-шаблонов в хранилище
+    /// Сохранение sql-шаблона в хранилище.
+    /// Атрибуты шаблона (включая тэги как ссылки по уникальным идентификаторам) сохраняются
+    /// в файл с расширением .json, а текст самого sql-шаблона — в файл с расширением .sql,
+    /// размещенный в той же папке, что и файл атрибутов.
     /// </summary>
     /// <param name="sqlTemplate">Сохраняемый sql-шаблон</param>
     private static void SaveSqlTemplateToFileStorage(SqlTemplate sqlTemplate)
@@ -564,19 +590,25 @@ public static class StaticConstructorStorage
                 Directory.CreateDirectory(templateFolderPath);
             }
 
-            string templateInfoFileName = $"{sqlTemplateName}.json";
-            string fullTemplateFilePath = Path.Combine(templateFolderPath, templateInfoFileName);
-
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
                 WriteIndented = true
             };
 
-            string jsonTemplate = JsonSerializer.Serialize(sqlTemplate, options);
+            // Файл атрибутов шаблона (.json) — без текста скрипта и без вложенных объектов целиком
+            string templateInfoFileName = $"{sqlTemplateName}.json";
+            string fullTemplateFilePath = Path.Combine(templateFolderPath, templateInfoFileName);
+            SqlTemplateFileDto templateDto = sqlTemplate.ToDto();
+            string jsonTemplate = JsonSerializer.Serialize(templateDto, options);
             File.WriteAllText(fullTemplateFilePath, jsonTemplate);
 
+            // Файл с текстом sql-шаблона (.sql) — в той же папке, что и файл атрибутов
+            string templateSqlFileName = $"{sqlTemplateName}.sql";
+            string fullTemplateSqlFilePath = Path.Combine(templateFolderPath, templateSqlFileName);
+            File.WriteAllText(fullTemplateSqlFilePath, sqlTemplate.SqlText ?? string.Empty);
+
             SqlTemplateInfo templateInfo = new SqlTemplateInfo(sqlTemplate.Uuid, sqlTemplate.Name, accessType,
-                templateFolderPath, templateInfoFileName);
+                templateFolderPath, templateInfoFileName, templateSqlFileName);
             if (SqlTemplateInfos.Exists(x => x.Equals(templateInfo)))
             {
                 SqlTemplateInfos.Remove(templateInfo);
@@ -588,7 +620,9 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Сохранение шаблона тэга в хранилище
+    /// Сохранение шаблона тэга в хранилище.
+    /// В файл .json сериализуются только атрибуты шаблона тэга, привязанный sql-шаблон
+    /// сохраняется отдельным объектом, а в файле хранится ссылка на него по уникальному идентификатору.
     /// </summary>
     /// <param name="tagTemplate">Сохраняемый шаблон тэга</param>
     private static void SaveTagTemplateToFileStorage(TagTemplate tagTemplate)
@@ -607,6 +641,12 @@ public static class StaticConstructorStorage
                 return;
             }
 
+            // Сначала сохраняем привязанный sql-шаблон, чтобы в файле осталась только ссылка по Uuid
+            if (tagTemplate.SqlTemplate != null)
+            {
+                SaveSqlTemplateToFileStorage(tagTemplate.SqlTemplate);
+            }
+
             // Находим имя Шаблона без недопустимых симполов
             string tagTemplateName = RemoveInvalidChars(tagTemplate.Name);
             string templateInfoFileName = $"{tagTemplateName}.json";
@@ -615,7 +655,8 @@ public static class StaticConstructorStorage
             {
                 WriteIndented = true
             };
-            string jsonTemplate = JsonSerializer.Serialize(tagTemplate, options);
+            TagTemplateFileDto tagTemplateDto = tagTemplate.ToDto();
+            string jsonTemplate = JsonSerializer.Serialize(tagTemplateDto, options);
             File.WriteAllText(fullTagTemplateFilePath, jsonTemplate);
             TagTemplateInfo tagTemplateInfo = new TagTemplateInfo(
                 tagTemplate.Uuid, tagTemplate.Name, accessType, pathToSave, templateInfoFileName);
@@ -721,6 +762,95 @@ public static class StaticConstructorStorage
     private static string RemoveInvalidChars(string filename)
     {
         return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
+    }
+
+    /// <summary>
+    /// Чтение текста sql-шаблона из файла .sql, размещенного в той же папке, что и файл атрибутов.
+    /// Если имя файла текста не задано (например, для данных, сохраненных в старом формате),
+    /// выполняется поиск одноименного файла с расширением .sql.
+    /// </summary>
+    /// <param name="templateFolderPath">Папка, содержащая файл атрибутов шаблона</param>
+    /// <param name="templateSqlFileName">Название файла с текстом шаблона из информации о хранилище</param>
+    /// <param name="templateName">Название шаблона (резервный вариант имени файла)</param>
+    /// <returns>Текст sql-шаблона либо пустая строка, если файл текста отсутствует</returns>
+    private static string ReadSqlTemplateText(string templateFolderPath, string? templateSqlFileName, string? templateName)
+    {
+        if (!string.IsNullOrEmpty(templateSqlFileName))
+        {
+            string fullSqlFilePath = Path.Combine(templateFolderPath, templateSqlFileName);
+            if (File.Exists(fullSqlFilePath))
+            {
+                return File.ReadAllText(fullSqlFilePath);
+            }
+        }
+
+        // Резервный поиск: файл .sql с тем же именем, что и файл атрибутов, в той же папке
+        if (!string.IsNullOrEmpty(templateName))
+        {
+            string fallbackSqlFileName = RemoveInvalidChars(templateName) + ".sql";
+            string fallbackSqlFilePath = Path.Combine(templateFolderPath, fallbackSqlFileName);
+            if (File.Exists(fallbackSqlFilePath))
+            {
+                return File.ReadAllText(fallbackSqlFilePath);
+            }
+        }
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Разрешение ссылки на объект конструктора по его уникальному идентификатору.
+    /// Используется при загрузке DTO из файловой системы: вместо сериализованных объектов
+    /// целиком в файлы записываются Uuid, которые при загрузке сопоставляются с объектами хранилища.
+    /// </summary>
+    /// <param name="uuid">Уникальный идентификатор объекта</param>
+    /// <returns>Найденный объект (SqlTemplate или TagTemplate) либо null, если объект отсутствует</returns>
+    private static object? ResolveConstructorObject(Guid uuid)
+    {
+        SqlTemplate? sqlTemplate = SqlTemplates.GetById(uuid);
+        if (sqlTemplate != null)
+        {
+            return sqlTemplate;
+        }
+
+        TagTemplate? tagTemplate = TagTemplates.GetById(uuid);
+        return tagTemplate;
+    }
+
+    /// <summary>
+    /// Обход всех sql-шаблонов, на которые ссылается модель (корневые шаблоны узлов дерева
+    /// и дочерние шаблоны тэгов), без зацикливания на повторяющихся ссылках
+    /// </summary>
+    /// <param name="model">Модель, чьи связанные шаблоны нужно обойти</param>
+    /// <returns>Неповторяющаяся последовательность sql-шаблонов модели</returns>
+    private static IEnumerable<SqlTemplate> EnumerateModelSqlTemplates(Model model)
+    {
+        HashSet<Guid> visited = new();
+        return EnumerateModelSqlTemplatesIterator(model.RootModelItem, visited);
+    }
+
+    private static IEnumerable<SqlTemplate> EnumerateModelSqlTemplatesIterator(ModelItem modelItem, HashSet<Guid> visited)
+    {
+        if (modelItem.SqlTemplate != null && visited.Add(modelItem.SqlTemplate.Uuid))
+        {
+            yield return modelItem.SqlTemplate;
+
+            foreach (Tag tag in modelItem.SqlTemplate.Tags)
+            {
+                if (tag.SqlTemplate != null && visited.Add(tag.SqlTemplate.Uuid))
+                {
+                    yield return tag.SqlTemplate;
+                }
+            }
+        }
+
+        foreach (ModelItem childModelItem in modelItem.ChildModelItems.Values)
+        {
+            foreach (SqlTemplate template in EnumerateModelSqlTemplatesIterator(childModelItem, visited))
+            {
+                yield return template;
+            }
+        }
     }
 
     #endregion

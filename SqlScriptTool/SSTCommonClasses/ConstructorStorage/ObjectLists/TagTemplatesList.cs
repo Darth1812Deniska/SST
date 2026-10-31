@@ -21,4 +21,14 @@ public class TagTemplatesList:List<TagTemplate>
         }
         Add(tagTemplate);
     }
+
+    /// <summary>
+    /// Поиск шаблона тэга по уникальному идентификатору
+    /// </summary>
+    /// <param name="uuid">Уникальный идентификатор шаблона тэга</param>
+    /// <returns>Найденный шаблон тэга либо null</returns>
+    public TagTemplate? GetById(Guid uuid)
+    {
+        return Find(x => x.Uuid == uuid);
+    }
 }
