@@ -124,6 +124,11 @@ public partial class SqlTemplateEditorWindow : Window
 
     private SqlTemplate GetCurrentSqlTemplate()
     {
+        // Перед формированием результата синхронизируем имена тэгов и дочерних
+        // sql-шаблонов с текущим названием шаблона (требование: изменённый узел
+        // должен называться так же, как шаблон, его содержащий).
+        SyncNamesWithTemplate();
+
         SqlTemplate sqlTemplate = new SqlTemplate()
         {
             AccessType = AccessType.Private,
@@ -139,6 +144,67 @@ public partial class SqlTemplateEditorWindow : Window
         };
 
         return sqlTemplate;
+    }
+
+    /// <summary>
+    /// Синхронизация имени шаблона с именами тэга, под которым он используется
+    /// в родительском шаблоне, и с именем дочернего sql-шаблона, прикреплённого к тэгу.
+    /// Выполняется только если имя шаблона было изменено пользователем.
+    /// </summary>
+    private void SyncNamesWithTemplate()
+    {
+        if (InputSqlTemplate == null)
+        {
+            return;
+        }
+
+        string currentName = SqlTemplateName;
+        string? oldName = InputSqlTemplate.Name;
+
+        // Имя не менялось — ничего не делаем
+        if (string.IsNullOrEmpty(oldName) || oldName == currentName)
+        {
+            return;
+        }
+
+        // Если старый текст шаблона содержал старый тэг ровно один раз, переименовываем
+        // его в тексте (с сохранением уже внесённых пользователем правок)
+        string? oldSqlText = InputSqlTemplate.SqlText;
+        int occurrences = string.IsNullOrEmpty(oldSqlText)
+            ? 0
+            : Regex.Matches(Regex.Escape(oldSqlText), Regex.Escape(oldName)).Count;
+        bool renameInText = occurrences == 1 && !string.IsNullOrEmpty(TbCodeEditor.Text)
+                            && TbCodeEditor.Text.Contains(oldName);
+
+        foreach (Tag tag in SqlTemplateTags)
+        {
+            if (tag.TagType != TagType.ModelItemParent)
+            {
+                continue;
+            }
+
+            // Тэг, представляющий данный шаблон в родительском шаблоне
+            if (tag.Name == oldName)
+            {
+                tag.SetName(currentName);
+                if (renameInText)
+                {
+                    TbCodeEditor.Text = TbCodeEditor.Text?.Replace(oldName, currentName);
+                }
+
+                continue;
+            }
+
+            // Дочерний тэг с унаследованным именем: sql-шаблон дочернего узла называется
+            // так же, как тэг, который его содержит (узел == имя шаблона в дереве модели).
+            // При переименовании родителя префикс имени заменяется на новое имя шаблона.
+            if (tag.SqlTemplate != null && !string.IsNullOrEmpty(tag.Name)
+                && oldName.Length > 2 && tag.Name.StartsWith(oldName[..^1], StringComparison.Ordinal))
+            {
+                string suffix = tag.Name[oldName.Length..]; // хвост вида "_ModelItem_N>"
+                tag.SqlTemplate.SetName(currentName + suffix);
+            }
+        }
     }
 
     #endregion
