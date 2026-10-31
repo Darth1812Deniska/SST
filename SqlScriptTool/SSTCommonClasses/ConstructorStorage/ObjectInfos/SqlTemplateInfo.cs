@@ -24,9 +24,15 @@ public class SqlTemplateInfo
     /// </summary>
     public string? TemplateFolderPath { get; set; }
     /// <summary>
-    /// Название файла, в котором хранится sql-шаблон
+    /// Название файла атрибутов sql-шаблона (расширение .json)
     /// </summary>
     public string? TemplateInfoFileName { get; set; }
+
+    /// <summary>
+    /// Название файла с текстом sql-шаблона (расширение .sql),
+    /// который хранится в той же папке, что и файл атрибутов
+    /// </summary>
+    public string? TemplateSqlFileName { get; set; }
 
 
     /// <summary>
@@ -43,18 +49,17 @@ public class SqlTemplateInfo
     /// <param name="templateName">Название сохраненного SQL-шаблона</param>
     /// <param name="templateAccessType">Тип доступа к шаблону</param>
     /// <param name="templateFolderPath">Путь сохранения sql-шаблона в файловой системе</param>
-    /// <param name="templateFileName">Название файла, в котором хранится sql-шаблон</param>
+    /// <param name="templateFileName">Название файла атрибутов sql-шаблона (.json)</param>
+    /// <param name="templateSqlFileName">Название файла с текстом sql-шаблона (.sql)</param>
     public SqlTemplateInfo(Guid templateUuid, string? templateName, AccessType templateAccessType,
-        string templateFolderPath, string templateFileName/*, string templateSqlFileName, string templateTagsFileName*/)
+        string templateFolderPath, string templateFileName, string templateSqlFileName)
     {
         TemplateUuid = templateUuid;
         TemplateName = templateName;
         TemplateAccessType = templateAccessType;
         TemplateFolderPath = templateFolderPath;
         TemplateInfoFileName = templateFileName;
-        //TemplateSqlFileName = templateSqlFileName;
-        //TemplateTagsFileName = templateTagsFileName;
-        
+        TemplateSqlFileName = templateSqlFileName;
     }
 
     public bool Equals(SqlTemplateInfo? other)

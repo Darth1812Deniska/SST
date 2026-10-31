@@ -21,4 +21,14 @@ public class SqlTemplatesList : List<SqlTemplate>
         }
         Add(sqlTemplate);
     }
+
+    /// <summary>
+    /// Поиск sql-шаблона по уникальному идентификатору
+    /// </summary>
+    /// <param name="uuid">Уникальный идентификатор шаблона</param>
+    /// <returns>Найденный шаблон либо null</returns>
+    public SqlTemplate? GetById(Guid uuid)
+    {
+        return Find(x => x.Uuid == uuid);
+    }
 }
