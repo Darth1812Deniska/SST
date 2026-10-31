@@ -19,13 +19,77 @@ public class Tag : ConstructorItem
     /// </summary>
     public TagDataType? DataType { get; set; }
     /// <summary>
-    /// Шаблон тэга, на основе которого создан текущий тэг
+    /// Шаблон тэга, на основе которого создан текущий тэг.
+    /// Равен null, если шаблон не привязан либо ссылка на сохраненный шаблон
+    /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
     /// </summary>
-    public TagTemplate? TagTemplate { get; set; }
+    public TagTemplate? TagTemplate
+    {
+        get => _tagTemplate;
+        set
+        {
+            _tagTemplate = value;
+            _savedTagTemplateUuid = null;
+        }
+    }
+
     /// <summary>
-    /// Дочерний sql-щаблон привязанный к тэгу
+    /// Дочерний sql-щаблон привязанный к тэгу.
+    /// Равен null, если шаблон не привязан либо ссылка на сохраненный шаблон
+    /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
     /// </summary>
-    public SqlTemplate? SqlTemplate { get; set; }
+    public SqlTemplate? SqlTemplate
+    {
+        get => _sqlTemplate;
+        set
+        {
+            _sqlTemplate = value;
+            _savedSqlTemplateUuid = null;
+        }
+    }
+
+    private TagTemplate? _tagTemplate;
+    private SqlTemplate? _sqlTemplate;
+    private Guid? _savedTagTemplateUuid;
+    private Guid? _savedSqlTemplateUuid;
+
+    /// <summary>
+    /// Уникальный идентификатор шаблона тэга, на который ссылается тэг
+    /// (в том числе неразрешенная ссылка, сохраненная при первом этапе выгрузки).
+    /// null — если ссылка отсутствовала в сохраненных данных.
+    /// </summary>
+    public Guid? TagTemplateUuid => _tagTemplate?.Uuid ?? _savedTagTemplateUuid;
+
+    /// <summary>
+    /// Уникальный идентификатор дочернего sql-шаблона, на который ссылается тэг
+    /// (в том числе неразрешенная ссылка, сохраненная при первом этапе выгрузки).
+    /// null — если ссылка отсутствовала в сохраненных данных.
+    /// </summary>
+    public Guid? SqlTemplateUuid => _sqlTemplate?.Uuid ?? _savedSqlTemplateUuid;
+
+    /// <summary>
+    /// Установка ссылки тэга на шаблон тэга по уникальному идентификатору (без разрешения ссылки).
+    /// Используется на первом этапе выгрузки DTO из файловой системы; разрешение выполняется
+    /// вторым этапом по уже загруженным в память объектам.
+    /// </summary>
+    /// <param name="tagTemplateUuid">Уникальный идентификатор шаблона тэга</param>
+    public void SetTagTemplateReference(Guid tagTemplateUuid)
+    {
+        _tagTemplate = null;
+        _savedTagTemplateUuid = tagTemplateUuid;
+    }
+
+    /// <summary>
+    /// Установка ссылки тэга на дочерний sql-шаблон по уникальному идентификатору
+    /// (без разрешения ссылки). Используется на первом этапе выгрузки DTO из файловой системы;
+    /// разрешение выполняется вторым этапом по уже загруженным в память объектам.
+    /// </summary>
+    /// <param name="sqlTemplateUuid">Уникальный идентификатор sql-шаблона</param>
+    public void SetSqlTemplateReference(Guid sqlTemplateUuid)
+    {
+        _sqlTemplate = null;
+        _savedSqlTemplateUuid = sqlTemplateUuid;
+    }
     /// <summary>
     /// Метка, указывающая, является ли тэг родителем для множественного паттерна
     /// </summary>
