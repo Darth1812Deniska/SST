@@ -1,7 +1,7 @@
 ﻿using System;
 using SSTCommonClasses.Constants;
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
+namespace SSTCommonClasses.ConstructorStorage.ObjectInfos;
 /// <summary>
 /// Класс для описания информации о хранении SQL-шаблона в файловой системе
 /// </summary>

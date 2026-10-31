@@ -11,6 +11,7 @@ using Avalonia.Platform.Storage;
 
 using SqlScriptToolAvalonia.CustomComponents;
 using SqlScriptToolAvalonia.Helpers;
+using SSTCommonClasses.ScriptGeneration;
 using SqlScriptToolAvalonia.ScriptGeneration;
 
 using SSTCommonClasses.Constructor;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SSTCommonClasses.Constructor.Models;
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectLists;
+namespace SSTCommonClasses.ConstructorStorage.ObjectLists;
 
 /// <summary>
 /// Класс для доступа к списку sql-шаблонов в системе

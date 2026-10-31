@@ -1,7 +1,7 @@
 ﻿using SSTCommonClasses.Constants;
 using System;
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectInfos;
+namespace SSTCommonClasses.ConstructorStorage.ObjectInfos;
 
 /// <summary>
 /// Класс для описания информации о хранении шаблонов тэгов в файловой системе

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
+using SSTCommonClasses.ScriptGeneration;
 using SqlScriptToolAvalonia.ScriptGeneration;
 using SSTCommonClasses.Constructor.Models;
 using SSTCommonClasses.Constructor.Tags;

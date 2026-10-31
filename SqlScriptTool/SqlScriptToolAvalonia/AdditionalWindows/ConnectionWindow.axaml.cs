@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using SqlScriptToolAvalonia.Helpers;
-using SqlScriptToolClient.Connection;
+using SSTCommonClasses.Connection;
 
 namespace SqlScriptToolAvalonia.AdditionalWindows;
 

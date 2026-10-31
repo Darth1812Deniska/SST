@@ -1,6 +1,6 @@
 ﻿using Npgsql;
 
-namespace SqlScriptToolClient.Connection
+namespace SSTCommonClasses.Connection
 {
     public class PGConnectionChecker : ConnectionChecker
     {

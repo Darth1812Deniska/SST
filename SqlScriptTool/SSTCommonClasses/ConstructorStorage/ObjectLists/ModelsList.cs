@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SSTCommonClasses.Constructor.Models;
 
-namespace SqlScriptToolClient.ConstructorStorage.ObjectLists;
+namespace SSTCommonClasses.ConstructorStorage.ObjectLists;
 
 /// <summary>
 /// Класс для доступа к списку моделей в системе

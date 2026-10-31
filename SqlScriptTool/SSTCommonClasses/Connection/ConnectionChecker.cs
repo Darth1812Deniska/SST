@@ -1,4 +1,4 @@
-﻿namespace SqlScriptToolClient.Connection
+﻿namespace SSTCommonClasses.Connection
 {
     public class ConnectionChecker
     {
