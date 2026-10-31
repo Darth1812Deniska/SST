@@ -38,11 +38,13 @@ public static class FileStorageDtoConverter
     }
 
     /// <summary>
-    /// Восстановление sql-шаблона из DTO.
+    /// Восстановление sql-шаблона из DTO (первый этап выгрузки).
     /// Текст скрипта подставляется отдельно (он хранится в файле .sql),
-    /// ссылки на связанные объекты разрешаются через resolver.
+    /// ссылки на связанные объекты НЕ разрешаются — вместо этого сохраняются
+    /// неразрешенные ссылки (Uuid) для второго этапа выгрузки, когда все DTO
+    /// уже загружены в память.
     /// </summary>
-    public static SqlTemplate FromDto(this SqlTemplateFileDto dto, Func<Guid, object?> referenceResolver, string? sqlText)
+    public static SqlTemplate FromDto(this SqlTemplateFileDto dto, string? sqlText)
     {
         SqlTemplate sqlTemplate = new()
         {
@@ -60,7 +62,7 @@ public static class FileStorageDtoConverter
 
         foreach (TagFileDto tagDto in dto.Tags)
         {
-            sqlTemplate.Tags.Add(tagDto.FromDto(referenceResolver));
+            sqlTemplate.Tags.Add(tagDto.FromDto());
         }
 
         return sqlTemplate;
@@ -91,9 +93,11 @@ public static class FileStorageDtoConverter
     }
 
     /// <summary>
-    /// Восстановление модели из DTO. Ссылки на sql-шаблоны разрешаются через resolver.
+    /// Восстановление модели из DTO (первый этап выгрузки).
+    /// Ссылки на sql-шаблоны не разрешаются — неразрешенные ссылки сохраняются
+    /// для второго этапа выгрузки (<see cref="ResolveReferences"/>).
     /// </summary>
-    public static Model FromDto(this ModelFileDto dto, Func<Guid, object?> referenceResolver)
+    public static Model FromDto(this ModelFileDto dto)
     {
         Model model = new()
         {
@@ -106,8 +110,9 @@ public static class FileStorageDtoConverter
             CreatorName = dto.CreatorName,
             Version = dto.Version
         };
-        model.InitRootModelItem();
-        model.RootModelItem = dto.RootModelItem.FromDto(referenceResolver);
+        // Корневой узел восстанавливается из DTO вместе с деревом дочерних узлов
+        // (без ленивого создания пустого шаблона, который подменял бы сохраненную ссылку)
+        model.RootModelItem = dto.RootModelItem.FromDto();
         return model;
     }
 
@@ -128,27 +133,17 @@ public static class FileStorageDtoConverter
     }
 
     /// <summary>
-    /// Восстановление узла модели из DTO. Вместо ссылки по Uuid подставляется
-    /// объект, возвращенный resolver'ом (или новый пустой шаблон, если объект не найден).
+    /// Восстановление узла модели из DTO (первый этап выгрузки).
+    /// Ссылка на sql-шаблон сохраняется как неразрешенная (по Uuid) — она будет
+    /// разрешена вторым этапом по уже загруженным в память объектам.
     /// </summary>
-    public static ModelItem FromDto(this ModelItemFileDto dto, Func<Guid, object?> referenceResolver)
+    public static ModelItem FromDto(this ModelItemFileDto dto)
     {
-        ModelItem modelItem = new()
-        {
-            Uuid = dto.Uuid
-        };
-
-        if (dto.SqlTemplateUuid != Guid.Empty)
-        {
-            if (referenceResolver(dto.SqlTemplateUuid) is SqlTemplate referencedTemplate)
-            {
-                modelItem.SqlTemplate = referencedTemplate;
-            }
-        }
+        ModelItem modelItem = ModelItem.CreateWithTemplateReference(dto.Uuid, dto.SqlTemplateUuid);
 
         foreach (KeyValuePair<string, ModelItemFileDto> childDto in dto.ChildModelItems)
         {
-            modelItem.ChildModelItems.Add(childDto.Key, childDto.Value.FromDto(referenceResolver));
+            modelItem.ChildModelItems.Add(childDto.Key, childDto.Value.FromDto());
         }
 
         return modelItem;

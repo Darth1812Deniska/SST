@@ -16,6 +16,7 @@ public class ModelItem
     private Dictionary<string, ModelItem>? _childModelItems = null;
     private SqlTemplate? _sqlTemplate = null;
     private Guid _uuid = Guid.Empty;
+    private Guid? _savedSqlTemplateUuid = null;
 
     #region properties
 
@@ -30,12 +31,45 @@ public class ModelItem
     }
 
     /// <summary>
-    /// SQL-шаблон прикрепленный к узлу
+    /// SQL-шаблон прикрепленный к узлу.
+    /// Равен null, если шаблон еще не присоединен либо ссылка на сохраненный шаблон
+    /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
+    /// Присвоение null снимает шаблон с узла.
     /// </summary>
-    public SqlTemplate SqlTemplate
+    public SqlTemplate? SqlTemplate
     {
-        get => _sqlTemplate ??= new SqlTemplate();
-        set => _sqlTemplate = value;
+        get => _sqlTemplate;
+        set
+        {
+            _sqlTemplate = value;
+            _savedSqlTemplateUuid = null;
+        }
+    }
+
+    /// <summary>
+    /// Уникальный идентификатор sql-шаблона, на который ссылается узел после загрузки
+    /// DTO из файловой системы, но до разрешения ссылки (второй этап выгрузки).
+    /// Guid.Empty — если ссылка отсутствовала в сохраненных данных.
+    /// </summary>
+    [NotMapped]
+    public Guid SavedSqlTemplateUuid => _savedSqlTemplateUuid ?? Guid.Empty;
+
+    /// <summary>
+    /// Признак наличия неразрешенной ссылки узла на сохраненный sql-шаблон
+    /// </summary>
+    [NotMapped]
+    public bool HasSavedSqlTemplateReference => _savedSqlTemplateUuid.HasValue && _savedSqlTemplateUuid.Value != Guid.Empty;
+
+    /// <summary>
+    /// Установка ссылки узла на sql-шаблон по уникальному идентификатору (без разрешения ссылки).
+    /// Используется на первом этапе выгрузки DTO из файловой системы; разрешение выполняется
+    /// вторым этапом по уже загруженным в память объектам.
+    /// </summary>
+    /// <param name="sqlTemplateUuid">Уникальный идентификатор sql-шаблона</param>
+    public void SetSqlTemplateReference(Guid sqlTemplateUuid)
+    {
+        _savedSqlTemplateUuid = sqlTemplateUuid;
+        _sqlTemplate = null;
     }
 
     /// <summary>
@@ -82,10 +116,11 @@ public class ModelItem
     /// <returns>Созданный дочерний узел</returns>
     public ModelItem AddChildModelItem(string nodeName, DbType dbType)
     {
-        ModelItem childModelItem = new ();
-        Tag newChildTag = SqlTemplate.AddModelItemTag(nodeName, childModelItem);
+        // Новый дочерний узел сразу создается с собственным sql-шаблоном
+        ModelItem childModelItem = new(new SqlTemplate());
+        Tag newChildTag = SqlTemplate!.AddModelItemTag(nodeName, childModelItem);
         childModelItem.SetDbType(dbType);
-        childModelItem.SqlTemplate.SetName(nodeName);
+        childModelItem.SqlTemplate!.SetName(nodeName);
         ChildModelItems.Add(newChildTag.Name, childModelItem);
         return childModelItem;
     }
@@ -96,7 +131,7 @@ public class ModelItem
     /// <param name="dbType"></param>
     public void SetDbType(DbType dbType)
     {
-        SqlTemplate.SetDbType(dbType);
+        SqlTemplate?.SetDbType(dbType);
         foreach (KeyValuePair<string, ModelItem> childModelItem in ChildModelItems)
         {
             childModelItem.Value.SetDbType(dbType);
@@ -128,6 +163,20 @@ public class ModelItem
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    /// <summary>
+    /// Создание узла модели с неразрешенной ссылкой на sql-шаблон по уникальному идентификатору.
+    /// Используется при загрузке DTO из файловой системы (первый этап выгрузки):
+    /// ссылка разрешается вторым этапом по уже загруженным в память объектам.
+    /// </summary>
+    /// <param name="uuid">Уникальный идентификатор узла</param>
+    /// <param name="sqlTemplateUuid">Уникальный идентификатор сохраненного sql-шаблона</param>
+    public static ModelItem CreateWithTemplateReference(Guid uuid, Guid sqlTemplateUuid)
+    {
+        ModelItem modelItem = new() { Uuid = uuid };
+        modelItem.SetSqlTemplateReference(sqlTemplateUuid);
+        return modelItem;
     }
 
     #endregion

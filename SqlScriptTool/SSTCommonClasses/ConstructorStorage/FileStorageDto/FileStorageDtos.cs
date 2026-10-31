@@ -6,11 +6,24 @@ using SSTCommonClasses.Constructor.Tags;
 namespace SSTCommonClasses.ConstructorStorage.FileStorageDto;
 
 /// <summary>
+/// Интерфейс объекта, сохраняемого в файловую систему в виде DTO:
+/// хранит неразрешенные ссылки (уникальные идентификаторы) на связанные объекты,
+/// которые разрешаются на втором этапе выгрузки по уже загруженным в память объектам.
+/// </summary>
+public interface IFileReferenceHolder
+{
+    /// <summary>
+    /// Сохраненные неразрешенные ссылки на связанные объекты (Uuid -> имя свойства DTO)
+    /// </summary>
+    Dictionary<Guid, string> UnresolvedReferences { get; }
+}
+
+/// <summary>
 /// DTO для сериализации sql-шаблона в файловую систему.
 /// Содержит только атрибуты объекта: текст скрипта сохраняется в отдельный файл .sql,
 /// а связанные объекты (тэги) сериализуются в виде ссылок по уникальному идентификатору.
 /// </summary>
-public class SqlTemplateFileDto
+public class SqlTemplateFileDto : IFileReferenceHolder
 {
     /// <summary>
     /// Уникальный идентификатор sql-шаблона
@@ -61,6 +74,9 @@ public class SqlTemplateFileDto
     /// Ссылки на тэги шаблона (вместо объектов целиком — уникальные идентификаторы соответствующих объектов)
     /// </summary>
     public List<TagFileDto> Tags { get; set; } = new();
+
+    /// <inheritdoc cref="IFileReferenceHolder.UnresolvedReferences"/>
+    public Dictionary<Guid, string> UnresolvedReferences { get; } = new();
 }
 
 /// <summary>
@@ -68,7 +84,7 @@ public class SqlTemplateFileDto
 /// Текст связанных sql-шаблонов и вложенные объекты сохраняются отдельно,
 /// в дереве узлов вместо ссылок на объект целиком прописываются уникальные идентификаторы.
 /// </summary>
-public class ModelFileDto
+public class ModelFileDto : IFileReferenceHolder
 {
     /// <summary>
     /// Уникальный идентификатор модели
@@ -114,12 +130,15 @@ public class ModelFileDto
     /// Корневой узел модели (ссылки на sql-шаблоны — по уникальным идентификаторам)
     /// </summary>
     public ModelItemFileDto RootModelItem { get; set; } = new();
+
+    /// <inheritdoc cref="IFileReferenceHolder.UnresolvedReferences"/>
+    public Dictionary<Guid, string> UnresolvedReferences { get; } = new();
 }
 
 /// <summary>
 /// DTO для сериализации узла модели в файловую систему
 /// </summary>
-public class ModelItemFileDto
+public class ModelItemFileDto : IFileReferenceHolder
 {
     /// <summary>
     /// Уникальный идентификатор узла
@@ -135,13 +154,16 @@ public class ModelItemFileDto
     /// Дочерние узлы
     /// </summary>
     public Dictionary<string, ModelItemFileDto> ChildModelItems { get; set; } = new();
+
+    /// <inheritdoc cref="IFileReferenceHolder.UnresolvedReferences"/>
+    public Dictionary<Guid, string> UnresolvedReferences { get; } = new();
 }
 
 /// <summary>
 /// DTO для сериализации шаблона тэга в файловую систему.
 /// Связанный sql-шаблон сохраняется как ссылка по уникальному идентификатору.
 /// </summary>
-public class TagTemplateFileDto
+public class TagTemplateFileDto : IFileReferenceHolder
 {
     /// <summary>
     /// Уникальный идентификатор шаблона тэга
@@ -188,13 +210,16 @@ public class TagTemplateFileDto
     /// null — если sql-шаблон не привязан.
     /// </summary>
     public Guid? SqlTemplateUuid { get; set; }
+
+    /// <inheritdoc cref="IFileReferenceHolder.UnresolvedReferences"/>
+    public Dictionary<Guid, string> UnresolvedReferences { get; } = new();
 }
 
 /// <summary>
 /// DTO для сериализации тэга (внутри файла атрибутов sql-шаблона).
 /// Вместо ссылок на объекты целиком прописываются уникальные идентификаторы соответствующих объектов.
 /// </summary>
-public class TagFileDto
+public class TagFileDto : IFileReferenceHolder
 {
     /// <summary>
     /// Уникальный идентификатор тэга
@@ -257,4 +282,7 @@ public class TagFileDto
     /// Значение по умолчанию для тэга. Может отсутствовать
     /// </summary>
     public object? DefaultValue { get; set; }
+
+    /// <inheritdoc cref="IFileReferenceHolder.UnresolvedReferences"/>
+    public Dictionary<Guid, string> UnresolvedReferences { get; } = new();
 }
