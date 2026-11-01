@@ -124,6 +124,41 @@ public partial class SqlTemplateEditorWindow : Window
 
     private SqlTemplate GetCurrentSqlTemplate()
     {
+        if (InputSqlTemplate != null)
+        {
+            // Режим редактирования: возвращаем ТОТ ЖЕ самый объект шаблона, который
+            // был передан в окно (с тем же Uuid). Это критично:
+            // 1) имя узла на дереве модели корректно обновляется после закрытия окна;
+            // 2) ссылка «тэг ModelItemParent -> дочерний sql-шаблон» остаётся прежним
+            //    объектом, поэтому при повторном открытии шаблона не создаётся дубль
+            //    тэга с тем же именем и не теряется привязка по uuid.
+
+            // ВАЖНО: текст сохраняем ДО переименования. При переименовании шаблона
+            // метод SqlTemplate.SetName автоматически переименовывает связанный тэг
+            // ModelItemParent и заменяет старое имя тэга в текстах родительских
+            // шаблонов. Если бы старый текст сохранялся после SetName, он затёр бы
+            // эту замену (и изменения пользователя в собственном тексте — тоже).
+            InputSqlTemplate.SqlText = SqlTemplateText ?? InputSqlTemplate.SqlText;
+
+            InputSqlTemplate.AccessType = AccessType.Private;
+            InputSqlTemplate.DbType = SqlTemplateDbType;
+            InputSqlTemplate.Description = SqlTemplateDescription;
+            InputSqlTemplate.DisplayLabel = SqlTemplateDisplayLabel;
+            InputSqlTemplate.IsMultiplePattern = SqlTemplateIsMultiplePattern;
+            // SetName синхронизирует имя самого шаблона, связанных тэгов ModelItemParent
+            // (по uuid) и их имена в текстах родительских шаблонов
+            InputSqlTemplate.SetName(SqlTemplateName);
+            // Синхронизация имён унаследованных дочерних тэгов/шаблонов с новым именем
+            SyncNamesWithTemplate();
+            InputSqlTemplate.Tags = SqlTemplateTags;
+            return InputSqlTemplate;
+        }
+
+        // Перед формированием результата синхронизируем имена тэгов и дочерних
+        // sql-шаблонов с текущим названием шаблона (требование: изменённый узел
+        // должен называться так же, как шаблон, его содержащий).
+        SyncNamesWithTemplate();
+
         SqlTemplate sqlTemplate = new SqlTemplate()
         {
             AccessType = AccessType.Private,
@@ -139,6 +174,136 @@ public partial class SqlTemplateEditorWindow : Window
         };
 
         return sqlTemplate;
+    }
+
+    /// <summary>
+    /// Синхронизация имени шаблона с именами дочерних тэгов ModelItemParent и
+    /// прикреплённых к ним дочерних sql-шаблонов (тэг -> узел -> дерево модели).
+    /// Выполняется только если имя шаблона было изменено пользователем.
+    /// Переименование ТЭГА, представляющего данный шаблон в родительских шаблонах
+    /// (и замена старого имени в их текстах), выполняет сам SqlTemplate.SetName —
+    /// здесь этот тэг пропускается, чтобы не переименовать его повторно по устаревшему
+    /// «старому имени».
+    /// </summary>
+    private void SyncNamesWithTemplate()
+    {
+        if (InputSqlTemplate == null)
+        {
+            return;
+        }
+
+        string currentName = SqlTemplateName;
+        // Исходное имя шаблона на момент открытия окна редактора (не меняется при
+        // редактировании поля «Название») — именно оно является «старым именем»
+        string? oldName = InputSqlTemplate.Name;
+
+        // Имя не менялось — ничего не делаем
+        if (string.IsNullOrEmpty(oldName) || oldName == currentName)
+        {
+            return;
+        }
+
+        // 1. Если старый текст редактируемого шаблона содержал старый тэг, переименовываем
+        //    его в текущем редакторе (с сохранением правок пользователя).
+        //    Условие: новое имя шаблона ещё не присутствует в тексте — иначе пользователь
+        //    сам уже вписал новый тэг и автоматическая замена создала бы дубль.
+        string? oldSqlText = _sqlTemplateText;
+        string currentEditorText = TbCodeEditor.Text ?? string.Empty;
+        if (!string.IsNullOrEmpty(oldName)
+            && !currentEditorText.Contains(currentName, StringComparison.Ordinal))
+        {
+            int occurrences = string.IsNullOrEmpty(oldSqlText)
+                ? 0
+                : Regex.Matches(oldSqlText, Regex.Escape(oldName)).Count;
+            if (occurrences >= 1 && currentEditorText.Contains(oldName, StringComparison.Ordinal))
+            {
+                TbCodeEditor.Text = currentEditorText.Replace(oldName, currentName);
+            }
+        }
+
+        // 2. Тэги ModelItemParent самого редактируемого шаблона с унаследованными именами:
+        //    sql-шаблон дочернего узла называется так же, как тэг, который его содержит.
+        //    При переименовании родителя префикс имени заменяется на новое имя шаблона.
+        foreach (Tag tag in SqlTemplateTags)
+        {
+            if (tag.TagType != TagType.ModelItemParent)
+            {
+                continue;
+            }
+
+            // Тэг, представляющий сам редактируемый шаблон в родителе, — его имя уже
+            // синхронизировано методом SqlTemplate.SetName (по uuid); не трогаем
+            if (tag.SqlTemplateUuid is Guid selfTemplateUuid && selfTemplateUuid == InputSqlTemplate.Uuid)
+            {
+                continue;
+            }
+
+            // Уже согласован с новым именем — пропускаем
+            if (tag.Name == currentName || tag.SqlTemplate?.Name == currentName)
+            {
+                continue;
+            }
+
+            // Дочерний тэг наследует имя от родительского шаблона:
+            // "<ИмяРодителя_...>" -> "<НовоеИмя_...>". Сопоставление по префиксу нового
+            // или старого имени родителя, суффикс сохраняется как есть.
+            string? childNewName = BuildRenamedChildTagName(tag.Name, oldName, currentName);
+            if (childNewName == null)
+            {
+                continue;
+            }
+
+            // Имя дочернего sql-шаблона меняем ПЕРВЫМ: SetName автоматически переименует
+            // тэги ModelItemParent во всех родительских шаблонах (включая текущий),
+            // сопоставив их по uuid дочернего шаблона, и заменит старое имя в их текстах.
+            if (tag.SqlTemplate != null)
+            {
+                tag.SqlTemplate.SetName(childNewName);
+            }
+
+            // Если у тэга нет привязанного шаблона (или связь ещё не разрешилась),
+            // переименовываем сам тэг напрямую
+            if (tag.Name != childNewName)
+            {
+                tag.SetName(childNewName);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Вычисление нового имени дочернего тэга при переименовании родительского шаблона.
+    /// Поддерживаются имена вида "&lt;СтароеИмя&gt;" и "&lt;СтароеИмя_ModelItem_N&gt;",
+    /// а также уже перестроенные варианты с новым именем. Возвращает null, если имя тэга
+    /// не связано ни со старым, ни с новым именем родителя (менять его не нужно).
+    /// </summary>
+    private static string? BuildRenamedChildTagName(string tagName, string oldParentName, string newParentName)
+    {
+        if (string.IsNullOrEmpty(tagName))
+        {
+            return null;
+        }
+
+        // Отрезаем угловые скобки для сравнения префиксов
+        string inner = tagName.TrimStart('<').TrimEnd('>');
+        string oldInner = oldParentName.TrimStart('<').TrimEnd('>');
+        string newInner = newParentName.TrimStart('<').TrimEnd('>');
+
+        string? suffix = null;
+        if (inner.StartsWith(newInner, StringComparison.Ordinal))
+        {
+            suffix = inner[newInner.Length..];
+        }
+        else if (inner.StartsWith(oldInner, StringComparison.Ordinal))
+        {
+            suffix = inner[oldInner.Length..];
+        }
+
+        if (suffix == null)
+        {
+            return null;
+        }
+
+        return $"<{newInner}{suffix}>";
     }
 
     #endregion
