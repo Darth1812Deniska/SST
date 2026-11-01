@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using MsBox.Avalonia.Enums;
@@ -473,6 +474,24 @@ public partial class ModelEditorWindow : Window
     }
 
     /// <summary>
+    /// Построение имени дочернего тэга, наследуемого от имени родительского шаблона:
+    /// "&lt;ИмяРодителя_ModelItem_N&gt;". Используется при синхронизации имён, когда нужно
+    /// сохранить исходный нумерованный суффикс ("_ModelItem_N"), а не обрезать последнюю
+    /// букву (как делает <see cref="BuildChildName"/>).
+    /// </summary>
+    private static string BuildInheritedTagName(string parentTemplateName, string suffix)
+    {
+        if (string.IsNullOrEmpty(parentTemplateName))
+        {
+            return suffix.TrimStart('_');
+        }
+
+        return parentTemplateName.EndsWith('>')
+            ? $"{parentTemplateName[..^1]}{suffix}>"
+            : $"<{parentTemplateName}{suffix}>";
+    }
+
+    /// <summary>
     /// Рекурсивное обновление заголовков узлов дерева и ключей ChildModelItems
     /// при изменении имени шаблона узла. Дочерний узел всегда называется так же,
     /// как sql-шаблон, который его содержит; имя потомков наследуется от имени родителя.
@@ -508,7 +527,17 @@ public partial class ModelEditorWindow : Window
         foreach (KeyValuePair<string, ModelItem> child in oldChildren)
         {
             childIndex++;
-            string childNewName = BuildChildName(newTemplateName, childIndex);
+            // Сохраняем исходный нумерованный суффикс "_ModelItem_N" из старого имени,
+            // чтобы переименование не портило имя и соответствующий тэг в тексте шаблона
+            string suffix = $"_ModelItem_{childIndex}";
+            Match suffixMatch = System.Text.RegularExpressions.Regex.Match(
+                child.Key, @"_ModelItem_\d+(?=>$)");
+            if (suffixMatch.Success)
+            {
+                suffix = suffixMatch.Value;
+            }
+
+            string childNewName = BuildInheritedTagName(newTemplateName, suffix);
 
             ModelItem childModelItem = child.Value;
             childModelItem.EffectiveSqlTemplate.SetName(childNewName);
@@ -533,8 +562,11 @@ public partial class ModelEditorWindow : Window
     /// <summary>
     /// Синхронизация структуры дерева под выбранным узлом с тэгами типа
     /// <see cref="TagType.ModelItemParent"/> из его sql-шаблона. Вызывается после
-    /// закрытия SqlTemplateEditorWindow. Дочерние узлы, уже созданные пользователем
-    /// ранее, сохраняются (не теряются), новые тэги получают унаследованные имена.
+    /// закрытия SqlTemplateEditorWindow. Сопоставление тэгов и существующих дочерних
+    /// узлов выполняется ЯВНО по uuid sql-шаблона (свойство <see cref="ModelItem.SqlTemplateUuid"/>),
+    /// а не по имени или ссылке на объект — это исключает создание дублей дочерних узлов
+    /// при переоткрытии отредактированного шаблона. Дочерние узлы, уже созданные
+    /// пользователем ранее, сохраняются (не теряются), новые тэги получают унаследованные имена.
     /// </summary>
     private void SyncChildrenWithTemplateTags(TreeViewItem selTreeViewItem, ModelItem selModelItem)
     {
@@ -549,14 +581,26 @@ public partial class ModelEditorWindow : Window
             .Select(item => (ModelItem)item.Tag!)
             .ToList();
 
-        // Тэги, которым уже соответствует существующий дочерний узел (по шаблону или имени)
+        // Тэги, которым уже соответствует существующий дочерний узел.
+        // Основное правило сопоставления — совпадение uuid sql-шаблонов узла и тэга;
+        // дополнительные правила — прямое совпадение объектов или имён (для случаев,
+        // когда uuid ещё не назначен, например лениво созданный шаблон нового узла).
         List<Tag> matchedTags = new List<Tag>();
         List<(TreeViewItem ViewItem, ModelItem ModelItem)> retainedChildren =
             new List<(TreeViewItem, ModelItem)>();
 
         foreach (ModelItem childModelItem in existingChildModelItems)
         {
-            Tag? matchingTag = modelItemTags.FirstOrDefault(tag =>
+            Guid childTemplateUuid = childModelItem.SqlTemplateUuid;
+
+            Tag? matchingTag = null;
+            if (childTemplateUuid != Guid.Empty)
+            {
+                matchingTag = modelItemTags.FirstOrDefault(tag =>
+                    tag.SqlTemplateUuid.HasValue && tag.SqlTemplateUuid.Value == childTemplateUuid);
+            }
+
+            matchingTag ??= modelItemTags.FirstOrDefault(tag =>
                 (tag.SqlTemplate != null && ReferenceEquals(tag.SqlTemplate, childModelItem.SqlTemplate))
                 || tag.Name == childModelItem.EffectiveSqlTemplate.Name);
 
@@ -577,7 +621,7 @@ public partial class ModelEditorWindow : Window
         // Новые тэги ModelItemParent, добавленные при редактировании шаблона
         List<Tag> newTags = modelItemTags.Where(tag => !matchedTags.Contains(tag)).ToList();
 
-        // Если структура не изменилась — только обновляем заголовки (имя шаблона могло измениться)
+        // Если структура не изменилась — только обновляем заголовки (имена шаблонов могли измениться)
         if (newTags.Count == 0 && retainedChildren.Count == existingChildModelItems.Count)
         {
             for (int i = 0; i < retainedChildren.Count; i++)
@@ -624,7 +668,10 @@ public partial class ModelEditorWindow : Window
             ModelItem modelItem;
             if (template.SqlTemplate != null)
             {
-                // Тэг уже связан с sql-шаблоном (например, выбран через редактор тэгов)
+                // Тэг уже связан с sql-шаблоном (например, выбран через редактор тэгов).
+                // Привязка выполнена по uuid: такой же шаблон мог уже существовать среди
+                // удалённых из отображения узлов — но раз он не был найден выше по uuid,
+                // создаём новый узел поверх существующего шаблона.
                 modelItem = new ModelItem
                 {
                     SqlTemplate = template.SqlTemplate
@@ -644,10 +691,24 @@ public partial class ModelEditorWindow : Window
                     selModelItem.ChildModelItems[childName] = modelItem;
                 }
             }
+            else if (template.SqlTemplateUuid is Guid savedTemplateUuid && savedTemplateUuid != Guid.Empty
+                     && StaticConstructorStorage.SqlTemplates.FirstOrDefault(t => t.Uuid == savedTemplateUuid)
+                         is SqlTemplate resolvedTemplate)
+            {
+                // Ссылка тэга на сохранённый шаблон разрешается напрямую из хранилища по uuid
+                modelItem = new ModelItem { SqlTemplate = resolvedTemplate };
+                childName = string.IsNullOrEmpty(resolvedTemplate.Name) ? childName : resolvedTemplate.Name;
+
+                if (!selModelItem.ChildModelItems.ContainsKey(childName))
+                {
+                    selModelItem.ChildModelItems[childName] = modelItem;
+                }
+            }
             else
             {
                 // Создаём новый дочерний узел через модельный метод — он сам создаст
-                // sql-шаблон, добавит тэг в текст шаблона и зарегистрирует в ChildModelItems
+                // sql-шаблон, добавит тэг в текст шаблона (идемпотентно: если тэг уже
+                // есть в тексте — дубль не создаётся) и зарегистрирует в ChildModelItems
                 modelItem = selModelItem.AddChildModelItem(childName, ModelDbType);
             }
 
@@ -671,7 +732,10 @@ public partial class ModelEditorWindow : Window
 
         if (selTreeViewItem?.Tag is ModelItem selModelItem)
         {
-            // Открываем окно для выбранного шаблона
+            // Открываем окно для выбранного шаблона.
+            // Окно в режиме редактирования возвращает ТОТ ЖЕ объект шаблона (Uuid сохраняется),
+            // поэтому привязка «тэг ModelItemParent -> дочерний шаблон» не рвётся и
+            // повторное открытие редактора не порождает дублей тэгов/узлов.
             SqlTemplateEditorWindow sqlTemplateEditorWindow =
                 new SqlTemplateEditorWindow(selModelItem.EffectiveSqlTemplate);
             await sqlTemplateEditorWindow.ShowDialog(this);
@@ -679,19 +743,26 @@ public partial class ModelEditorWindow : Window
             selModelItem.SqlTemplate = sqlTemplateEditorWindow.CurrentSqlTemplate;
 
             string updatedTemplateName = sqlTemplateEditorWindow.CurrentSqlTemplate.Name;
-
-            // Обновляем заголовок выбранного узла: узел называется так же,
-            // как sql-шаблон, который он содержит
             bool rootItemSelected = ReferenceEquals(selTreeViewItem, VisualRootModelItem);
+
             if (!string.IsNullOrWhiteSpace(updatedTemplateName) && rootItemSelected)
             {
-                // Изменён корневой узел: обновляем имя модели и рекурсивно
-                // переименовываем все дочерние узлы (без потери потомков)
-                TbName.Text = updatedTemplateName.Trim('<', '>');
-                UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
+                // Изменён корневой узел: обновляем имя модели — событие TextChanged
+                // само переименует корневой узел и рекурсивно всех потомков.
+                // Если имя поля не изменилось, вызываем обновление напрямую.
+                string modelPlainName = updatedTemplateName.Trim('<', '>');
+                if ((TbName.Text ?? string.Empty).Trim() == modelPlainName)
+                {
+                    UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
+                }
+                else
+                {
+                    TbName.Text = modelPlainName;
+                }
             }
             else if (!string.IsNullOrWhiteSpace(updatedTemplateName))
             {
+                // Узел называется так же, как sql-шаблон, который он содержит
                 selTreeViewItem.Header = updatedTemplateName;
             }
 

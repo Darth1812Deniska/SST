@@ -96,6 +96,16 @@ public class ModelItem
     }
 
     /// <summary>
+    /// Актуальный уникальный идентификатор sql-шаблона, к которому привязан узел:
+    /// либо присоединённого объекта, либо сохранённой неразрешённой ссылки.
+    /// Guid.Empty — если шаблон ещё никогда не был создан/присоединён (ленивое состояние).
+    /// Используется для явного сопоставления визуальных узлов дерева и тэгов
+    /// ModelItemParent по uuid шаблона (а не по имени или ссылке на объект).
+    /// </summary>
+    [NotMapped]
+    public Guid SqlTemplateUuid => _sqlTemplate?.Uuid ?? _savedSqlTemplateUuid ?? Guid.Empty;
+
+    /// <summary>
     /// Дочерние узлы
     /// </summary>
     [NotMapped]

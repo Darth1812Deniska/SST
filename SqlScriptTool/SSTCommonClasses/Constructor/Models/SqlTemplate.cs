@@ -133,13 +133,24 @@ public class SqlTemplate : ConstructorItem
     }
 
     /// <summary>
-    /// Добавление ссылочного тэга
+    /// Добавление ссылочного тэга.
+    /// Если тэг с таким именем уже присутствует в списке тэгов шаблона —
+    /// существующий тэг возвращается без изменения (идемпотентность: повторное
+    /// добавление не создаёт дубль и не изменяет текст скрипта).
     /// </summary>
     /// <param name="tagName">Название нового тэга</param>
     /// <param name="modelItem">Узел модели</param>
     /// <returns></returns>
     public Tag AddModelItemTag(string tagName, ModelItem modelItem)
     {
+        // Идемпотентность: если такой тэг уже есть — возвращаем существующий,
+        // не создавая дубль и не добавляя имя тэга в текст скрипта повторно
+        Tag? existingTag = Tags.FirstOrDefault(tag => tag.Name == tagName);
+        if (existingTag != null)
+        {
+            return existingTag;
+        }
+
         Tag modelItemTag = new()
         {
             Name = tagName,
@@ -154,11 +165,24 @@ public class SqlTemplate : ConstructorItem
     }
 
     /// <summary>
-    /// Добавление имени ссылочного тэга в текст скрипта
+    /// Добавление имени ссылочного тэга в текст скрипта.
+    /// Если тэг уже присутствует в тексте — дублирование не выполняется
+    /// (иначе при переоткрытии шаблона один и тот же тэг добавлялся бы повторно).
     /// </summary>
     /// <param name="tagName">Название ссылочного тэга</param>
     public void AddModelItemTagToScript(string? tagName)
     {
+        if (string.IsNullOrEmpty(tagName))
+        {
+            return;
+        }
+
+        // Тэг уже есть в тексте скрипта — ничего не добавляем
+        if (!string.IsNullOrEmpty(SqlText) && SqlText.Contains(tagName, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         SqlText = string.IsNullOrEmpty(SqlText)
             ? tagName
             : string.Concat(SqlText, Environment.NewLine, tagName);
