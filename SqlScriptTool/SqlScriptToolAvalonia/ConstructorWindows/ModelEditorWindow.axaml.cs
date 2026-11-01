@@ -22,6 +22,13 @@ public partial class ModelEditorWindow : Window
     #region fields
 
     private bool _isSaveAndCloseClicked = false;
+    /// <summary>
+    /// Подавление обработчика TbName_TextChanged при программной синхронизации поля
+    /// «Название» модели (например, после переименования корневого sql-шаблона из
+    /// SqlTemplateEditorWindow). Без него TextChanged переименовал бы корневой узел
+    /// обратно в "<ИмяМодели>", затерев новое имя шаблона.
+    /// </summary>
+    private bool _suppressRootRename = false;
 
     #endregion
 
@@ -747,23 +754,23 @@ public partial class ModelEditorWindow : Window
 
             if (!string.IsNullOrWhiteSpace(updatedTemplateName) && rootItemSelected)
             {
-                // Изменён корневой узел: обновляем имя модели — событие TextChanged
-                // само переименует корневой узел и рекурсивно всех потомков.
-                // Если имя поля не изменилось, вызываем обновление напрямую.
-                string modelPlainName = updatedTemplateName.Trim('<', '>');
-                if ((TbName.Text ?? string.Empty).Trim() == modelPlainName)
-                {
-                    UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
-                }
-                else
-                {
-                    TbName.Text = modelPlainName;
-                }
+                // Изменён корневой узел: обновляем имя модели и заголовок корневого узла.
+                // Прямое присваивание TbName.Text НЕ вызываем — обработчик TextChanged
+                // иначе переименовал бы корень обратно в "<ИмяМодели>", затерев новое
+                // имя шаблона. Вместо него — рекурсивное обновление имён всего поддерева.
+                UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
+                // Синхронизируем поле «Название» модели без генерации события TextChanged
+                _suppressRootRename = true;
+                TbName.Text = updatedTemplateName.Trim('<', '>');
+                _suppressRootRename = false;
             }
             else if (!string.IsNullOrWhiteSpace(updatedTemplateName))
             {
-                // Узел называется так же, как sql-шаблон, который он содержит
-                selTreeViewItem.Header = updatedTemplateName;
+                // Узел называется так же, как sql-шаблон, который он содержит.
+                // Обновляем заголовок узла и рекурсивно имена потомков (они наследуются
+                // от имени родительского шаблона). Если имя не изменилось — метод ничего
+                // не делает.
+                UpdateNodeNamesRecursively(selTreeViewItem, selModelItem, updatedTemplateName);
             }
 
             // Синхронизируем дочерние узлы с тэгами ModelItemParent из обновлённого шаблона
@@ -839,6 +846,13 @@ public partial class ModelEditorWindow : Window
 
     private void TbName_TextChanged(object? sender, TextChangedEventArgs e)
     {
+        // Программная синхронизация поля «Название» (после закрытия SqlTemplateEditorWindow)
+        // не должна переименовывать корневой узел — имя шаблона уже установлено из редактора
+        if (_suppressRootRename)
+        {
+            return;
+        }
+
         // Наименование узла
         string nodeName = string.IsNullOrEmpty(ModelName) ? "<ModelItem>" : $"<{ModelName}>";
         // Без проверки на ввод текста
@@ -850,6 +864,8 @@ public partial class ModelEditorWindow : Window
         // поэтому NullReferenceException больше не возникает.
         if (VisualRootModelItem.Tag is ModelItem rootModelItem)
         {
+            // SetName также переименовывает связанный тэг ModelItemParent и заменяет
+            // старое имя в текстах родительских шаблонов (сопоставление по uuid)
             rootModelItem.EffectiveSqlTemplate.SetName(nodeName);
 
             // Рекурсивно обновляем имена дочерних узлов, унаследованные от имени
