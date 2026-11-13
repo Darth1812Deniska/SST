@@ -1,4 +1,5 @@
 ﻿using SSTCommonClasses.Constants;
+using SSTCommonClasses.ConstructorStorage;
 using SSTCommonClasses.Constructor.Tags;
 
 namespace SSTCommonClasses.Constructor.Models;
@@ -88,12 +89,63 @@ public class SqlTemplate : ConstructorItem
     #region Public methods
 
     /// <summary>
-    /// Изменение имени шаблона
+    /// Изменение имени шаблона. Дополнительно обновляются имена тэгов ModelItemParent,
+    /// представляющих данный шаблон в родительских шаблонах (связь выполняется по uuid
+    /// sql-шаблона, а не по имени или ссылке на объект), и заменяется старый тэг в текстах
+    /// этих родительских шаблонов. Это сохраняет согласованность имён «тэг ↔ дочерний
+    /// sql-шаблон ↔ узел дерева» при переименовании шаблона из любого места.
     /// </summary>
     /// <param name="name">Новое имя шаблона</param>
     public void SetName(string name)
     {
+        string oldName = Name;
         Name = name;
+
+        if (string.IsNullOrEmpty(oldName) || oldName == name)
+        {
+            return;
+        }
+
+        RenameLinkedTagsEverywhere(name, oldName);
+    }
+
+    /// <summary>
+    /// Переименование тэгов ModelItemParent, ссылающихся на данный шаблон (по uuid),
+    /// во всех загруженных в хранилище sql-шаблонах, с заменой старого имени тэга
+    /// в их текстах. Вызывается из <see cref="SetName"/>.
+    /// </summary>
+    private void RenameLinkedTagsEverywhere(string newName, string oldName)
+    {
+        foreach (SqlTemplate parentCandidate in StaticConstructorStorage.SqlTemplates)
+        {
+            // Сам переименовываемый шаблон не обрабатывается
+            if (ReferenceEquals(parentCandidate, this))
+            {
+                continue;
+            }
+
+            bool renamed = false;
+            foreach (Tag parentTag in parentCandidate.Tags)
+            {
+                if (parentTag.TagType != TagType.ModelItemParent)
+                {
+                    continue;
+                }
+
+                // Сопоставление ЯВНО по uuid sql-шаблона, на который ссылается тэг
+                if (parentTag.SqlTemplateUuid is Guid tagTemplateUuid && tagTemplateUuid == Uuid)
+                {
+                    parentTag.Name = newName;
+                    renamed = true;
+                }
+            }
+
+            if (renamed && !string.IsNullOrEmpty(parentCandidate.SqlText)
+                          && parentCandidate.SqlText.Contains(oldName, StringComparison.Ordinal))
+            {
+                parentCandidate.SqlText = parentCandidate.SqlText.Replace(oldName, newName);
+            }
+        }
     }
 
     /// <summary>
@@ -133,13 +185,24 @@ public class SqlTemplate : ConstructorItem
     }
 
     /// <summary>
-    /// Добавление ссылочного тэга
+    /// Добавление ссылочного тэга.
+    /// Если тэг с таким именем уже присутствует в списке тэгов шаблона —
+    /// существующий тэг возвращается без изменения (идемпотентность: повторное
+    /// добавление не создаёт дубль и не изменяет текст скрипта).
     /// </summary>
     /// <param name="tagName">Название нового тэга</param>
     /// <param name="modelItem">Узел модели</param>
     /// <returns></returns>
     public Tag AddModelItemTag(string tagName, ModelItem modelItem)
     {
+        // Идемпотентность: если такой тэг уже есть — возвращаем существующий,
+        // не создавая дубль и не добавляя имя тэга в текст скрипта повторно
+        Tag? existingTag = Tags.FirstOrDefault(tag => tag.Name == tagName);
+        if (existingTag != null)
+        {
+            return existingTag;
+        }
+
         Tag modelItemTag = new()
         {
             Name = tagName,
@@ -154,11 +217,24 @@ public class SqlTemplate : ConstructorItem
     }
 
     /// <summary>
-    /// Добавление имени ссылочного тэга в текст скрипта
+    /// Добавление имени ссылочного тэга в текст скрипта.
+    /// Если тэг уже присутствует в тексте — дублирование не выполняется
+    /// (иначе при переоткрытии шаблона один и тот же тэг добавлялся бы повторно).
     /// </summary>
     /// <param name="tagName">Название ссылочного тэга</param>
     public void AddModelItemTagToScript(string? tagName)
     {
+        if (string.IsNullOrEmpty(tagName))
+        {
+            return;
+        }
+
+        // Тэг уже есть в тексте скрипта — ничего не добавляем
+        if (!string.IsNullOrEmpty(SqlText) && SqlText.Contains(tagName, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         SqlText = string.IsNullOrEmpty(SqlText)
             ? tagName
             : string.Concat(SqlText, Environment.NewLine, tagName);
