@@ -23,33 +23,48 @@ public class Tag : ConstructorItem
     /// Равен null, если шаблон не привязан либо ссылка на сохраненный шаблон
     /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
     /// </summary>
-    public TagTemplate? TagTemplate
-    {
-        get => _tagTemplate;
-        set
-        {
-            _tagTemplate = value;
-            _savedTagTemplateUuid = null;
-        }
-    }
+    public TagTemplate? TagTemplate => _tagTemplate;
 
     /// <summary>
     /// Дочерний sql-щаблон привязанный к тэгу.
     /// Равен null, если шаблон не привязан либо ссылка на сохраненный шаблон
     /// (по уникальному идентификатору) еще не разрешена при загрузке из файловой системы.
+    /// Для получения шаблона, уже выгруженного в систему, по одной только ссылке
+    /// используется <see cref="Models.ModelItem.GetSqlTemplate(Guid)"/>.
     /// </summary>
-    public SqlTemplate? SqlTemplate
+    public SqlTemplate? SqlTemplate => _sqlTemplate;
+
+    private TagTemplate? _tagTemplate;
+    private SqlTemplate? _sqlTemplate;
+
+    /// <summary>
+    /// Привязка шаблона тэга к тэгу (ссылка на объект и его уникальный идентификатор).
+    /// Присвоение null снимает привязку.
+    /// </summary>
+    public TagTemplate? AttachedTagTemplate
+    {
+        get => _tagTemplate;
+        set
+        {
+            _tagTemplate = value;
+            _savedTagTemplateUuid = value?.Uuid;
+        }
+    }
+
+    /// <summary>
+    /// Привязка дочернего sql-шаблона к тэгу (ссылка на объект и его уникальный идентификатор).
+    /// Присвоение null снимает привязку.
+    /// </summary>
+    public SqlTemplate? AttachedSqlTemplate
     {
         get => _sqlTemplate;
         set
         {
             _sqlTemplate = value;
-            _savedSqlTemplateUuid = null;
+            _savedSqlTemplateUuid = value?.Uuid;
         }
     }
 
-    private TagTemplate? _tagTemplate;
-    private SqlTemplate? _sqlTemplate;
     private Guid? _savedTagTemplateUuid;
     private Guid? _savedSqlTemplateUuid;
 
@@ -58,14 +73,30 @@ public class Tag : ConstructorItem
     /// (в том числе неразрешенная ссылка, сохраненная при первом этапе выгрузки).
     /// null — если ссылка отсутствовала в сохраненных данных.
     /// </summary>
-    public Guid? TagTemplateUuid => _tagTemplate?.Uuid ?? _savedTagTemplateUuid;
+    public Guid? TagTemplateUuid
+    {
+        get => _tagTemplate?.Uuid ?? _savedTagTemplateUuid;
+        set
+        {
+            _tagTemplate = null;
+            _savedTagTemplateUuid = value;
+        }
+    }
 
     /// <summary>
     /// Уникальный идентификатор дочернего sql-шаблона, на который ссылается тэг
     /// (в том числе неразрешенная ссылка, сохраненная при первом этапе выгрузки).
     /// null — если ссылка отсутствовала в сохраненных данных.
     /// </summary>
-    public Guid? SqlTemplateUuid => _sqlTemplate?.Uuid ?? _savedSqlTemplateUuid;
+    public Guid? SqlTemplateUuid
+    {
+        get => _sqlTemplate?.Uuid ?? _savedSqlTemplateUuid;
+        set
+        {
+            _sqlTemplate = null;
+            _savedSqlTemplateUuid = value;
+        }
+    }
 
     /// <summary>
     /// Установка ссылки тэга на шаблон тэга по уникальному идентификатору (без разрешения ссылки).

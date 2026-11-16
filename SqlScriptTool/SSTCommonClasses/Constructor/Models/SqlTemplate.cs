@@ -2,6 +2,7 @@
 using SSTCommonClasses.ConstructorStorage;
 using SSTCommonClasses.Constructor.Tags;
 
+
 namespace SSTCommonClasses.Constructor.Models;
 
 
@@ -207,7 +208,9 @@ public class SqlTemplate : ConstructorItem
         {
             Name = tagName,
             TagType = TagType.ModelItemParent,
-            SqlTemplate = modelItem.SqlTemplate,
+            // Тэг ссылается на sql-шаблон дочернего узла по уникальному идентификатору:
+            // сам шаблон хранится в хранилище и получается по ссылке (дубли исключены)
+            SqlTemplateUuid = modelItem.SqlTemplateUuid,
             AccessType = AccessType
         };
 
