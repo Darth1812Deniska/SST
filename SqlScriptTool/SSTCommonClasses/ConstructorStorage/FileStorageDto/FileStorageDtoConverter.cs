@@ -34,6 +34,22 @@ public static class FileStorageDtoConverter
             IsMultiplePattern = sqlTemplate.IsMultiplePattern,
             Tags = sqlTemplate.Tags.Select(tag => tag.ToDto()).ToList()
         };
+
+        // Запоминаем неразрешенные ссылки тэгов (Uuid связанных объектов), чтобы второй
+        // этап выгрузки мог их разрешить даже если объекты ещё не загружены в память
+        foreach (Tag tag in sqlTemplate.Tags)
+        {
+            if (tag.TagTemplate == null && tag.TagTemplateUuid is Guid unresolvedTagTemplateUuid)
+            {
+                dto.UnresolvedReferences[unresolvedTagTemplateUuid] = nameof(TagFileDto.TagTemplateUuid);
+            }
+
+            if (tag.AttachedSqlTemplate == null && tag.SqlTemplateUuid is Guid unresolvedSqlTemplateUuid)
+            {
+                dto.UnresolvedReferences[unresolvedSqlTemplateUuid] = nameof(TagFileDto.SqlTemplateUuid);
+            }
+        }
+
         return dto;
     }
 
@@ -70,13 +86,15 @@ public static class FileStorageDtoConverter
         {
             Tag tag = tagDto.FromDto(referenceResolver);
             // Если ссылка не разрешилась (первый этап), сохраняем Uuid в самом тэге,
-            // чтобы второй этап мог разрешить её по уже загруженным в память объектам
+            // чтобы второй этап мог разрешить её по уже загруженным в память объектам.
+            // Дополнительно проверяем неразрешенные ссылки самого DTO шаблона — они
+            // заполняются при сохранении объекта с ещё не разрешенными зависимостями.
             if (tag.TagTemplate == null && tagDto.TagTemplateUuid is Guid unresolvedTagTemplateUuid)
             {
                 tag.SetTagTemplateReference(unresolvedTagTemplateUuid);
             }
 
-            if (tag.SqlTemplate == null && tagDto.SqlTemplateUuid is Guid unresolvedSqlTemplateUuid)
+            if (tag.AttachedSqlTemplate == null && tagDto.SqlTemplateUuid is Guid unresolvedSqlTemplateUuid)
             {
                 tag.SetSqlTemplateReference(unresolvedSqlTemplateUuid);
             }
@@ -143,18 +161,28 @@ public static class FileStorageDtoConverter
     }
 
     /// <summary>
-    /// Преобразование узла модели в DTO
+    /// Преобразование узла модели в DTO. Узел хранит только ссылку на sql-шаблон
+    /// (<see cref="ModelItem.SqlTemplateUuid"/>), поэтому в DTO записывается именно она,
+    /// без сериализации самого шаблона (он выгружается в хранилище отдельно).
     /// </summary>
     public static ModelItemFileDto ToDto(this ModelItem modelItem)
     {
         ModelItemFileDto dto = new()
         {
             Uuid = modelItem.Uuid,
-            SqlTemplateUuid = modelItem.SqlTemplate?.Uuid ?? modelItem.SavedSqlTemplateUuid,
+            SqlTemplateUuid = modelItem.SqlTemplateUuid,
             ChildModelItems = modelItem.ChildModelItems.ToDictionary(
                 pair => pair.Key,
                 pair => pair.Value.ToDto())
         };
+
+        // Если шаблон по ссылке ещё не выгружен в систему — запоминаем неразрешенную ссылку,
+        // чтобы второй этап выгрузки смог её разрешить
+        if (modelItem.SqlTemplateUuid != Guid.Empty && ModelItem.GetSqlTemplate(modelItem.SqlTemplateUuid) == null)
+        {
+            dto.UnresolvedReferences[modelItem.SqlTemplateUuid] = nameof(ModelItemFileDto.SqlTemplateUuid);
+        }
+
         return dto;
     }
 
@@ -168,14 +196,9 @@ public static class FileStorageDtoConverter
     /// (на первом этапе передаётся пустой resolver, возвращающий null)</param>
     public static ModelItem FromDto(this ModelItemFileDto dto, Func<Guid, object?> referenceResolver)
     {
+        // Узел создаётся сразу со ссылкой на сохраненный sql-шаблон; сам шаблон
+        // получается из хранилища методом ModelItem.GetSqlTemplate() по необходимости
         ModelItem modelItem = ModelItem.CreateWithTemplateReference(dto.Uuid, dto.SqlTemplateUuid);
-
-        // Если resolver что-то вернул (второй этап или прямая загрузка с разрешением) — привязываем объект
-        if (dto.SqlTemplateUuid != Guid.Empty
-            && referenceResolver(dto.SqlTemplateUuid) is SqlTemplate referencedTemplate)
-        {
-            modelItem.SqlTemplate = referencedTemplate;
-        }
 
         foreach (KeyValuePair<string, ModelItemFileDto> childDto in dto.ChildModelItems)
         {
@@ -204,8 +227,15 @@ public static class FileStorageDtoConverter
             TagType = tagTemplate.TagType,
             DataType = tagTemplate.DataType,
             IsMultiplePattern = tagTemplate.IsMultiplePattern,
-            SqlTemplateUuid = tagTemplate.SqlTemplate?.Uuid
+            SqlTemplateUuid = tagTemplate.SqlTemplateUuid
         };
+
+        // Если шаблон по ссылке ещё не выгружен в систему — запоминаем неразрешенную ссылку
+        if (tagTemplate.SqlTemplate == null && tagTemplate.SqlTemplateUuid is Guid unresolvedSqlTemplateUuid)
+        {
+            dto.UnresolvedReferences[unresolvedSqlTemplateUuid] = nameof(TagTemplateFileDto.SqlTemplateUuid);
+        }
+
         return dto;
     }
 
