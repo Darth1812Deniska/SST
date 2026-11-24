@@ -921,16 +921,23 @@ public static class StaticConstructorStorage
     }
 
     /// <summary>
-    /// Рекурсивное разрешение ссылок узлов дерева модели на sql-шаблоны по уникальным идентификаторам
+    /// Обход дерева узлов модели: проверка того, что ссылки узлов на sql-шаблоны
+    /// (<see cref="ModelItem.SqlTemplateUuid"/>) ведут на уже выгруженные в систему объекты.
+    /// Узел хранит только ссылку и получает шаблон из хранилища через
+    /// <see cref="ModelItem.GetSqlTemplate(Guid)"/>, поэтому разрешение ссылок как таковое
+    /// не требуется — здесь лишь фиксируются битые ссылки (шаблон по Uuid отсутствует
+    /// в хранилище), чтобы они попали в список ошибок загрузки.
     /// </summary>
     private static void ResolveModelItemReferences(ModelItem modelItem)
     {
-        // Ленивый getter SqlTemplate создавал новый пустой шаблон при обращении к узлу,
-        // который ссылается на сохраненный шаблон по Uuid. Теперь неразрешенная ссылка
-        // отличается от Guid.Empty, а отсутствующий шаблон — null.
-        if (modelItem.HasSavedSqlTemplateReference && modelItem.SqlTemplate == null)
+        // Битая ссылка: узел ссылается на шаблон, которого нет в системе.
+        // GetSqlTemplate() вернёт null, а текст скрипта для такого узла считаться не будет,
+        // поэтому ситуация регистрируется как ошибка загрузки
+        if (modelItem.SqlTemplateUuid != Guid.Empty && modelItem.GetSqlTemplate() == null)
         {
-            modelItem.SqlTemplate = SqlTemplates.GetById(modelItem.SavedSqlTemplateUuid);
+            throw new InvalidOperationException(
+                $"Узел модели '{modelItem.Uuid}' ссылается на sql-шаблон " +
+                $"'{modelItem.SqlTemplateUuid}', который отсутствует в хранилище.");
         }
 
         foreach (ModelItem childModelItem in modelItem.ChildModelItems.Values)
@@ -966,11 +973,14 @@ public static class StaticConstructorStorage
 
     private static IEnumerable<SqlTemplate> EnumerateModelSqlTemplatesIterator(ModelItem modelItem, HashSet<Guid> visited)
     {
-        if (modelItem.SqlTemplate != null && visited.Add(modelItem.SqlTemplate.Uuid))
+        // Шаблон узла получается из хранилища по ссылке (Uuid): узел хранит только её,
+        // поэтому дубли sql-шаблонов при сохранении/загрузке модели невозможны
+        SqlTemplate? ownTemplate = modelItem.GetSqlTemplate();
+        if (ownTemplate != null && visited.Add(ownTemplate.Uuid))
         {
-            yield return modelItem.SqlTemplate;
+            yield return ownTemplate;
 
-            foreach (Tag tag in modelItem.SqlTemplate.Tags)
+            foreach (Tag tag in ownTemplate.Tags)
             {
                 if (tag.SqlTemplate != null && visited.Add(tag.SqlTemplate.Uuid))
                 {
