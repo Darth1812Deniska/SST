@@ -136,7 +136,10 @@ public class ModelFileDto : IFileReferenceHolder
 }
 
 /// <summary>
-/// DTO для сериализации узла модели в файловую систему
+/// DTO для сериализации узла модели в файловую систему.
+/// Узел хранит только ссылку на sql-шаблон, уже выгруженный в систему, —
+/// его уникальный идентификатор <see cref="SqlTemplateUuid"/>; сам шаблон
+/// сериализуется отдельно, что исключает появление дублей шаблонов после редактирования модели.
 /// </summary>
 public class ModelItemFileDto : IFileReferenceHolder
 {
@@ -146,7 +149,8 @@ public class ModelItemFileDto : IFileReferenceHolder
     public Guid Uuid { get; set; }
 
     /// <summary>
-    /// Ссылка на прикрепленный sql-шаблон (уникальный идентификатор соответствующего объекта)
+    /// Ссылка на прикрепленный sql-шаблон (уникальный идентификатор соответствующего объекта).
+    /// Guid.Empty — если шаблон к узлу ещё не присоединён.
     /// </summary>
     public Guid SqlTemplateUuid { get; set; }
 

@@ -85,10 +85,11 @@ public class Model : ConstructorItem
 
     public void InitRootModelItem()
     {
-        _rootModelItem = new ModelItem()
-        {
-            SqlTemplate = new SqlTemplate()
-        };
+        // Корневой узел создаётся со ссылкой на собственный sql-шаблон, который сразу
+        // регистрируется в хранилище (повторная регистрация одного и того же шаблона
+        // дублей не образует)
+        _rootModelItem = new ModelItem();
+        _rootModelItem.EnsureOwnTemplate();
     }
 
     public bool Equals(Model? other)

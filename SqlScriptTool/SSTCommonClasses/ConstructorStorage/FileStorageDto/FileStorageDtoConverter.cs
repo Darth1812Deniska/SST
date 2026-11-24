@@ -164,12 +164,16 @@ public static class FileStorageDtoConverter
     /// Преобразование узла модели в DTO. Узел хранит только ссылку на sql-шаблон
     /// (<see cref="ModelItem.SqlTemplateUuid"/>), поэтому в DTO записывается именно она,
     /// без сериализации самого шаблона (он выгружается в хранилище отдельно).
+    /// Повторное сохранение модели обновляет существующие шаблоны по их уникальным
+    /// идентификаторам, не создавая дублей.
     /// </summary>
     public static ModelItemFileDto ToDto(this ModelItem modelItem)
     {
         ModelItemFileDto dto = new()
         {
             Uuid = modelItem.Uuid,
+            // Ссылка на sql-шаблон берётся непосредственно из узла: сам объект шаблона
+            // в DTO не попадает, а выгружается в хранилище отдельно по своему Uuid
             SqlTemplateUuid = modelItem.SqlTemplateUuid,
             ChildModelItems = modelItem.ChildModelItems.ToDictionary(
                 pair => pair.Key,
@@ -188,8 +192,11 @@ public static class FileStorageDtoConverter
 
     /// <summary>
     /// Восстановление узла модели из DTO (первый этап выгрузки).
-    /// Ссылка на sql-шаблон сохраняется как неразрешенная (по Uuid) — она будет
-    /// разрешена вторым этапом по уже загруженным в память объектам.
+    /// В узле сохраняется только ссылка на sql-шаблон (по Uuid): если шаблон уже
+    /// выгружен в систему (например, прочитан из хранилища раньше дерева модели),
+    /// ссылка указывает на него сразу; иначе ссылка остаётся неразрешенной и будет
+    /// разрешена вторым этапом (<see cref="StaticConstructorStorage.ResolveLoadedReferences"/>)
+    /// либо получена напрямую через <see cref="ModelItem.GetSqlTemplate(Guid)"/> при обращении.
     /// </summary>
     /// <param name="dto">DTO узла модели</param>
     /// <param name="referenceResolver">Функция разрешения ссылок по уникальному идентификатору
@@ -199,6 +206,15 @@ public static class FileStorageDtoConverter
         // Узел создаётся сразу со ссылкой на сохраненный sql-шаблон; сам шаблон
         // получается из хранилища методом ModelItem.GetSqlTemplate() по необходимости
         ModelItem modelItem = ModelItem.CreateWithTemplateReference(dto.Uuid, dto.SqlTemplateUuid);
+
+        // Разрешение ссылки на sql-шаблон: если передан полноценный resolver и шаблон
+        // уже загружен в память, ссылка проверяется на актуальность; при пустом resolver
+        // (первый этап) ничего не делается — текст шаблона всё равно берётся из хранилища
+        // по Uuid лениво, поэтому раннее разрешение не требуется
+        if (dto.SqlTemplateUuid != Guid.Empty && referenceResolver(dto.SqlTemplateUuid) is SqlTemplate)
+        {
+            modelItem.SqlTemplateUuid = dto.SqlTemplateUuid;
+        }
 
         foreach (KeyValuePair<string, ModelItemFileDto> childDto in dto.ChildModelItems)
         {

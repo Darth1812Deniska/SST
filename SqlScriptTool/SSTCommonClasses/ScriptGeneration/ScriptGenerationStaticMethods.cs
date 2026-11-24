@@ -49,14 +49,16 @@ public static class ScriptGenerationStaticMethods
     /// <returns>Сформированный текст шаблона скрипта для заданного узла</returns>
     private static string GetModelItemSqlText(ModelItem modelItem)
     {
-        SqlTemplate sqlTemplate = modelItem.SqlTemplate;
+        // Текст шаблона берётся из sql-шаблона, уже выгруженного в систему: узел хранит
+        // только ссылку на него (SqlTemplateUuid), поэтому дубли шаблонов исключены
+        SqlTemplate? sqlTemplate = modelItem.GetSqlTemplate();
 
-        if (sqlTemplate.IsMultiplePattern)
+        if (sqlTemplate == null || sqlTemplate.IsMultiplePattern)
         {
             return string.Empty;
         }
 
-        string? templateText = modelItem.SqlTemplate.SqlText;
+        string? templateText = sqlTemplate.SqlText;
 
         if (string.IsNullOrEmpty(templateText))
         {
